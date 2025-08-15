@@ -1,4 +1,7 @@
 packages:
-  - "."
-  - "packages/tylant/packages/*"
-  - "!**/test/**"
+  - .
+  - packages/tylant/packages/*
+  - '!**/test/**'
+onlyBuiltDependencies:
+  - esbuild
+  - sharp

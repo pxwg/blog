@@ -1,12 +1,14 @@
-
 #import "/typ/templates/mod.typ": sys-is-html-target
 
-Myriad Dreamin puts down daily life, essays, and notes within _PoeMagie._
+Hi there, my name is Xinyu Xiang. I'm currently an undergraduate student in the #link("https://www.phys.tsinghua.edu.cn/phyen/")[Department of Physics] at Tsinghua University.
+I am primarily interested in the _non-perturbative_ structure of quantum field theory and its mathematical foundations, including quantization, deformation, duality, and holography.
 
-Myriad Dreamin 在 _PoeMagie_ 中记录生活中的日常、随笔与笔记。
+Drawing on my physics studies, I aspire to use mathematical tools to provide precise descriptions of *universal properties* of the universe; and with my mathematical training, I hope to leverage physical tools to offer new insights and extensions of pure mathematical objects.
 
-I'm a student. I make compilers and software in my spare time. I have a fictional character named raihamiya.
+Beyond physics, I am a programming enthusiast who enjoys writing plugins for #link("https://github.com/neovim/neovim")[Neovim] (an open-source text editor) to enhance productivity, and I maintain an open-source personal configuration repository and several plugins on #link("https://github.com/pxwg")[GitHub].
 
-我是一名学生。我在空余时间开发编译器和软件。我拥有一个名为「礼羽みや」的虚构角色。
+I am also a fan of tennis, playing weekly matches with friends at the Zijing Tennis Court (紫荆网球场).
 
-#link("https://github.com/Myriad-Dreamin")[GitHub]/#link("https://skeb.jp/@camiyoru")[Skeb]. Buy me a coffee on #link("https://www.unifans.com/camiyoru")[Unifans]/#link("https://afdian.com/a/camiyoru")[Afdian].
+This site is a personal blog where I share my notes, essays, and articles. It is built with #link("https://github.com/Myriad-Dreamin/tylant")[tylant], a Typst-based static site generator.
+
+#link("https://github.com/pxwg")[GitHub]/#link("https://www.zhihu.com/people/bu-hui-fei-de-qi-e-71")[Zhihu]
