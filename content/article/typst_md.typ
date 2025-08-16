@@ -2,7 +2,7 @@
 #import "/typ/packages/metalogo.typ": *
 
 #show: main.with(
-  title: [Using Typst to Mark everything down, instead of TeX them],
+  title: [Using Typst to Mark Everything Down, Instead of TeX Them],
   desc: [Affliction is Bodhi.],
   date: "2025-08-16",
   tags: (
