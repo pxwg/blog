@@ -17,7 +17,7 @@
 
 = Typst: Markdown Evolved, Not LaTeX Simplified
 
-`Typst` is an excellent typesetting tool that I've integrated into every corner of my life since its debut—from lecture notes and math drafts to this _blog post_ you're reading now.
+`Typst` is an excellent typesetting tool that I've integrated into every corner of my life since I first met it—from lecture notes and math drafts to this _blog post_ you're reading now.
 
 == Where Typst Outshines LaTeX?
 
