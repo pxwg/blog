@@ -15,9 +15,9 @@
   underline[~~~#body~~~]
 }
 
-`Typst` is an excellent typesetting tool that I've integrated into every corner of my life since I first met it—from lecture notes and math drafts to this _blog post_ you're reading now.
+#link("https://github.com/typst/typst")[Typst] is an excellent typesetting tool that I've integrated into every corner of my life since I first met it—from lecture notes and math drafts to this _blog post_ you're reading now.
 
-== Where Typst Outshines LaTeX?
+= Where Typst Outshines LaTeX?
 
 How does Typst differ from traditional LaTeX? Key advantages include: _Faster_ compilation (thanks to incremental compiling), _easier_ writing (modern syntax eliminates endless `\` commands), and _simpler_ installation.
 But what about *typesetting quality*? Frankly, Typst doesn't yet surpass LaTeX here.
@@ -30,12 +30,12 @@ When replicating LaTeX layouts in Typst, I sometimes hit roadblocks—certain fe
 After weeks of frustration, I realized: Typst isn't a LaTeX replacement today, at least for me, for now.
 What draws me to it is its _accessibility_—perfect for blogs, notes, or homework solutions, not research papers.
 
-== People Use LaTeX for Notes Because They ONLY Have LaTeX
+= People Use LaTeX for Notes Because They ONLY Have LaTeX
 
 Using LaTeX for notes forces focus on formatting over content. While its design aiming on separation of style/content helps, waiting for compilations invites distractions from alignment issues or package conflicts.
 Simply put: LaTeX is overkill for notes. People use it only because Markdown lacks essential features, leaving no middle ground.
 
-=== Typst Bridges the Gap
+== Typst Bridges the Gap
 
 Typst delivers a Markdown-like writing experience with live previews and straightforward syntax, while surpassing Markdown's capabilities through built-in features like mathematical typesetting, citation and more.
 Crucially, it produces PDFs natively—unlike Markdown which relies on external conversion tools. This positions Typst as the ideal middle ground, whereas LaTeX remains fundamentally mismatched for simple note-taking due to its excessive complexity.
@@ -50,7 +50,7 @@ Concerned about typesetting instability? Remember that Markdown can't even maint
 Worried about the ecosystem? Consider what note-takers truly need: a digital pen for capturing thoughts, not an industrial pressroom for perfect typesetting.
 While writing blogs or lecture notes—and even drafting papers—we don't require elaborate publishing tools.
 
-== Affliction is Bodhi
+= Affliction is Bodhi
 
 While framing Typst as a LaTeX alternative, we're naturally drawn to the grand vision: a unified syntax for all scientific documents—simple to use, write, and read.
 But this promise collides with reality during Typst's early development phase, where growing afflictions manifest as countless minor frustrations.
