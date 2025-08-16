@@ -52,6 +52,8 @@ Concerned about typesetting instability? Remember that Markdown can't even maint
 Worried about the ecosystem? Consider what note-takers truly need: a digital pen for capturing thoughts, not an industrial pressroom for perfect typesetting.
 While writing blogs or lecture notes—and even drafting papers—we don't require elaborate publishing tools.
 
+== Affliction is Bodhi
+
 While framing Typst as a LaTeX alternative, we're naturally drawn to the grand vision: a unified syntax for all scientific documents—simple to use, write, and read.
 But this promise collides with reality during Typst's early development phase, where growing afflictions manifest as countless minor frustrations.
 One solution is patience: waiting for Typst to mature over years, just as #LaTeX did. Yet how much time can we reasonably invest?
