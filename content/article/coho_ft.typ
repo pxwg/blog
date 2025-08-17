@@ -2,13 +2,14 @@
 #show: main.with(
   title: "Cohomological Field Theory",
   desc: [A brief introduction to cohomological field theory under the $L_oo$ BV construction, which is the mathematical foundation of Witten's original consideration of Donaldson's theory.],
-  date: "2025-08-15",
+  date: "2025-08-17",
   tags: (
     blog-tags.programming,
     blog-tags.typst,
   ),
 )
 
+*Warning*: Typst html output is experimental and may not work as expected. For example, the non-file/non-URL links would not work properly.
 
 = $L_oo$ BV Construction
 Locally, we can identify the BV algebra with $L_oo$ algebra
@@ -63,13 +64,13 @@ structure as follows:
 $
   & mu_1 (psi_1) := dif psi_1 , quad
   mu_1(A_1) := dif star A_1 , quad
-  mu_1(A_1^(star)) := dif A_1^star , quad mu_1(psi^(star)_1) = 0 ,
+  mu_1(A_1^(star)) := dif A_1^star , quad mu_1(psi^(star)_1) = 0 ,\
   & mu_2(psi_1 , psi_2) := [ psi_1 , psi_2 ] , quad
-  mu_2(psi_1 , A_1) := [ psi_1 , A_1 ] , quad
+  mu_2(psi_1 , A_1) := [ psi_1 , A_1 ] , quad \
   & mu_2(psi_1 , A_2) := [psi_1, A_2^(star)] , quad
-  mu_2(psi_1 , psi_2^(star)) := [psi_1, psi_2^(star)] , quad
+  mu_2(psi_1 , psi_2^(star)) := [psi_1, psi_2^(star)] , quad \
   & mu_2(A_1 , A_2^(star)) := [A_1, A_2^(star)] , quad
-  mu_2 (A_1 , A_2) = dif star [A_1 , A_2] + [A_1, star dif A_2] + [A_2, star dif A_1] ,
+  mu_2 (A_1 , A_2) = dif star [A_1 , A_2] + [A_1, star dif A_2] + [A_2, star dif A_1] , \
   & mu_3(A_1, A_2, A_3) = [A_1, star [A_2, A_3]] + [A_2, star [A_1, A_3]] + [A_3, star [A_1, A_2]] ,
 $
 And the non-trivial symplectic form $omega$ would be defined as:
@@ -105,7 +106,7 @@ $ & mu_1 ( psi_1 ) := dif psi_1 , quad mu_1 ( A_1 ) := dif A_1 , quad mu_1 ( A_1
 & mu_2 ( A_1 , A_2^(star) ) := [ A_1 , A_2^(star) ] , quad mu_2 ( A_1 , A_2 ) = [ A_1 , A_2 ] $ and the non-trivial symplectic form $omega$ would be defined as what
 we have defined above. The action could be written as
 $
-  upright(C S) [ cal(A) ] = integral_X [1 / 2 angle.l cal(A) , dif cal(A) angle.r + 1 / 6 angle.l cal(A) , [cal(A) , cal(A)] angle.r ] ,
+  "CS" [ cal(A) ] = integral_X [1 / 2 angle.l cal(A) , dif cal(A) angle.r + 1 / 6 angle.l cal(A) , [cal(A) , cal(A)] angle.r ] ,
 $
 where $cal(A) = A + A^(star) + psi + psi^(star)$ is the super field. We can
 simply note that this action is simply the Chern-Simons action, which
@@ -128,21 +129,21 @@ would lead to the solution or moduli space of
 <observables>
 The BRST symmetry is defined as:
 $
-  [Q \, A] = psi \, quad [Q \, psi] = - dif_A phi.alt \, quad [Q \, phi.alt] = 0 \,
+  [Q , A] = psi , quad [Q , psi] = - dif_A phi.alt , quad [Q , phi.alt] = 0 ,
 $<eq:brst_symmetry_1>
 where $A^a$ take value in a Lie algebra $frak(g)$, ghost $psi^a$ which
 is a fermionic field takes value in $frak(g)$, and commuting field
 $phi.alt^a$ which is the generator of the gauge transformation who will
 generate gauge transformation by
-$\[ Q \, \[ Q \, A \] \] = - dif_A phi.alt$.
+$[ Q , [ Q , A ] ] = - dif_A phi.alt$.
 
-One could simply verify that $Q^2 = 1 / 2 \[ Q \, Q \] = 0$ up to the
+One could simply verify that $Q^2 = 1 / 2 [ Q , Q ] = 0$ up to the
 gauge transformation, and weather the bracket is anti or not is chosen
 via the Koszul sign rule. Such a construction could be viewed as the
 Cartan model of $G$ equivariant cohomology.
 
-The ghost number would become $U = 0 \, 1 \, 2$ respectively, and
-$A^a \, psi^a$ has differential form degree $1$ and $phi.alt^a$ has form
+The ghost number would become $U = 0 , 1 , 2$ respectively, and
+$A^a , psi^a$ has differential form degree $1$ and $phi.alt^a$ has form
 degree $0$.
 
 Now we shell use the BRST symmetry
@@ -153,61 +154,65 @@ spacetime manifold $M$.
 First, we shell consider the #emph[zeroth] observable
 $cal(O)_(k,0)(x) = tr phi^(k)(x)$, which is a local
 function on the spacetime manifold $M$ and is BRST invariant, i.e.
-$[Q \, cal(O)_(k \, 0) \( x \)] = 0$.
+$[Q , cal(O)_(k , 0) ( x )] = 0$.
 
 Now we shell consider
 $
-  dif cal(O)_(k, 0) = k tr phi^(k - 1) dif_A phi = \[ Q, - tr phi^(k - 1) psi \] \,
+  dif cal(O)_(k, 0) = k tr phi^(k - 1) dif_A phi = [ Q, - tr phi^(k - 1) psi ] ,
 $
-thus $dif cal(O)_(k \, 1)$ is a BRST exact observable, which
+thus $dif cal(O)_(k , 1)$ is a BRST exact observable, which
 means it would become a global constant up to an BRST exact term.
 Furthermore, define $cal(O)_(k,1) = - tr phi^(k-1) psi$
 which is a one form on $M$, we have
 $
-  dif cal(O)_(k,1) = - k (k-1) tr phi^(k-2) psi dif_A phi - k tr phi^(k-1) dif_A psi = \[ Q, cal(O)_(k, 2) \] \,
+  dif cal(O)_(k,1) = - k (k-1) tr phi^(k-2) psi dif_A phi - k tr phi^(k-1) dif_A psi = [ Q, cal(O)_(k, 2) ] ,
 $
 where $cal(O)_(k,2) = -k tr ((k-1) phi^(k-2)[psi, psi] + phi F )$. Using the mechanism above, we can construct the $n$-th observable as
 follows:
-$ dif cal(O)_(k \, 0) = & [Q \, cal(O)_(k \, 1)] \, quad dif cal(O)_(k \, 1) = [Q \, cal(O)_(k \, 2)] \,\
-dif cal(O)_(k \, 2) = & [Q \, cal(O)_(k \, 3)] \, quad dif cal(O)_(k \, 3) = [Q \, cal(O)_(k \, 4)] \,\
-dif cal(O)_(k \, 4) = & 0 \, $ which is so-called
+$
+  dif cal(O)_(k , 0) = & [Q , cal(O)_(k , 1)] , quad dif cal(O)_(k , 1) = [Q , cal(O)_(k , 2)] , \
+  dif cal(O)_(k , 2) = & [Q , cal(O)_(k , 3)] , quad dif cal(O)_(k , 3) = [Q , cal(O)_(k , 4)] , \
+  dif cal(O)_(k , 4) = & 0 ,
+$
+which is so-called
 #emph[topological descendant equation];. Consider $n$ dimensional closed
 manifold $Y subset M$, we could introduce the observable as follows:
-$ W_k \( Y_n \) = integral_(Y_n) cal(O)_(k \, n) \, $ which are all BRST
+$ W_k ( Y_n ) = integral_(Y_n) cal(O)_(k , n) , $ which are all BRST
 close and only depends on the $n$-th homology class of the manifold $M$,
 since
-$ \[ Q \, W_k \( Y_n \) \] = integral_(Y_n) dif cal(O)_(k \, n) = 0 \, $
+$ [ Q , W_k ( Y_n ) ] = integral_(Y_n) dif cal(O)_(k , n) = 0 , $
 and if $Y_n$ is a trivial homology class i.e. $Y_n = partial X_(n + 1)$,
 thus
 $
-  W_k \( partial X_(n + 1) \) = integral_(X_(n + 1)) dif cal(O)_(k \, n) = integral_(X_(n + 1)) [Q \, cal(O)_(k \, n + 1)] = \[ Q \, W_(k \, n + 1) \] = 0 .
+  W_k ( partial X_(n + 1) ) = integral_(X_(n + 1)) dif cal(O)_(k , n) = integral_(X_(n + 1)) [Q , cal(O)_(k , n + 1)] = [ Q , W_(k , n + 1) ] = 0 .
 $
 What we have constructed above is a family of BRST invariant observables
-$W_k \( Y_n \)$ which only depends on the homology class of the manifold
-$M$ i.e. $H_bullet \( M \)$.
+$W_k ( Y_n )$ which only depends on the homology class of the manifold
+$M$ i.e. $H_bullet ( M )$.
 
 The more general field could be added into the BRST symmetry, which is
 called anti-fields and thus extend the theory with BRST symmetry to BV
 field theory. In the construction from Witten, this means add field
-$\( lambda \, eta \)$ with ghost number $\( - 2 \, - 1 \)$ respectively,
+$( lambda , eta )$ with ghost number $( - 2 , - 1 )$ respectively,
 where $lambda$ has same quantum number#footnote[Which means it would
   transform as the Lie algebra of gauge group $G$.] as $phi.alt$ and $eta$
-is the partner of $lambda$. And we introduce $\( chi \, H \)$ field with
-ghost number $\( - 1 \, 0 \)$ where $H$ is the partner of $chi$ and
+is the partner of $lambda$. And we introduce $( chi , H )$ field with
+ghost number $( - 1 , 0 )$ where $H$ is the partner of $chi$ and
 $chi$ has same quantum number of equation of motion but has spin
 statistic.
 
 The BRST symmetry of the new added fields could be listed below:
-$ [Q \, lambda] = & eta \, quad [Q \, eta] = \[ lambda \, phi.alt \] \, \
-   [Q \, chi] = & H \, quad [Q \, H] = \[ chi \, phi.alt \] \, $ which
+$ [Q , lambda] = & eta , quad [Q , eta] = [ lambda , phi.alt ] , \
+   [Q , chi] = & H , quad [Q , H] = [ chi , phi.alt ] , $ which
 could be simply derived from the original BRST symmetry
-#link(<eq:brst_symmetry_1>)[\[eq:brst\_symmetry\_1\]] by adding the new
+#link(<eq:brst_symmetry_1>)[[eq:brst_symmetry_1]] by adding the new
 fields and their BRST symmetry.
 
 == Lagrangian
 <lagrangian>
 = Four Dimensional Cohomological Field Theory: Relation to $L_oo$ BV Construction
 <four-dimensional-cohomological-field-theory-relation-to-l_infty-bv-construction>
-<LastPage>
 
-#bibliography("../refs/coho_ft.bib")
+= Two Dimensional Cohomological Field Theory: Chiral Field Theory and it's Deformation
+
+#bibliography("/content/refs/coho_ft.bib")
