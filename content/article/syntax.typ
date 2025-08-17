@@ -37,7 +37,7 @@ $
   upright(d)_(upright(C E))^2 c^alpha
   = & 1 / 2 f_(beta gamma)^alpha [1 / 2 f_(rho lambda)^beta c^rho c^lambda c^gamma - 1 / 2 f_(rho lambda)^gamma c^beta c^rho c^lambda]\
   = & - 1 / 2 f_(gamma beta)^alpha f_(rho lambda)^beta c^rho c^lambda c^lambda\
-  = & 1 / 12 f_(beta [ gamma)^alpha f_(rho lambda ])^beta c^rho c^lambda c^lambda\
+  = & 1 / 12 f_(beta \[ gamma)^alpha f_(rho lambda \])^beta c^rho c^lambda c^lambda\
   = & 0.
 $
 $
