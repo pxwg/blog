@@ -202,8 +202,9 @@ $chi$ has same quantum number of equation of motion but has spin
 statistic.
 
 The BRST symmetry of the new added fields could be listed below:
-$ [Q , lambda] = & eta , quad [Q , eta] = [ lambda , phi.alt ] , \
-   [Q , chi] = & H , quad [Q , H] = [ chi , phi.alt ] , $ which
+$ [Q , lambda] = & eta , quad [Q , eta] = [ lambda , phi.alt ] , $
+$ [Q , chi] = & H , quad [Q , H] = [ chi , phi.alt ] , $
+which
 could be simply derived from the original BRST symmetry
 #link(<eq:brst_symmetry_1>)[[eq:brst_symmetry_1]] by adding the new
 fields and their BRST symmetry.
