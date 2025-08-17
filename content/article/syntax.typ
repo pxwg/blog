@@ -1,4 +1,4 @@
-#import "/typ/templates/blog.typ": *
+#import "../../typ/templates/blog.typ": *
 #show: main.with(
   title: "Typst Syntax",
   desc: [List of Typst Syntax, for rendering tests.],

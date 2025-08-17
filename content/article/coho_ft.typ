@@ -1,6 +1,7 @@
-#import "/typ/templates/blog.typ": *
+#import "../../typ/templates/blog.typ": *
+#let title = "Cohomological Field Theory"
 #show: main.with(
-  title: "Cohomological Field Theory",
+  title: title,
   desc: [A brief introduction to cohomological field theory under the $L_oo$ BV construction, which is the mathematical foundation of Witten's original consideration of Donaldson's theory (The first part about L-infinity BV is finished).],
   date: "2025-08-17",
   tags: (
@@ -202,7 +203,7 @@ $chi$ has same quantum number of equation of motion but has spin
 statistic.
 
 The BRST symmetry of the new added fields could be listed below:
-$ [Q , lambda] = & eta , quad [Q , eta] = [ lambda , phi.alt ] , $
+$ [Q , lambda] = eta , quad [Q , eta] = [ lambda , phi.alt ] , $
 $ [Q , chi] = & H , quad [Q , H] = [ chi , phi.alt ] , $
 which
 could be simply derived from the original BRST symmetry
