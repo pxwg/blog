@@ -14,7 +14,7 @@
 
 *Warning*: This article is a draft, and might contain some mistakes or notations that are not standard. Please read it with caution.
 
-= A Man What to Know What Mountain Looks Like
+= Prelude: A Man Wants to Know What Mountain Looks Like
 
 = Mathematician's Consideration: Mores Flow and Morse Cohomology
 
