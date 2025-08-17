@@ -37,8 +37,12 @@ $
   upright(d)_(upright(C E))^2 c^alpha
   = & 1 / 2 f_(beta gamma)^alpha [1 / 2 f_(rho lambda)^beta c^rho c^lambda c^gamma - 1 / 2 f_(rho lambda)^gamma c^beta c^rho c^lambda]\
   = & - 1 / 2 f_(gamma beta)^alpha f_(rho lambda)^beta c^rho c^lambda c^lambda\
-  = & 1 / 12 f_(beta \[ gamma)^alpha f_(rho lambda \])^beta c^rho c^lambda c^lambda\
+  = & 1 / 12 f_(beta [ gamma)^alpha f_(rho lambda ])^beta c^rho c^lambda c^lambda\
   = & 0.
+$
+$
+  a^2 + b^2 = & c^2 \
+    a^2 b^2 = & c^2 \
 $
 There is another test for the equation block from #link("https://github.com/ahxt/academic-homepage-typst/blob/55e76cb813f0096070fdda57dc81e13697af66b2/content/blog/grpo.typ")[academic-homepage-typst: GRPO]
 $
