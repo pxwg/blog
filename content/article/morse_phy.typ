@@ -20,7 +20,7 @@
 
 = Instantons as Morse Flow
 
-In quantum mechanics, we encounter a problem analogous to determining a mountain's structure by observing the trajectory of a free-falling ball—but in reverse.
+In the world of mechanics, we encounter a problem analogous to determining a mountain's structure by observing the trajectory of a free-falling ball—but in reverse.
 Here, given a potential (which effectively shapes the "mountain"), we aim to predict how the ball (e.g., a quantum particle) will behave.
 For instance: Will the ball tunnel through the mountain, or become trapped on one side?
 
@@ -75,10 +75,10 @@ The answer reveals that, the phase of the probability amplitude is determined by
 == Instanton
 
 While we want to use the formulation above to calculate the probability amplitude of the ball to cross the mountain,
-we will meet a 毁灭性的 problem: there is NO classical path that crosses the mountain if the ball does not have enough energy!
+we will meet a catastrophic problem: there is NO classical path that crosses the mountain if the ball does not have enough energy!
 So that we cannot use the saddle point method directly to calculate the probability amplitude.
 
-However, there might be a 变通的 way to use it.
+However, there might be a workaround to use it.
 After introduce $tau = -upright(i) t$, the phase term could be written as:
 $
   upright(i) S[x(tau)] = - integral_(tau_(A))^(tau_(B)) dif tau thin [ frac(1, 2) dot(x)(tau)^(2) + V(x) ],
@@ -87,7 +87,7 @@ which could be viewed as a particle moving in a potential $-V(x)$ with imaginary
 Thus, using the saddle point method, we could find a classical path that crosses the mountain in the potential $-V(x)$, which is called an _instanton_.
 
 We want to get the value of the phase term under the classical path of the instanton.
-Thanks to the real value of it, we can use some basic 不等式技巧 to get the maximum of the action, which is given by:
+Thanks to the real value of it, we can use some basic inequalities to get the maximum of the action, which is given by:
 $
   upright(i) S[x(tau)]= - integral_(tau_(A))^(tau_(B)) frac(1, 2)( dot(x) -sqrt(2 V(x)) )^(2) dif tau - integral_(x_(A))^(x_(B)) sqrt(2 V(x)) dif x <= - integral_(x_(A))^(x_(B)) sqrt(2 V(x)) dif x,
 $
