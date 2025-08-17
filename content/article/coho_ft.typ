@@ -4,8 +4,8 @@
   desc: [A brief introduction to cohomological field theory under the $L_oo$ BV construction, which is the mathematical foundation of Witten's original consideration of Donaldson's theory (The first part about L-infinity BV is finished).],
   date: "2025-08-17",
   tags: (
-    blog-tags.programming,
-    blog-tags.typst,
+    blog-tags.physics,
+    blog-tags.quantum-field,
   ),
 )
 
