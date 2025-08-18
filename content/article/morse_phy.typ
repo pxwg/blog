@@ -12,13 +12,14 @@
   ),
 )
 
-*Warning*: This article is a draft, and might contain some mistakes or notations that are not standard. Please read it with caution.
+*Warning*: Chrome does not support MathML fully.
+You can use Firefox to avoid these potential problems
 
 = Prelude: A Man Wants to Know What Mountain Looks Like
 
 = Mathematician's Consideration: Mores Flow and Morse Cohomology
 
-= Instantons as Morse Flow
+= Tunneling and Path Integral
 
 In the world of mechanics, we encounter a problem analogous to determining a mountain's structure by observing the trajectory of a free-falling ball—but in reverse.
 Here, given a potential (which effectively shapes the "mountain"), we aim to predict how the ball (e.g., a quantum particle) will behave.
@@ -30,7 +31,7 @@ If we just consider such effect in classical level, such a question would give u
 
 In quantum mechanics, everything would be considered in a probabilistic way. So there is a natural question: are there any probability for the ball to cross the mountain even if it does not have enough energy?
 
-The answer is YES: the ball would have a probability to cross the mountain even if it does not have enough energy, and, suprisingly, this probability would related to the structure of the mountain, instead of just the height of the mountain.
+The answer is YES: the ball would have a probability to cross the mountain even if it does not have enough energy, and, surprisingly, this probability would related to the structure of the mountain, instead of just the height of the mountain.
 This is called _quantum tunneling_.
 
 == Path Integral
@@ -45,7 +46,7 @@ $
 $
 and $t_A$ and $t_B$ are the initial and final times.
 
-The amptitude above could be calculated by using the path integral formulation of quantum mechanics, which states that the probability amplitude could be calculated by summing over all possible paths of the ball, weighted by the exponential of the action of the path:
+The amplitude above could be calculated by using the path integral formulation of quantum mechanics, which states that the probability amplitude could be calculated by summing over all possible paths of the ball, weighted by the exponential of the action of the path:
 $
   bra(B) e^(- upright(i) integral_(t_A)^(t_B) H dif t ) ket(A) = integral_(x(t_(A))=x_(A))^(x(t_(B))=x_(B)) cal(D)[x(t)] thin e^(upright(i) integral_(t_(A))^(t_(B)) L[x(t)] dif t ) ,
 $
@@ -132,6 +133,5 @@ i.e. The probability amplitude could be calculated by the sum of all the contrib
 == Instanton Determinant: A First Glance of Infinite Dimensions
 
 Now we want to calculate the contribution of the instanton fluctuations, which is given by the determinant $K_"ins"^(-1 \/ 2)$.
-
 
 = Taming Infinity: Supersymmetric Quantum Mechanics
