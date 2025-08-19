@@ -244,6 +244,27 @@ The theorem below gives us the ratio of the determinants of two operators with t
   ],
 )
 
-You can check the proof of this theorem #link("https://rgjha.github.io/gallery/AOS_Coleman.pdf")[here]. With this theorem, we can calculate the ratio of the determinants of two operators with the same boundary condition by evaluating the eigenstates of the operators at the boundary.
+You can check the proof of this theorem #link("https://rgjha.github.io/gallery/AOS_Coleman.pdf")[here].
+In our problem, we have $W_1(tau) = V''(x_(c)(tau))$ and $W_2(tau) = omega^(2)$, thus the ratio of the determinants is given by:
+$
+  A = sqrt(frac(S_(0), 2pi)) (frac(det[- diff_(tau)^(2) + omega^(2)], det' [- diff_(tau)^(2) + V''(x_(c)(tau))]))^(1\/2) = lim_(T-> oo) sqrt(frac(S_0, 2pi)) frac(x_(1)(T \/ 2), lambda_0 upright(e)^(T) \/ 2),
+$
+so the next step is to calculate the eigenvalue $lambda_0$ and the function $x_(1)(tau)$.
+
+We note that the (normalized) eigenstate could be written as $x_(1)(tau) = S_0^(-1\/ 2) dot(x)_(c)(tau) -> a upright(e)^(-tau)$, while $tau -> + oo$.
+Using this could help us to construct the eigenfunction $x_(lambda_0)(tau) = frac(1, 2a) (upright(e)^(tau \/ 2) x_(1)(tau) + e^(-tau \/ 2) y_(1)(tau))$, where $y_1(tau)$ could be derived from the Wronskian:
+$
+  x_1 diff_(tau) y_1 - y_1 diff_(tau) x_1 = 2 a^(2),
+$
+thus we have $y_(1)(tau) -> a upright(e)^(tau)$ while $tau -> oo$.
+The eigenfunction at $tau = T \/ 2$ is $x_(lambda_0)(T \/ 2) = 1$ and $lambda_0 = 4 A^(2) e^(-T)$.
+So that for large $T$, we have:
+$
+  A = sqrt(frac(S_(0), 2pi)) frac(1, 2a^(2)),
+$
+where $A$ is determined by the normalization condition:
+$
+  tau = integral_(0)^(x_(c)(tau)) dif x thin sqrt(2 V(x)) = - ln [S_0^(-1\/2) A^(-1)(x_(B) - x_(c)(tau))] + cal(O)(x_(B) - x_(c)(tau)).
+$
 
 = 'Taming' Infinity: Supersymmetric Quantum Mechanics
