@@ -12,6 +12,33 @@
   ),
 )
 
+#let theorem(name: none, body) = {
+  box(
+    stroke: 1pt + dash-color,
+    width: 100%,
+    inset: (x: 8pt, y: 8pt),
+    [
+      #if name != none [*Theorem* (#emph(name))] else [*Theorem*]
+      #body
+    ],
+  )
+}
+
+#let proof(name: none, body) = {
+  block(
+    stroke: 1pt + dash-color,
+    width: 100%,
+    inset: (x: 8pt, y: 8pt),
+  )[
+    #if name != none [_Proof_. (#emph(name)). ] else [_Proof_. ]
+    #body
+    #h(1fr)
+    $qed$
+  ]
+}
+
+
+
 *Warning*: Chrome does not support MathML fully.
 You can use Firefox to avoid these potential problems
 
@@ -111,6 +138,27 @@ $
 $
 where the different instantons would correspond to different steepest descent paths from $x_A$ to $x_B$.
 
+Now we want to estimate the size of an instanton.
+We only take the single instanton solution into account here.
+We consider the instanton configuration $A-> B$.
+Let $T = tau_(B)-tau_(A)$, then, as $tau -> T$, $x$ would approach $x_B$, and the instanton equation would become:
+$
+  frac(dif, dif tau) x(tau) = omega(x_(B))(a - x(tau)),
+$
+thus, the solution would be given by $x_(B) - x(tau) tilde upright(e)^(- omega(x_(B)) (tau - tau_0))$.
+Thus, the instanton would be localized around $tau_(0)$ with a width of $1 / omega(x_(B))$.
+Using this intuition, in a propagation process from $x_A$ to $x_B$, the instanton would be localized around some $tau_0$.
+So that we can introduce the one instanton contribution as:
+$
+  cal(M)(A, B; t_(A), t_(B)) = upright(e)^(- omega (tau_(B) - tau_(B)) \/ 2) integral_(tau_(A))^(tau_(B)) dif tau thin A upright(e)^(upright(i) S_(c,1)) ,
+$
+where $tau$ is where the instanton localized on, and $A$ is defined as:
+$
+  integral_(tau_(A))^(tau_(B)) dif tau thin A = [ frac(det(- diff_(tau)^(2) + omega^(2)), det(- diff_(tau)^(2) + V''(x_(c)))) ]^(1\/2),
+$
+and $V''(x_(A,B)) = m omega^(2)$.
+The original determinant could be written as $K^(-1\/2)_("ins") = e^(- omega tau \/ 2) A$, where the first term could be removed by some proper phase shift in real time.
+
 == A Shadow of Morse Theory
 
 The discussion above hints us that, the structure of the quantum tunneling in a potential, might be similar to the structre of Morse theory.
@@ -133,5 +181,69 @@ i.e. The probability amplitude could be calculated by the sum of all the contrib
 == Instanton Determinant: A First Glance of Infinite Dimensions
 
 Now we want to calculate the contribution of the instanton fluctuations, which is given by the determinant $K_"ins"^(-1 \/ 2)$.
+To simplify the discussion, we will restrict ourselves to one dimension in this section.
 
-= Taming Infinity: Supersymmetric Quantum Mechanics
+=== Zero Mode
+
+Near the instanton path $x_(c)$, we could write the action up to second order as:
+$
+  upright(i) S[x(t)] = upright(i) S[x_(c)(t)] - frac(1, 2) integral_(tau_(A))^(tau_(B)) dif tau thin delta x(tau) [- frac(dif^(2), dif tau^(2)) + V''(x_(c)(tau))] delta x(tau).
+$
+To simplify the consideration, we would assume $tau_(A,B) -> plus.minus oo$, thus $x_(A,B)$ would be two critical prints of the potential $V(x)$, i.e., the classical ground state of the system.
+
+However, the ratio $A$ is not well-defined in our case.
+Note that the Newtonian equation of motion is given by:
+$
+  - frac(dif^(2), dif tau^(2)) x_(c)(tau) + V'(x_(c)(tau)) = 0,
+$
+where $x_(c)(tau)$ and $x_(c)(tau + eta)$ will both satisfies the equation above, then, at the linear order, we have:
+$
+  [- diff_(tau)^(2) + V''(x_(c)(tau))] diff_(tau) x_(c) = 0,
+$
+which means that the instanton path $diff_(tau)x_(c)(tau)$ is a zero mode of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$.
+To evaluate the determinant, we need to use a more careful treatment of the zero mode.
+Consider eigenstates of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$, we can expand the degree of freedom as $delta x(t) = sum_(n) c_(n) x_(n)(t)$, where $x_(n)(t)$ is the $n$-th eigenstate of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$.
+Then we can write the path integral for first $N$-th eigenstates as:
+$
+  K_("ins",N)^(-1\/2)
+  = & A_(N) integral product_(n=1)^(N) frac(dif c_(n), sqrt(2pi)) thin e^(upright(i) S[x_(c)(t) + sum_(n=1)^(N) c_(n) x_(n)(t)]) \
+  = & A_(N) integral_(-oo)^(+oo) frac(dif c_(1), sqrt(2pi)) thin (attach(det', br: N) [- diff_(tau)^(2) + V''(x_(c)(tau))])^(-1\/2),
+$
+where $attach(det', br: N)$ denotes the determinant with the first $N$-th eigenstates and remove the zero mode. And $A_(N)$ is a normalization factor would be determined by harmonic oscillator.
+Since the normalized zero mode is given by $x_1(tau) = frac(dot(x)_(c)(tau), sqrt(S_0))$, the determinant could be written as:
+$
+  K_("ins",N)^(-1\/2) = A_(N) sqrt(frac(S_(0), 2pi)) integral_(-oo)^(+oo) dif tau thin (attach(det', br: N) [- diff_(tau)^(2) + V''(x_(c)(tau))])^(-1\/2),
+$
+thus, we can recover the original determinant as $K_( "ins")^(-1\/ 2) = lim_(N->oo) K_( "ins",N)^(-1 \/ 2)$.
+Moreover, the instanton amplitude $A$ would be defined as:
+$
+  A = sqrt(frac(S_(0), 2pi)) (frac(det[-diff^(2)_(tau) + omega^(2)], det' [- diff_(tau)^(2) + V''(x_(c)(tau))]))^(1\/2).
+$
+=== Calculating the Determinant
+
+Now we want to get the determinant which removes the zero mode.
+By definition, the determinant (removed the zero mode) is given by:
+$
+  det'[- diff_(tau)^(2) + W(tau)] = product_(n=2) lambda_(n),
+$
+where the $lambda_n$ are the eigenvalues of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$, which could be defined as:
+$
+  [- diff_(tau)^(2) + W(tau)] x_(n)(tau) = lambda_(n) x_(n)(tau),
+$
+where $x_(n)(tau)$ are en eigenstate of the operator, if and only if $x_(n)$ satisfies the boundary condition $x_(n)(plus.minus oo) = 0$.
+To evaluate the determinant properly, we would firstly consider the equation supports on $[-T\/2, T \/2]$, then remove the lowest eigenvalue $lambda_(1)$, and take the limit $T -> plus oo$.
+
+The theorem below gives us the ratio of the determinants of two operators with the same boundary condition, which is given by:
+
+#theorem(
+  [The ratio of determinants is:
+    $
+      det [frac(- diff_(tau)^(2) + W_1(tau) - lambda, -diff_(tau)^(2) + W_2(tau) - lambda)] = frac(x^((1))_(lambda)(T \/ 2), x^(2)_(lambda)(T \/ 2)),
+    $
+    where $x_(lambda)^(1,2)$ satisfies the boundary condition $x_(lambda)^(1,2)(plus.minus T\/2) = 0$ and $diff_(tau) x_(lambda)^(1,2)(-T \/ 2) = 1$.
+  ],
+)
+
+You can check the proof of this theorem #link("https://rgjha.github.io/gallery/AOS_Coleman.pdf")[here]. With this theorem, we can calculate the ratio of the determinants of two operators with the same boundary condition by evaluating the eigenstates of the operators at the boundary.
+
+= 'Taming' Infinity: Supersymmetric Quantum Mechanics
