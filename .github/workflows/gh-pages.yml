@@ -26,6 +26,10 @@ concurrency:
 jobs:
   build-gh-pages:
     runs-on: ubuntu-latest
+    env:
+      TYPST_FONT_PATHS: assets/fonts
+      TYPST_FONT_PATH: assets/fonts
+      BLOG_FONT_DIR: assets/fonts
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
