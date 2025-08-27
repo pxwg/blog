@@ -39,9 +39,7 @@
 }
 
 
-
-*Warning*: Chrome does not support MathML fully.
-You can use Firefox to avoid these potential problems
+*Warning*: This article is working in progress. Please check back later for the complete version.
 
 = Prelude: A Man Wants to Know What Mountain Looks Like
 
