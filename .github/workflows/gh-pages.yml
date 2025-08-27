@@ -3,7 +3,7 @@ name: blog::gh_pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["main"]
+    branches: ["main", "update"]
   # At 0 minutes past the hour, every 6 hours
   schedule:
     - cron: "0 */3 * * *"
