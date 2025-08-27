@@ -3,6 +3,7 @@ import { defineConfig, envField } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import { typst } from "astro-typst";
 import { loadEnv } from "vite";
+import { resolve } from "path";
 
 // Please check `defineConfig/env` in astro.config.mjs for schema
 const e = loadEnv(process.env.NODE_ENV || "", process.cwd(), "");
@@ -45,6 +46,13 @@ export default defineConfig({
       mode: {
         default: "html",
         detect: () => "html",
+      },
+      options: {
+        fontArgs: [
+          {
+            fontPaths: [resolve(process.cwd(), "assets/fonts/")],
+          },
+        ],
       },
     }),
   ],
