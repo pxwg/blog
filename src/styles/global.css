@@ -28,7 +28,7 @@
 }
 
 body {
-  --vp-font-family-base: "Inter Variable", "Inter", "Noto Sans SC",
+  --vp-font-family-base: "Libertinus Serif", "Inter", "Noto Sans SC",
     "PingFang SC", "Microsoft Yahei", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --vp-font-family-mono: ui-monospace, "Menlo", "Monaco", "Consolas",
@@ -42,8 +42,9 @@ body {
   background-size: 100% 600px;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  font-size: 20px;
   color: var(--main-color);
-  line-height: 1.7;
+  line-height: 1.5;
 }
 main,
 .search {
