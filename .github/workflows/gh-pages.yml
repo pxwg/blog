@@ -48,7 +48,8 @@ jobs:
         run: |
           mkdir -p ./assets/fonts
           curl -L https://github.com/Myriad-Dreamin/shiroa/releases/download/v0.1.5/source-han-serif-font-assets.tar.gz | tar -xvz -C assets/fonts
-           curl -L https://raw.githubusercontent.com/stipub/stixfonts/master/zipfiles/static_otf.zip | unzip -o - -d assets/fonts
+          curl -L https://raw.githubusercontent.com/stipub/stixfonts/master/zipfiles/static_otf.zip -o /tmp/static_otf.zip
+          unzip -o /tmp/static_otf.zip -d assets/fonts
 
       - run: pnpm install
       # - name: Pull Data from Backend (Optional)
