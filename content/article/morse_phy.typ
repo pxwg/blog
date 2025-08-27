@@ -1,6 +1,7 @@
 #import "../../typ/templates/blog.typ": *
 #import "../../typ/packages/physica.typ": *
 #let title = "I Know What Mountain Looks Like: A Brief Story about Morse Theory in Physics"
+#let grad = math.nabla
 #show: main.with(
   title: title,
   desc: [In the 19th century, Maxwell described how one could deduce the structure of a mountain without climbing it—or even seeing it. Following his spirit, we will witness another "great wedding of the century" between mathematics and physics—one that began in the 1980s, when supersymmetry and Morse theory united in a profound and revolutionary embrace.],
@@ -159,6 +160,7 @@ $
 and $V''(x_(A,B)) = m omega^(2)$.
 The original determinant could be written as $K^(-1\/2)_("ins") = e^(- omega tau \/ 2) A$, where the first term could be removed by some proper phase shift in real time.
 
+
 == A Shadow of Morse Theory
 
 The discussion above hints us that, the structure of the quantum tunneling in a potential, might be similar to the structre of Morse theory.
@@ -201,6 +203,11 @@ $
   [- diff_(tau)^(2) + V''(x_(c)(tau))] diff_(tau) x_(c) = 0,
 $
 which means that the instanton path $diff_(tau)x_(c)(tau)$ is a zero mode of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$.
+
+
+
+=== Determinant with Zero Mode
+
 To evaluate the determinant, we need to use a more careful treatment of the zero mode.
 Consider eigenstates of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$, we can expand the degree of freedom as $delta x(t) = sum_(n) c_(n) x_(n)(t)$, where $x_(n)(t)$ is the $n$-th eigenstate of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$.
 Then we can write the path integral for first $N$-th eigenstates as:
@@ -262,9 +269,66 @@ So that for large $T$, we have:
 $
   A = sqrt(frac(S_(0), 2pi)) frac(1, 2a^(2)),
 $
-where $A$ is determined by the normalization condition:
+where $a$ is determined by the normalization condition:
 $
-  tau = integral_(0)^(x_(c)(tau)) dif x thin sqrt(2 V(x)) = - ln [S_0^(-1\/2) A^(-1)(x_(B) - x_(c)(tau))] + cal(O)(x_(B) - x_(c)(tau)).
+  tau = integral_(0)^(x_(c)(tau)) dif x thin sqrt(2 V(x)) = - ln [S_0^(-1\/2) a^(-1)(x_(B) - x_(c)(tau))] + cal(O)(x_(B) - x_(c)(tau)).
 $
 
 = 'Taming' Infinity: Supersymmetric Quantum Mechanics
+
+The difficulties in calculating the instanton determinant above arise from the infinite dimensional nature of the path integral.
+Which would arise in calculating the determinant of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$.
+If we can find a way to remove such infinite number of degrees of freedom (in the calculation of the determinant is infinite number of eigenstates), then we can calculate the instanton determinant easily by tracking the finite product of the eigenvalues.
+
+== $A \/ A = 1$
+
+To achieve this, a natural idea comes from Grassmannian integral, where the Gaussian integral of Grassmannian variables would give us
+$
+  integral dif psi dif overline(psi) thin upright(e)^(- overline(psi) A psi) = det(A),
+$
+which is the determinant of the matrix $A$.
+Thus, if we can find a way to introduce some Grassmannian variables to the system, such that the determinant would appear neither in the Bosonic part as $(det(A))^(-frac(1, 2))$ but also in the Fermionic part as $det(B)$.
+If one introduce $B = A^(1\/ 2)$, the infinite dimensional part would be removed automatically.
+
+The physical realization of this is called _supersymmetry_.
+In supersymmetric quantum mechanics, we introduce some Fermionic variables $psi$ and $overline(psi)$ to the system, such that the Lagrangian of the system would become:
+$
+  upright(i) S[x,psi,overline(psi)] = - integral dif tau thin [ frac(1, 2) angle.l dot(x), dot(x) angle.r + frac(1, 2) angle.l grad h(x), grad h(x) angle.r+ angle.l overline(psi) , (diff_(tau) + grad^(2) h(x)) psi angle.r ],
+$
+where we have $V(x) = frac(1, 2) (grad h(x))^(2)$ and $angle.l , angle.r$ is the natural pairing induced by the metric on the space.
+In order to remove the infinite dimensional part in the determinant of the Bosonic part (here comes from $x$), we need to let the Fermionic part satisfy the periodic boundary condition instead of the anti-periodic boundary condition, which is usually used in finite temperature field theory.
+
+The classical equation of motion of the system is given by $dot(x) = plus.minus grad h$, thus the classical ground state of the system is given by the critical points of the Morse function $h$.
+Around the classical ground state(s) $x_(i)$, we can expand the action up to second order as:
+$
+  upright(i)S[delta x, psi, overline(psi)] = - integral dif tau thin [ frac(1, 2) angle.l delta x, ( - diff_(tau)^(2) + (grad^(2) h(x_(i)))^(2)) delta x angle.r + angle.l overline(psi), (diff_(tau) + grad^(2) h(x_(i))) psi angle.r ],
+$
+and the path integral around the classical ground state is given by (where the modes of $x$ and $psi, overline(psi)$ are all periodic, thus $diff_(tau)$ has eigenvalues $n$):
+$
+  integral cal(D)[delta x] cal(D)[psi] cal(D)[overline(psi)] thin upright(e)^(upright(i) S[delta x, psi, overline(psi)]) = frac(det (diff_(tau)+ nabla^(2) h(x_(i))), sqrt(det(- diff_(tau)^(2) + (nabla^(2) h(x_(i)))^(2))))
+  = frac(det(nabla^(2)h(x_(i))), |det(nabla^(2) h(x_(i)))|).
+$
+After summing over all the classical ground states, we would get:
+$
+  tr(-1)^(F) upright(e)^(-beta H) = sum_(x_(i): "critical points of" h) frac(det(nabla^(2) h(x_(i))), |det(nabla^(2) h(x_(i)))|) = sum_(i) "sgn"(det(nabla^(2) h(x_(i)))),
+$
+which is the Morse characteristic of the manifold.
+
+=== Instanton Moduli
+
+Supersymmetry gives a strong constrain of the possible structure of instantons.
+In this section, we want to prove that the time shifting $tau -> tau + delta tau$ is the only possible deformation of the instanton which preserves the instanton equation.
+
+The general deformation of the instanton path up to the first order could be written as
+$
+  cal(D)_(plus.minus) delta x := diff_(tau) delta x plus.minus diff^(2)_(x) h delta x = 0,
+$
+thus, the possible deformation could be determined by the kernel of the operator $cal(D)_(plus.minus)$.
+
+== Instanton Lifted Classical Ground States
+
+At the discussion of spontaneous symmetry breaking, we have seen that, the instanton effect would lift some classical ground states of the system due to the existence of quantum tunneling.
+The same thing would happen in our case.
+The instanton whose path connects two classical ground states $x_(i)$ and $x_(i+1)$ would make them no longer the ground states of the system in quantum level.
+
+To compute the instanton effect, we need to consider the path integral around the instanton path $x_(c)(tau)$, which satisfies the instanton equation with the boundary condition $x(- oo) = x_(i)$ and $x(+ oo) = x_(i+1)$.
