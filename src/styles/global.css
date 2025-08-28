@@ -28,7 +28,7 @@
 }
 
 body {
-  --vp-font-family-base: "Libertinus Serif", "LXGW WenKai", "Inter", "Noto Sans SC",
+  --vp-font-family-base: "Source Serif 4", "LXGW WenKai", "Inter", "Noto Sans SC",
     "PingFang SC", "Microsoft Yahei", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --vp-font-family-mono: ui-monospace, "Menlo", "Monaco", "Consolas",
