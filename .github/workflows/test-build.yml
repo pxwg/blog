@@ -1,0 +1,41 @@
+name: Test Build
+
+on:
+  pull_request:
+    branches: ["main", "update"]
+  workflow_dispatch:
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    env:
+      TYPST_FONT_PATHS: assets/fonts
+      TYPST_FONT_PATH: assets/fonts
+      BLOG_FONT_DIR: assets/fonts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 10
+          run_install: false
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+      - name: Download Fonts
+        run: |
+          mkdir -p ./assets/fonts
+          curl -L https://github.com/Myriad-Dreamin/shiroa/releases/download/v0.1.5/source-han-serif-font-assets.tar.gz | tar -xvz -C assets/fonts
+          curl -L https://raw.githubusercontent.com/stipub/stixfonts/master/zipfiles/static_otf.zip -o assets/fonts/static_otf.zip
+          unzip -o -j assets/fonts/static_otf.zip -d assets/fonts
+          rm assets/fonts/static_otf.zip
+          ls ./assets/fonts
+
+      - run: pnpm install
+      - name: Test Build (No Deploy)
+        run: pnpm build:deploy
