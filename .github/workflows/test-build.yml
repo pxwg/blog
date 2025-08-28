@@ -38,4 +38,4 @@ jobs:
 
       - run: pnpm install
       - name: Test Build (No Deploy)
-        run: pnpm build:deoloy
+        run: pnpm build:deploy
