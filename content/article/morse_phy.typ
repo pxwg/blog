@@ -5,7 +5,7 @@
 #show: main.with(
   title: title,
   desc: [In the 19th century, Maxwell described how one could deduce the structure of a mountain without climbing it—or even seeing it. Following his spirit, we will witness another "great wedding of the century" between mathematics and physics—one that began in the 1980s, when supersymmetry and Morse theory united in a profound and revolutionary embrace.],
-  date: "2025-08-18",
+  date: "2025-08-28",
   tags: (
     blog-tags.physics,
     blog-tags.math,
