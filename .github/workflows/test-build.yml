@@ -39,6 +39,11 @@ jobs:
         run: |
           git config --global url."https://github.com/".insteadOf "git@github.com:"
           git submodule update --init --recursive || echo "Some submodules failed to initialize, continuing..."
+          # Work around mathyml submodule issue
+          if [ ! -d "typ/packages/mathyml" ]; then
+            mkdir -p typ/packages/mathyml
+            echo "# Placeholder for mathyml" > typ/packages/mathyml/README.md
+          fi
       
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -64,7 +69,17 @@ jobs:
       - run: pnpm install
       
       - name: Test Build
-        run: pnpm build
+        run: |
+          echo "=== Font paths debugging ==="
+          echo "Assets fonts:"
+          ls -la ./assets/fonts/ || echo "No assets/fonts directory"
+          echo "Public fonts:"
+          ls -la ./public/fonts/ || echo "No public/fonts directory"
+          echo "Environment variables:"
+          env | grep -i font || echo "No font environment variables set"
+          
+          echo "=== Running build ==="
+          pnpm build
         
       - name: Build Success
         run: echo "✅ Build completed successfully!"

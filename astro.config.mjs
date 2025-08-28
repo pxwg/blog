@@ -53,9 +53,17 @@ export default defineConfig({
             fontPaths: [
               resolve(process.cwd(), "assets/fonts"),
               resolve(process.cwd(), "public/fonts"),
-              ...(process.env.TYPST_FONT_PATHS ? process.env.TYPST_FONT_PATHS.split(':') : [])
+              resolve(process.cwd(), "public/fonts/libertinus-serif"),
+              resolve(process.cwd(), "public/fonts/sitx-two-math"),
+              "/usr/share/fonts",
+              "/System/Library/Fonts"
             ] 
           }
+        ],
+        // Pass additional font paths via command line arguments
+        additionalArgs: [
+          "--font-path", resolve(process.cwd(), "assets/fonts"),
+          "--font-path", resolve(process.cwd(), "public/fonts"),
         ],
       },
     }),
