@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "dev": "astro dev",
-    "build": "TYPST_FONT_PATHS=.:assets/fonts:public/fonts TYPST_FONT_PATH=. astro build",
+    "build": "TYPST_FONT_PATHS=assets/fonts:public/fonts:. TYPST_FONT_PATH=assets/fonts astro build",
     "build:deploy": "bash scripts/setup-fonts.sh && npm run build",
     "preview": "astro preview",
     "create:post": "node scripts/create-file.mjs blog-post",

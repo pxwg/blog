@@ -60,7 +60,7 @@ jobs:
       - run: pnpm install
       # - name: Pull Data from Backend (Optional)
       #   run: pnpm run pull-data
-      - run: pnpm build
+      - run: pnpm build:deploy
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
