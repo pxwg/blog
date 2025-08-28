@@ -48,7 +48,7 @@ export default defineConfig({
         detect: () => "html",
       },
       options: {
-        fontArgs: [{ fontPaths: ["./assets/fonts", "./public/fonts"] }],
+        fontArgs: [{ fontPaths: ["./assets/fonts/", "./public/fonts"] }],
       },
     }),
   ],
