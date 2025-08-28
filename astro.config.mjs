@@ -48,7 +48,15 @@ export default defineConfig({
         detect: () => "html",
       },
       options: {
-        fontArgs: [{ fontPaths: ["./assets/fonts", "./public/fonts"] }],
+        fontArgs: [
+          { 
+            fontPaths: [
+              resolve(process.cwd(), "assets/fonts"),
+              resolve(process.cwd(), "public/fonts"),
+              ...(process.env.TYPST_FONT_PATHS ? process.env.TYPST_FONT_PATHS.split(':') : [])
+            ] 
+          }
+        ],
       },
     }),
   ],
