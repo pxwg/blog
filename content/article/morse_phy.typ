@@ -272,7 +272,7 @@ $
   tau = integral_(0)^(x_(c)(tau)) dif x thin sqrt(2 V(x)) = - ln [S_0^(-1\/2) a^(-1)(x_(B) - x_(c)(tau))] + cal(O)(x_(B) - x_(c)(tau)).
 $
 
-= 'Taming' Infinity: Supersymmetric Quantum Mechanics
+== "Taming" Infinity: Supersymmetric Quantum Mechanics
 
 The difficulties in calculating the instanton determinant above arise from the infinite dimensional nature of the path integral.
 Which would arise in calculating the determinant of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$.

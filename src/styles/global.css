@@ -42,7 +42,7 @@ body {
   background-size: 100% 600px;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  font-size: 20px;
+  font-size: 17px;
   color: var(--main-color);
   line-height: 1.5;
 }
