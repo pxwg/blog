@@ -2,7 +2,7 @@
 #let title = "在 MacOS 中置顶浮动窗口"
 #show: main-zh.with(
   title: title,
-  desc: [利用 Objective-C 代码注入在 MacOS 中实现置顶浮动窗口，以 kitty 终端为例。],
+  desc: [利用 Objective-C 代码注入在 MacOS 中实现置顶浮动窗口，无需禁止 SIP，以 kitty 终端为例。],
   date: "2025-09-01",
   tags: (
     blog-tags.macos,
@@ -32,7 +32,7 @@ MacOS 系统中，部分系统原生应用可以支持置顶窗口功能 (官方
 ```bash
 lldb -p pid -o 'expr for (NSWindow *w in (NSArray *)[(NSApplication *)NSApp windows]) { [w setLevel:10]; }' -o 'detach' -o 'quit'
 ```
-其中`pid`是目标进程的进程 ID，`level`属性的值越大，窗口越靠前。通常`NSNormalWindowLevel`的值为`0`，设置为`10`可以比较安全地实现置顶功能#footnote([启用 `lldb` 需要利用禁用 `debug` SIP 保护。我不会介绍具体的实现方案，如果你没有这样基本的信息检索能力，*请不要尝试本方案*])。
+其中`pid`是目标进程的进程 ID，`level`属性的值越大，窗口越靠前。通常`NSNormalWindowLevel`的值为`0`，设置为`10`可以比较安全地实现置顶功能#footnote([对于系统程序 (保存在 `/System/` 目录) 启用 `lldb` 需要利用禁用 `debug` SIP 保护。对于这种情况，我不会介绍具体的实现方案，如果你没有这样基本的信息检索能力，*请不要尝试本方案*。_对于修改 `kitty` 窗口 level 的工作场景，本方案不需要关闭 SIP_])。
 
 = 封装
 
@@ -119,4 +119,6 @@ echo level | ncat -U /tmp/kitty_level.sock
 
 = 总结
 
-这个方案需要禁用部分 SIP 保护 (`debug` 保护)，存在一定的安全风险，请务必了解相关风险并自行承担后果！在 github 上也存在基于辅助功能实现置顶功能的#link("https://github.com/lihaoyun6/Topit")[工具]，好处是无需禁用 SIP 保护，坏处是稳定性不佳、原生感不强、并且 Apple Watch 无法在其使用时解锁，如果不想禁用 SIP 的朋友可以尝试。
+这个方案不需要使用 SIP(对于非系统 App)，好处是原生感较强，调用的是原生 API，不会出现体验问题。坏处就是相对而言较难操作，可能需要一些基础的编程知识。
+
+在 github 上也存在基于辅助功能实现置顶功能的#link("https://github.com/lihaoyun6/Topit")[工具]，好处是无需编程，坏处是稳定性不佳、原生感不强、并且 Apple Watch 无法在其使用时解锁，如果不想写代码的朋友可以尝试。
