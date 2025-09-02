@@ -23,9 +23,9 @@ MacOS 系统中，部分系统原生应用可以支持置顶窗口功能 (官方
 然而，对于我常用的笔记工具 `kitty`+`neovim`，并没有原生的置顶功能，而例如`Afloat`等第三方工具也无法在 Apple Silicon 芯片的 MacOS 上使用，并且长期未更新。因此，在很长一段时间内，我只能通过手动调整窗口位置来实现类似的功能，效率较低。
 
 = 初步解决
-$
-  #text(size: 20pt, weight: 800, font: pdf-fonts)[警告！接下来的操作需要禁止部分系统完整保护 (SIP)，请你务必了解相关风险并自行承担后果！]
-$
+// $
+//   #text(size: 20pt, weight: 800, font: pdf-fonts)[警告！接下来的操作需要禁止部分系统完整保护 (SIP)，请你务必了解相关风险并自行承担后果！]
+// $
 最近因为需要频繁地在阅读文献和记录笔记之间切换，因此我决定尝试寻找一种可行的解决方案。首先出局的是`hammerspoon`，因为他压根就没有这个功能。`yabai` (我是它的长期用户) 在尝试一阵子之后也放弃了，主要是因为在禁用 `nvram` 保护的情况下，我的电脑桌面会直接崩溃#footnote([这个事情非常吓人，我当时一度以为我的电脑坏了，后来全部重启 SIP 保护后才恢复正常。])。
 
 在阅读了#link("https://github.com/kovidgoyal/kitty")[kitty 仓库]之后，我发现 kitty 的窗口是通过 Cocoa API 创建的，因此理论上可以通过 Objective-C 代码注入的方式来修改窗口属性，从而实现置顶功能。#link("https://apple.stackexchange.com/questions/219116/any-nice-stable-ways-to-keep-a-window-always-on-top-on-the-mac")[Stack Exchange] 上也有相关的讨论，主要是基于`lldb` 调整窗口的`level`属性来实现置顶功能。
