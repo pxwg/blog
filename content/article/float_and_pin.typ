@@ -1,6 +1,6 @@
 #import "../../typ/templates/blog.typ": *
 #let title = "在 MacOS 中置顶浮动窗口"
-#show: main.with(
+#show: main-zh.with(
   title: title,
   desc: [利用 Objective-C 代码注入在 MacOS 中实现置顶浮动窗口，以 kitty 终端为例。],
   date: "2025-09-01",
