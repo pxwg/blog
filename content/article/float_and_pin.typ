@@ -36,7 +36,74 @@ lldb -p pid -o 'expr for (NSWindow *w in (NSArray *)[(NSApplication *)NSApp wind
 
 = 封装
 
-每一次运行`lldb` 都会花费较长的时间。受到`Afloat`的启发，我认识到可以直接在目标进程 (在这里是 kitty) 中注入#link("https://gist.github.com/pxwg/d7a8c44ca280a81bf19b1e9ea6e63c1e")[代码]实现置顶功能，这样只需要在启动 kitty 时注入一次代码，此后通过 WebSocket 注入的代码通信即可实现对置顶功能的调控，这样还能很方便地实现热更新，并集成到常见的`Hammerspoon`等工具中。
+每一次运行`lldb` 都会花费较长的时间。受到`Afloat`的启发，我认识到可以直接在目标进程 (在这里是 kitty) 中注入#link("https://gist.github.com/pxwg/d7a8c44ca280a81bf19b1e9ea6e63c1e")[代码]实现置顶功能，这样只需要在启动 kitty 时注入一次代码，此后通过 WebSocket 向注入的代码通信即可实现对置顶功能的调控。这样还能很方便地实现热更新，并集成到常见的`Hammerspoon`等工具中，成为工作流的一部分。
+
+由于只需要传递一个参数，WebSocket 的实现非常简单，但由于单次打开 kitty 对应了多个进程 (`kitty` 本体，工具集`kitten` 以及一些桌面渲染的进程)，需要通过锁来保证只有一个进程在监听 WebSocket 套接字，否则会出现端口冲突的问题，进而导致无法正常通信#footnote([在#link("https://gist.github.com/pxwg/d7a8c44ca280a81bf19b1e9ea6e63c1e")[Gist]中我加入了一些 Debug print，就是因为这个问题。])。
+
+这个代码展示了基本的逻辑，省略了错误处理和信号处理等细节。
+```objc
+static void *socket_server(void *arg) {
+  // Acquire lock to ensure only one process listens
+  lock_fd = open(LOCK_PATH, O_CREAT | O_RDWR, 0600);
+  if (lock_fd < 0)
+    return NULL;
+  struct flock fl = {.l_type = F_WRLCK,
+                     .l_whence = SEEK_SET,
+                     .l_start = 0,
+                     .l_len = 0,
+                     .l_pid = getpid()};
+  if (fcntl(lock_fd, F_SETLK, &fl) < 0)
+    return NULL;
+
+  // Create socket
+  sock_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+  if (sock_fd < 0)
+    return NULL;
+
+  // Bind address
+  struct sockaddr_un addr = {0};
+  addr.sun_family = AF_UNIX;
+  strncpy(addr.sun_path, SOCKET_PATH, sizeof(addr.sun_path) - 1);
+  unlink(SOCKET_PATH); // ignore ENOENT
+
+  if (bind(sock_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+    return NULL;
+  chmod(SOCKET_PATH, 0600);
+
+  // Start listening
+  if (listen(sock_fd, 5) < 0)
+    return NULL;
+
+  // Signal handling omitted
+
+  while (1) {
+    int client = accept(sock_fd, NULL, NULL);
+    if (client < 0)
+      continue;
+    char buf[32] = {0};
+    ssize_t n = read(client, buf, sizeof(buf) - 1);
+    if (n > 0) {
+      int lvl = atoi(buf);
+      setAllWindowsLevel(lvl);
+    }
+    close(client);
+  }
+
+  // Cleanup omitted
+  return NULL;
+}
+```
+注入的窗口置顶操作则只需要将窗口的`level`属性设置为指定的值即可，完全类似`lldb`中的操作。
+```objc
+static void setAllWindowsLevel(NSInteger level) {
+  dispatch_async(dispatch_get_main_queue(), ^{
+    NSArray *windows = [(NSApplication *)NSApp windows];
+    for (NSWindow *w in windows) {
+      [w setLevel:level];
+    }
+  });
+}
+```
 
 根据#link("https://gist.github.com/pxwg/d7a8c44ca280a81bf19b1e9ea6e63c1e")[代码]编译完 `dylib` 文件后，只要通过
 ```bash
