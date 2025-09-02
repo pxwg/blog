@@ -4,6 +4,7 @@
 @import "@fontsource-variable/inter/wght.css";
 @import "@fontsource-variable/inter/wght-italic.css";
 @import "@fontsource-variable/inter/opsz.css";
+@import 'lxgw-wenkai-webfont/style.css';
 
 @font-face {
   font-family: 'Libertinus Serif';
@@ -34,53 +35,53 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: 'LXGW WenKai';
-  src: url('/fonts/lxgw-wenkai/LXGWWenKai-Light.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'LXGW WenKai';
-  src: url('/fonts/lxgw-wenkai/LXGWWenKai-Light.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'LXGW WenKai';
-  src: url('/fonts/lxgw-wenkai/LXGWWenKai-Light.ttf') format('truetype');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
+/* @font-face { */
+/*   font-family: 'LXGW WenKai'; */
+/*   src: url('/fonts/lxgw-wenkai/LXGWWenKai-Light.ttf') format('truetype'); */
+/*   font-weight: 400; */
+/*   font-style: normal; */
+/*   font-display: swap; */
+/* } */
+/* @font-face { */
+/*   font-family: 'LXGW WenKai'; */
+/*   src: url('/fonts/lxgw-wenkai/LXGWWenKai-Light.ttf') format('truetype'); */
+/*   font-weight: 700; */
+/*   font-style: normal; */
+/*   font-display: swap; */
+/* } */
+/* @font-face { */
+/*   font-family: 'LXGW WenKai'; */
+/*   src: url('/fonts/lxgw-wenkai/LXGWWenKai-Light.ttf') format('truetype'); */
+/*   font-weight: 300; */
+/*   font-style: normal; */
+/*   font-display: swap; */
+/* } */
 
 @font-face {
   font-family: 'Source Serif 4';
   src: url('/fonts/source-serif/SourceSerif4-Light.otf.woff2') format('woff2');
-  font-weight: 400;
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Source Serif 4';
   src: url('/fonts/source-serif/SourceSerif4-LightIt.otf.woff2') format('woff2');
-  font-weight: 400;
+  font-weight: 300;
   font-style: italic;
   font-display: swap;
 }
 @font-face {
   font-family: 'Source Serif 4';
   src: url('/fonts/source-serif/SourceSerif4-Regular.otf.woff2') format('woff2');
-  font-weight: 300;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Source Serif 4';
   src: url('/fonts/source-serif/SourceSerif4-It.otf.woff2') format('woff2');
-  font-weight: 300;
+  font-weight: 400;
   font-style: italic;
   font-display: swap;
 }
@@ -102,28 +103,28 @@
 @font-face {
   font-family: 'JetBrains Mono';
   src: url('/fonts/jetbrains-mono/JetBrainsMono-ExtraLight.woff2') format('woff2');
-  font-weight: 400;
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'JetBrains Mono';
   src: url('/fonts/jetbrains-mono/JetBrainsMono-ExtraLightItalic.woff2') format('woff2');
-  font-weight: 400;
+  font-weight: 300;
   font-style: italic;
   font-display: swap;
 }
 @font-face {
   font-family: 'JetBrains Mono';
   src: url('/fonts/jetbrains-mono/JetBrainsMono-Regular.woff2') format('woff2');
-  font-weight: 300;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'JetBrains Mono';
   src: url('/fonts/jetbrains-mono/JetBrainsMono-Italic.woff2') format('woff2');
-  font-weight: 300;
+  font-weight: 400;
   font-style: italic;
   font-display: swap;
 }

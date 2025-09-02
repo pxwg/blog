@@ -32,6 +32,9 @@ importers:
       astro-typst:
         specifier: 0.9.0-rc1
         version: 0.9.0-rc1(astro@5.13.1(@types/node@24.3.0)(rollup@4.46.2)(typescript@5.9.2))(rollup@4.46.2)
+      lxgw-wenkai-webfont:
+        specifier: ^1.7.0
+        version: 1.7.0
     devDependencies:
       vite:
         specifier: ^6.3.5
@@ -1338,6 +1341,9 @@ packages:
 
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
+
+  lxgw-wenkai-webfont@1.7.0:
+    resolution: {integrity: sha512-kVJmT4xMAyOLhG6q0w63wJkVU7RP8UMQRGoAWj9tnpzL7sWFFYiEHBdUQyW9myqBQFa5SQfWfa2VLYF4IJBL5g==}
 
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
@@ -3280,6 +3286,8 @@ snapshots:
   longest-streak@3.1.0: {}
 
   lru-cache@10.4.3: {}
+
+  lxgw-wenkai-webfont@1.7.0: {}
 
   magic-string@0.30.17:
     dependencies:
