@@ -1,4 +1,6 @@
-#import "../float_and_pin.typ": *
+#import "../../../typ/templates/blog.typ": *
+#import "../../../typ/templates/translation-disclaimer.typ": translation-disclaimer
+
 #let title = "Pinning Floating Windows on Top in MacOS"
 #show: main.with(
   title: title,
@@ -9,6 +11,8 @@
     blog-tags.programming,
   ),
 )
+
+#translation-disclaimer(original-path: "content/article/float_and_pin.typ", lang: "en")
 
 = Origin
 

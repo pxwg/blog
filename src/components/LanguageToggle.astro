@@ -1,0 +1,108 @@
+---
+interface Props {
+  articleId?: string;
+}
+
+const { articleId } = Astro.props;
+
+// Helper function to get language toggle links
+function getLanguageLinks(currentUrl: string, articleId?: string) {
+  const url = new URL(currentUrl);
+  const pathname = url.pathname;
+  
+  // Determine current language from URL or article content
+  let currentLang = 'zh'; // default to Chinese
+  let basePath = pathname;
+  
+  if (pathname.includes('/en/') || pathname.includes('_en')) {
+    currentLang = 'en';
+    basePath = pathname.replace(/\/en\//, '/').replace(/_en/, '');
+  } else if (pathname.includes('/zh/') || pathname.includes('_zh')) {
+    currentLang = 'zh'; 
+    basePath = pathname.replace(/\/zh\//, '/').replace(/_zh/, '');
+  }
+  
+  const baseUrl = url.origin + url.pathname.replace(/\/[^\/]*$/, '');
+  
+  // For article pages, try to find the corresponding translation
+  if (articleId) {
+    const zhLink = currentLang === 'en' ? 
+      `${baseUrl}/zh/${articleId}` : 
+      `${baseUrl}/${articleId}`;
+    const enLink = currentLang === 'zh' ? 
+      `${baseUrl}/en/${articleId}` : 
+      `${baseUrl}/${articleId}`;
+      
+    return {
+      zh: zhLink,
+      en: enLink,
+      current: currentLang
+    };
+  }
+  
+  // For other pages, just toggle language prefix
+  return {
+    zh: currentLang === 'en' ? basePath.replace('/en/', '/zh/') : basePath,
+    en: currentLang === 'zh' ? basePath.replace('/zh/', '/en/') : basePath,
+    current: currentLang
+  };
+}
+
+const links = getLanguageLinks(Astro.url.href, articleId);
+---
+
+<div class="language-toggle">
+  <a 
+    href={links.zh} 
+    class:list={["lang-link", { active: links.current === 'zh' }]}
+    title="切换到中文"
+  >
+    中文
+  </a>
+  <span class="separator">|</span>
+  <a 
+    href={links.en} 
+    class:list={["lang-link", { active: links.current === 'en' }]}
+    title="Switch to English"
+  >
+    EN
+  </a>
+</div>
+
+<style>
+  .language-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: 0.9em;
+  }
+  
+  .lang-link {
+    color: var(--gray-color);
+    text-decoration: none;
+    padding: 0.25em 0.5em;
+    border-radius: 3px;
+    transition: color 0.2s, background-color 0.2s;
+  }
+  
+  .lang-link:hover {
+    color: var(--main-hover-color);
+    background-color: var(--accent-bg-color, rgba(128, 128, 128, 0.1));
+  }
+  
+  .lang-link.active {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  
+  .separator {
+    color: var(--gray-color);
+    opacity: 0.5;
+  }
+  
+  @media (max-width: 680px) {
+    .language-toggle {
+      font-size: 0.8em;
+    }
+  }
+</style>
