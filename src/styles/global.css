@@ -161,6 +161,7 @@ code,
 kbd,
 samp {
   font-family: var(--vp-font-family-mono);
+  font-weight: 300;
 }
 code {
   padding: 2px 5px;
