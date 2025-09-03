@@ -22,7 +22,7 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
     basePath = pathname.replace(/\/zh\//, '/').replace(/_zh/, '');
   }
   
-  const baseUrl = url.origin + url.pathname.replace(/\/[^\/]*$/, '');
+  const baseUrl = url.origin + basePath.replace(/\/[^\/]*$/, '');
   
   // For article pages, try to find the corresponding translation
   if (articleId) {
@@ -40,10 +40,17 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
     };
   }
   
-  // For other pages, just toggle language prefix
+  // For other pages, construct language-specific URLs
+  const zhLink = currentLang === 'en' ? 
+    basePath.replace('/en/', '/zh/') : 
+    basePath.includes('/zh/') ? basePath : basePath + '/zh/';
+  const enLink = currentLang === 'zh' ? 
+    basePath.replace('/zh/', '/en/') : 
+    basePath.includes('/en/') ? basePath : basePath + '/en/';
+  
   return {
-    zh: currentLang === 'en' ? basePath.replace('/en/', '/zh/') : basePath,
-    en: currentLang === 'zh' ? basePath.replace('/zh/', '/en/') : basePath,
+    zh: zhLink,
+    en: enLink,
     current: currentLang
   };
 }
@@ -56,14 +63,16 @@ const links = getLanguageLinks(Astro.url.href, articleId);
     href={links.zh} 
     class:list={["lang-link", { active: links.current === 'zh' }]}
     title="切换到中文"
+    aria-label="Switch to Chinese"
   >
     中文
   </a>
-  <span class="separator">|</span>
+  <span class="separator" aria-hidden="true">|</span>
   <a 
     href={links.en} 
     class:list={["lang-link", { active: links.current === 'en' }]}
     title="Switch to English"
+    aria-label="Switch to English"
   >
     EN
   </a>
@@ -83,6 +92,7 @@ const links = getLanguageLinks(Astro.url.href, articleId);
     padding: 0.25em 0.5em;
     border-radius: 3px;
     transition: color 0.2s, background-color 0.2s;
+    font-weight: 500;
   }
   
   .lang-link:hover {
@@ -93,16 +103,29 @@ const links = getLanguageLinks(Astro.url.href, articleId);
   .lang-link.active {
     color: var(--accent);
     font-weight: 600;
+    background-color: var(--accent-bg-color, rgba(207, 130, 158, 0.15));
   }
   
   .separator {
     color: var(--gray-color);
     opacity: 0.5;
+    font-weight: 300;
   }
   
   @media (max-width: 680px) {
     .language-toggle {
       font-size: 0.8em;
+      gap: 0.4em;
+    }
+    
+    .lang-link {
+      padding: 0.2em 0.4em;
+    }
+  }
+  
+  @media (max-width: 400px) {
+    .language-toggle {
+      font-size: 0.75em;
     }
   }
 </style>
