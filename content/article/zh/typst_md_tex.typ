@@ -15,7 +15,7 @@
 )
 
 #translation-disclaimer(
-  original-path: "content/article/typst_md_tex",
+  original-path: "../typst_md_tex",
   lang: "zh",
 )
 
