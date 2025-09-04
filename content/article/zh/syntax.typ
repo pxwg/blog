@@ -13,7 +13,7 @@
 )
 
 #translation-disclaimer(
-  original-path: "../../float_and_pin",
+  original-path: "../../en/float_and_pin",
   lang: "zh",
 )
 

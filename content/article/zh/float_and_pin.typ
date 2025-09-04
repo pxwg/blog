@@ -14,7 +14,7 @@
 
 MacOS 系统中，部分系统原生应用可以支持置顶窗口功能 (官方名称为“浮动在最前面”)，例如`Stickies`。部分非原生应用也可以实现浮动功能，例如`Typora`。
 
-#figure(code-image(image("../../assets/float_and_pin_2.png")))
+#figure(code-image(image("../assets/float_and_pin_2.png")))
 
 将部分窗口置顶的功能在部分场景下非常有用，例如阅读文献时可以将笔记窗口置顶，方便随时记录笔记，即使切换到其他应用也不会遮挡笔记窗口，干扰笔记记录流程。
 
@@ -115,7 +115,7 @@ echo level | ncat -U /tmp/kitty_level.sock
 ```
 即可改变当前窗口的置顶级别，`level`为整数，值越大窗口越靠前。将这个命令封装为 Hammerspoon 的快捷键即可实现快速置顶窗口。
 
-#figure(code-image(image("../../assets/float_and_pin_1.png")))
+#figure(code-image(image("../assets/float_and_pin_1.png")))
 
 = 总结
 
