@@ -48,9 +48,7 @@ export function filterPostsByLanguage(posts: BlogPost[], language: Language): Bl
  * Generate language toggle URLs for listing pages
  */
 export function getListingLanguageUrls(currentUrl: URL) {
-  const baseUrl = currentUrl.pathname;
-  
-  // Create URLs with language parameters
+  // Create URLs with language parameters for consistent navigation
   const zhUrl = new URL(currentUrl);
   zhUrl.searchParams.delete('lang'); // Chinese is default, no param needed
   

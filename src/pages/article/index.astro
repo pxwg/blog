@@ -18,11 +18,11 @@ const allPosts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 
-// Get current language preference from URL
+// Get current language preference from URL parameters  
 const currentLanguage = getLanguageFromUrl(Astro.url);
 
-// Filter posts by selected language
-const posts = filterPostsByLanguage(allPosts, currentLanguage);
+// Filter all posts by selected language
+const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
 ---
 
 <!doctype html>
@@ -52,7 +52,7 @@ const posts = filterPostsByLanguage(allPosts, currentLanguage);
       <section>
         <ul class={`accent block-list posts${kEnableSearch ? " loading" : ""}`}>
           {
-            posts.map((post) => (
+            filteredPosts.map((post) => (
               <li
                 data-article-id={post.id}
                 data-article-meta={JSON.stringify(post.data)}

@@ -25,13 +25,12 @@ const allPosts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 
-// Get current language preference from URL
+// Get current language preference from URL parameters
 const currentLanguage = getLanguageFromUrl(Astro.url);
 
-// Filter posts by selected language
-const posts = filterPostsByLanguage(allPosts, currentLanguage);
-
-const recent5Posts = posts.slice(0, 5);
+// Filter posts by selected language for Recent Posts
+const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
+const recent5Posts = filteredPosts.slice(0, 5);
 ---
 
 <!doctype html>
