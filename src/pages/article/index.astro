@@ -23,6 +23,14 @@ const currentLanguage = getLanguageFromUrl(Astro.url);
 
 // Filter all posts by selected language
 const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
+
+// Debug information
+const debugInfo = {
+  currentLanguage,
+  totalPosts: allPosts.length,
+  filteredPostsCount: filteredPosts.length,
+  urlSearch: Astro.url.search
+};
 ---
 
 <!doctype html>
@@ -50,6 +58,12 @@ const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
     {kEnableSearch && <Search />}
     <main class={kEnableSearch ? "search-enabled" : ""}>
       <section>
+        <h1 style="margin-bottom: 1rem;">
+          All Posts 
+          <span style="font-size: 0.6em; color: var(--gray-color); font-weight: normal;">
+            ({currentLanguage === 'en' ? 'English' : '中文'} - {filteredPosts.length} posts)
+          </span>
+        </h1>
         <ul class={`accent block-list posts${kEnableSearch ? " loading" : ""}`}>
           {
             filteredPosts.map((post) => (

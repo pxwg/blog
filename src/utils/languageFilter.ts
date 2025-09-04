@@ -55,9 +55,7 @@ export function getArticleLanguage(articleId: string, posts: BlogPost[]): Langua
 export function filterPostsByLanguage(posts: BlogPost[], language: Language): BlogPost[] {
   return posts.filter(post => {
     const articleLang = getArticleLanguage(post.id, posts);
-    const output = articleLang === language;
-    console.log(`Filtering post ${post.id}: ${articleLang} vs ${language} => ${output}`);
-    return output;
+    return articleLang === language;
   });
 }
 

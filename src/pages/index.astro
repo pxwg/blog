@@ -31,6 +31,14 @@ const currentLanguage = getLanguageFromUrl(Astro.url);
 // Filter posts by selected language for Recent Posts
 const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
 const recent5Posts = filteredPosts.slice(0, 5);
+
+// Debug information (only in development)
+const debugInfo = {
+  currentLanguage,
+  totalPosts: allPosts.length,
+  filteredPostsCount: filteredPosts.length,
+  urlSearch: Astro.url.search
+};
 ---
 
 <!doctype html>
@@ -70,7 +78,11 @@ const recent5Posts = filteredPosts.slice(0, 5);
         <AboutContent />
       </section>
       <section aria-label="Recent Posts">
-        <h2>Recent Posts</h2>
+        <h2>Recent Posts 
+          <span style="font-size: 0.7em; color: var(--gray-color); font-weight: normal;">
+            ({currentLanguage === 'en' ? 'English' : '中文'} - {recent5Posts.length} posts)
+          </span>
+        </h2>
         <ul class="accent block-list posts">
           {
             recent5Posts.map((post) => (
