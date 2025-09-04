@@ -47,6 +47,83 @@ const debugInfo = {
         <meta name="baidu-site-verification" content={kBaiduVeriCode} />
       )
     }
+    
+    <!-- Early language detection to prevent flickering -->
+    <script is:inline>
+      (function() {
+        // Immediate language detection to prevent flickering
+        function getStoredLanguage() {
+          try {
+            const stored = localStorage.getItem('blog-language-preference');
+            return (stored === 'en' || stored === 'zh') ? stored : null;
+          } catch (e) {
+            return null;
+          }
+        }
+        
+        function getCurrentUrlLanguage() {
+          const urlParams = new URLSearchParams(window.location.search);
+          const langParam = urlParams.get('lang');
+          if (langParam === 'en') return 'en';
+          
+          const path = window.location.pathname;
+          if (path.match(/\/blog\/article\/en\/[^\/]+\/?$/)) return 'en';
+          if (path.match(/\/blog\/article\/zh\/[^\/]+\/?$/)) return 'zh';
+          
+          return 'zh';
+        }
+        
+        function needsRedirect(storedLang, currentUrlLang) {
+          if (!storedLang) return false;
+          
+          const currentPath = window.location.pathname;
+          const articleMatch = currentPath.match(/^\/blog\/article\/(.+?)\/?$/);
+          
+          if (articleMatch) {
+            const articlePath = articleMatch[1];
+            
+            if (storedLang === 'en' && !articlePath.startsWith('en/')) {
+              return true;
+            }
+            
+            if (storedLang === 'zh' && !articlePath.startsWith('zh/')) {
+              return true;
+            }
+            
+            return false;
+          } else {
+            const hasEnParam = window.location.search.includes('lang=en');
+            
+            if (storedLang === 'en' && !hasEnParam) {
+              return true;
+            }
+            
+            if (storedLang === 'zh' && hasEnParam) {
+              return true;
+            }
+            
+            return false;
+          }
+        }
+        
+        // Check if we need to redirect immediately
+        const storedLang = getStoredLanguage();
+        const currentUrlLang = getCurrentUrlLanguage();
+        
+        if (storedLang && needsRedirect(storedLang, currentUrlLang)) {
+          // Hide content to prevent flash during redirect
+          document.documentElement.style.visibility = 'hidden';
+          
+          // Show content after a short delay if redirect doesn't happen
+          setTimeout(function() {
+            document.documentElement.style.visibility = 'visible';
+          }, 100);
+        }
+        
+        // Make immediate language available globally
+        window.immediateLanguage = storedLang || currentUrlLang;
+      })();
+    </script>
 
     <style>
       .comments a {
@@ -123,6 +200,11 @@ const debugInfo = {
 
         // Language filtering utilities (client-side)
         function getLanguageFromUrl() {
+          // Use immediate language detection if available (prevents flickering)
+          if (window.immediateLanguage) {
+            return window.immediateLanguage;
+          }
+          
           // Use global state if available
           if (globalLanguageState) {
             return globalLanguageState.getCurrentLanguage();

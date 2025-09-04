@@ -153,17 +153,59 @@ export class GlobalLanguageState {
   
   /**
    * Initialize global language state on page load
+   * Only redirects if absolutely necessary (different article or incompatible URL structure)
    */
   initialize(): void {
     if (typeof window === 'undefined') return;
     
-    const currentLang = this.getCurrentLanguage();
     const storedLang = this.getStoredLanguage();
+    const currentUrlLang = this.getLanguageFromCurrentUrl();
     
-    // If we have a stored preference but current page doesn't match it,
-    // redirect to the appropriate language version
-    if (storedLang && storedLang !== this.getLanguageFromCurrentUrl()) {
+    // Only redirect if we have a stored preference AND the current URL structure 
+    // cannot represent that language (e.g., wrong article language folder)
+    if (storedLang && this.needsRedirectForLanguage(storedLang, currentUrlLang)) {
       this.switchToLanguage(storedLang);
+    }
+  }
+  
+  /**
+   * Check if a redirect is needed to properly display the stored language
+   */
+  private needsRedirectForLanguage(storedLang: Language, currentUrlLang: Language): boolean {
+    if (typeof window === 'undefined') return false;
+    
+    const currentPath = window.location.pathname;
+    const articleMatch = currentPath.match(/^\/blog\/article\/(.+?)\/?$/);
+    
+    if (articleMatch) {
+      // For article pages, redirect only if we're on the wrong language version of the article
+      const articlePath = articleMatch[1];
+      
+      if (storedLang === 'en' && !articlePath.startsWith('en/')) {
+        // Want English but not on English article - need to check if English version exists
+        return true;
+      }
+      
+      if (storedLang === 'zh' && !articlePath.startsWith('zh/')) {
+        // Want Chinese but not on Chinese article - need to check if Chinese version exists  
+        return true;
+      }
+      
+      // We're already on the correct language version of the article
+      return false;
+    } else {
+      // For listing pages (Home, Posts), only redirect if URL parameters don't match preference
+      const hasEnParam = window.location.search.includes('lang=en');
+      
+      if (storedLang === 'en' && !hasEnParam) {
+        return true; // Need to add ?lang=en
+      }
+      
+      if (storedLang === 'zh' && hasEnParam) {
+        return true; // Need to remove ?lang=en
+      }
+      
+      return false;
     }
   }
   
@@ -188,6 +230,34 @@ export class GlobalLanguageState {
 // Export singleton instance
 export const globalLanguageState = GlobalLanguageState.getInstance();
 
+// Immediate language detection (synchronous, for early use)
+export const getImmediateLanguage = (): Language => {
+  if (typeof window === 'undefined') return 'zh';
+  
+  try {
+    // Check localStorage first (highest priority)
+    const stored = localStorage.getItem('blog-language-preference');
+    if (stored === 'en' || stored === 'zh') {
+      return stored;
+    }
+  } catch (e) {
+    // localStorage access failed, continue with other methods
+  }
+  
+  // Check URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const langParam = urlParams.get('lang');
+  if (langParam === 'en') return 'en';
+  
+  // Check path patterns  
+  const path = window.location.pathname;
+  if (path.match(/\/blog\/article\/en\/[^\/]+\/?$/)) return 'en';
+  if (path.match(/\/blog\/article\/zh\/[^\/]+\/?$/)) return 'zh';
+  
+  // Default to Chinese
+  return 'zh';
+};
+
 // Client-side initialization script (to be used in pages)
 export const initializeGlobalLanguageState = () => {
   if (typeof window !== 'undefined') {
@@ -201,3 +271,80 @@ export const initializeGlobalLanguageState = () => {
     }
   }
 };
+
+// Early language detection script (runs immediately, before DOM ready)
+export const earlyLanguageDetectionScript = `
+(function() {
+  // Immediate language detection to prevent flickering
+  function getStoredLanguage() {
+    try {
+      const stored = localStorage.getItem('blog-language-preference');
+      return (stored === 'en' || stored === 'zh') ? stored : null;
+    } catch (e) {
+      return null;
+    }
+  }
+  
+  function getCurrentUrlLanguage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const langParam = urlParams.get('lang');
+    if (langParam === 'en') return 'en';
+    
+    const path = window.location.pathname;
+    if (path.match(/\\/blog\\/article\\/en\\/[^\\/]+\\/?$/)) return 'en';
+    if (path.match(/\\/blog\\/article\\/zh\\/[^\\/]+\\/?$/)) return 'zh';
+    
+    return 'zh';
+  }
+  
+  function needsRedirect(storedLang, currentUrlLang) {
+    if (!storedLang) return false;
+    
+    const currentPath = window.location.pathname;
+    const articleMatch = currentPath.match(/^\\/blog\\/article\\/(.+?)\\/?$/);
+    
+    if (articleMatch) {
+      const articlePath = articleMatch[1];
+      
+      if (storedLang === 'en' && !articlePath.startsWith('en/')) {
+        return true;
+      }
+      
+      if (storedLang === 'zh' && !articlePath.startsWith('zh/')) {
+        return true;
+      }
+      
+      return false;
+    } else {
+      const hasEnParam = window.location.search.includes('lang=en');
+      
+      if (storedLang === 'en' && !hasEnParam) {
+        return true;
+      }
+      
+      if (storedLang === 'zh' && hasEnParam) {
+        return true;
+      }
+      
+      return false;
+    }
+  }
+  
+  // Check if we need to redirect immediately
+  const storedLang = getStoredLanguage();
+  const currentUrlLang = getCurrentUrlLanguage();
+  
+  if (storedLang && needsRedirect(storedLang, currentUrlLang)) {
+    // Set a flag to indicate we're about to redirect (prevents content flash)
+    document.documentElement.style.visibility = 'hidden';
+    
+    // Show content after a short delay if redirect doesn't happen
+    setTimeout(function() {
+      document.documentElement.style.visibility = 'visible';
+    }, 100);
+  }
+  
+  // Make immediate language available globally
+  window.immediateLanguage = storedLang || currentUrlLang;
+})();
+`;

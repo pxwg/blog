@@ -120,6 +120,11 @@ const links = getLanguageLinks(Astro.url.href, articleId);
   }
 
   function getCurrentLanguageFromPath() {
+    // Use immediate language detection if available (prevents flickering)
+    if (window.immediateLanguage) {
+      return window.immediateLanguage;
+    }
+    
     // Use global state if available, otherwise fall back to URL detection
     if (globalLanguageState) {
       return globalLanguageState.getCurrentLanguage();
