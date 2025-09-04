@@ -7,6 +7,7 @@ export type Language = 'zh' | 'en';
 export class GlobalLanguageState {
   private static readonly STORAGE_KEY = 'blog-language-preference';
   private static _instance: GlobalLanguageState | null = null;
+  private _updatingLanguage: boolean = false;
   
   private constructor() {}
   
@@ -54,6 +55,19 @@ export class GlobalLanguageState {
   }
   
   /**
+   * Save language preference to localStorage without dispatching events (prevents infinite loops)
+   */
+  private setStoredLanguageQuiet(language: Language): void {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      localStorage.setItem(GlobalLanguageState.STORAGE_KEY, language);
+    } catch (e) {
+      console.warn('Failed to save language preference to localStorage:', e);
+    }
+  }
+  
+  /**
    * Clear stored language preference
    */
   clearStoredLanguage(): void {
@@ -80,6 +94,13 @@ export class GlobalLanguageState {
       const urlParams = new URLSearchParams(window.location.search);
       const explicitLang = urlParams.get('explicit_lang');
       if (explicitLang === 'en' || explicitLang === 'zh') {
+        // Update stored preference when user explicitly chooses a language
+        // Use a flag to prevent recursive calls
+        if (!this._updatingLanguage) {
+          this._updatingLanguage = true;
+          this.setStoredLanguageQuiet(explicitLang);
+          this._updatingLanguage = false;
+        }
         return explicitLang;
       }
     }
@@ -262,6 +283,13 @@ export const getImmediateLanguage = (): Language => {
   const urlParams = new URLSearchParams(window.location.search);
   const explicitLang = urlParams.get('explicit_lang');
   if (explicitLang === 'en' || explicitLang === 'zh') {
+    // Update stored preference when user explicitly chooses a language
+    // Don't dispatch events to prevent issues during early detection
+    try {
+      localStorage.setItem('blog-language-preference', explicitLang);
+    } catch (e) {
+      // localStorage access failed, continue
+    }
     return explicitLang;
   }
   
@@ -321,6 +349,13 @@ export const earlyLanguageDetectionScript = `
     // Check for explicit language parameter first
     const explicitLang = urlParams.get('explicit_lang');
     if (explicitLang === 'en' || explicitLang === 'zh') {
+      // Update stored preference when user explicitly chooses a language
+      // Don't dispatch events to prevent issues during early detection
+      try {
+        localStorage.setItem('blog-language-preference', explicitLang);
+      } catch (e) {
+        // localStorage access failed, continue
+      }
       return explicitLang;
     }
     
