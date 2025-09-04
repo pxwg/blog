@@ -1,5 +1,8 @@
 #import "../../../typ/packages/metalogo.typ": *
 #import "../../../typ/templates/blog.typ": *
+#import "../../../typ/templates/translation-disclaimer.typ": (
+  translation-disclaimer,
+)
 
 #show: main.with(
   title: [Using Typst to Mark Everything Down, Instead of TeX Them],
@@ -9,6 +12,11 @@
     blog-tags.programming,
     blog-tags.typst,
   ),
+)
+
+#translation-disclaimer(
+  original-path: "../../zh/typst_md_tex/",
+  lang: "en",
 )
 
 #let blank(body) = {
