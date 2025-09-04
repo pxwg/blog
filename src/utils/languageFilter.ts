@@ -20,17 +20,32 @@ export function getLanguageFromUrl(url: URL): Language {
   return 'zh'; // Default to Chinese
 }
 
+
+export function exists(articleId: string, posts: BlogPost[]): boolean {
+  const normalizedId = articleId.replace(/^en\//, '').replace(/^zh\//, '');
+  return posts.some((post: BlogPost) =>
+    post.id === articleId ||
+    post.id === `en/${normalizedId}` ||
+    post.id === `zh/${normalizedId}`
+  );
+}
+
 /**
  * Classify an article by its ID to determine its language
+ * rules:
+ * - If it starts with 'en/', it's English
+ * - If it starts with 'zh/', it's Chinese
+ * - If it has no prefix, its language is the opposite of the same-named post with en/xxx or zh/xxx.
  */
-export function getArticleLanguage(articleId: string): Language {
-  // Articles in 'en/' folder are English articles
+export function getArticleLanguage(articleId: string, posts: BlogPost[]): Language {
   if (articleId.startsWith('en/')) return 'en';
-  
-  // Articles in 'zh/' folder are Chinese articles  
   if (articleId.startsWith('zh/')) return 'zh';
-  
-  // Base articles (no language prefix) are considered Chinese
+
+  const baseId = articleId.replace(/^en\//, '').replace(/^zh\//, '');
+
+  if (posts.some(post => post.id === `en/${baseId}`)) return 'zh';
+  if (posts.some(post => post.id === `zh/${baseId}`)) return 'en';
+
   return 'zh';
 }
 
@@ -39,8 +54,10 @@ export function getArticleLanguage(articleId: string): Language {
  */
 export function filterPostsByLanguage(posts: BlogPost[], language: Language): BlogPost[] {
   return posts.filter(post => {
-    const articleLang = getArticleLanguage(post.id);
-    return articleLang === language;
+    const articleLang = getArticleLanguage(post.id, posts);
+    const output = articleLang === language;
+    console.log(`Filtering post ${post.id}: ${articleLang} vs ${language} => ${output}`);
+    return output;
   });
 }
 
@@ -56,7 +73,7 @@ export function getListingLanguageUrls(currentUrl: URL) {
   enUrl.searchParams.set('lang', 'en');
   
   const currentLang = getLanguageFromUrl(currentUrl);
-  
+
   return {
     zh: zhUrl.pathname + (zhUrl.search || ''),
     en: enUrl.pathname + enUrl.search,
