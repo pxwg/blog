@@ -2,7 +2,7 @@
 #show: main.with(
   title: "Typst Syntax",
   desc: [List of Typst Syntax, for rendering tests.],
-  date: datetime(year: 2024, month: 08, day: 15),
+  date: "2025-08-14",
   tags: (
     blog-tags.programming,
     blog-tags.typst,
