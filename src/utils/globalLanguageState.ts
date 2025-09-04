@@ -68,29 +68,39 @@ export class GlobalLanguageState {
   
   /**
    * Get current language based on priority:
-   * 1. Stored preference (highest priority)
-   * 2. URL parameters
-   * 3. Path patterns
-   * 4. Default to Chinese
+   * 1. Explicit language parameter (explicit user choice, highest priority)
+   * 2. Stored preference
+   * 3. URL parameters  
+   * 4. Path patterns
+   * 5. Default to Chinese
    */
   getCurrentLanguage(): Language {
-    // Priority 1: Check stored preference
+    // Priority 1: Check for explicit language parameter (from translation disclaimer clicks)
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const explicitLang = urlParams.get('explicit_lang');
+      if (explicitLang === 'en' || explicitLang === 'zh') {
+        return explicitLang;
+      }
+    }
+    
+    // Priority 2: Check stored preference
     const stored = this.getStoredLanguage();
     if (stored) return stored;
     
-    // Priority 2: Check URL parameters (client-side only)
+    // Priority 3: Check URL parameters (client-side only)
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const langParam = urlParams.get('lang');
       if (langParam === 'en') return 'en';
       
-      // Priority 3: Check path patterns
+      // Priority 4: Check path patterns
       const path = window.location.pathname;
       if (path.match(/\/blog\/article\/en\/[^\/]+\/?$/)) return 'en';
       if (path.match(/\/blog\/article\/zh\/[^\/]+\/?$/)) return 'zh';
     }
     
-    // Priority 4: Default to Chinese
+    // Priority 5: Default to Chinese
     return 'zh';
   }
   
@@ -170,9 +180,17 @@ export class GlobalLanguageState {
   
   /**
    * Check if a redirect is needed to properly display the stored language
+   * Do not redirect if user has explicitly chosen a language via translation disclaimer
    */
   private needsRedirectForLanguage(storedLang: Language, currentUrlLang: Language): boolean {
     if (typeof window === 'undefined') return false;
+    
+    // Don't redirect if user has explicitly chosen a language (e.g., via translation disclaimer)
+    const urlParams = new URLSearchParams(window.location.search);
+    const explicitLang = urlParams.get('explicit_lang');
+    if (explicitLang === 'en' || explicitLang === 'zh') {
+      return false; // Respect user's explicit choice
+    }
     
     const currentPath = window.location.pathname;
     const articleMatch = currentPath.match(/^\/blog\/article\/(.+?)\/?$/);
@@ -215,7 +233,13 @@ export class GlobalLanguageState {
   private getLanguageFromCurrentUrl(): Language {
     if (typeof window === 'undefined') return 'zh';
     
+    // Check for explicit language parameter first
     const urlParams = new URLSearchParams(window.location.search);
+    const explicitLang = urlParams.get('explicit_lang');
+    if (explicitLang === 'en' || explicitLang === 'zh') {
+      return explicitLang;
+    }
+    
     const langParam = urlParams.get('lang');
     if (langParam === 'en') return 'en';
     
@@ -234,8 +258,15 @@ export const globalLanguageState = GlobalLanguageState.getInstance();
 export const getImmediateLanguage = (): Language => {
   if (typeof window === 'undefined') return 'zh';
   
+  // Check for explicit language parameter first (highest priority)
+  const urlParams = new URLSearchParams(window.location.search);
+  const explicitLang = urlParams.get('explicit_lang');
+  if (explicitLang === 'en' || explicitLang === 'zh') {
+    return explicitLang;
+  }
+  
   try {
-    // Check localStorage first (highest priority)
+    // Check localStorage second (normal priority)
     const stored = localStorage.getItem('blog-language-preference');
     if (stored === 'en' || stored === 'zh') {
       return stored;
@@ -245,7 +276,6 @@ export const getImmediateLanguage = (): Language => {
   }
   
   // Check URL parameters
-  const urlParams = new URLSearchParams(window.location.search);
   const langParam = urlParams.get('lang');
   if (langParam === 'en') return 'en';
   
@@ -287,6 +317,13 @@ export const earlyLanguageDetectionScript = `
   
   function getCurrentUrlLanguage() {
     const urlParams = new URLSearchParams(window.location.search);
+    
+    // Check for explicit language parameter first
+    const explicitLang = urlParams.get('explicit_lang');
+    if (explicitLang === 'en' || explicitLang === 'zh') {
+      return explicitLang;
+    }
+    
     const langParam = urlParams.get('lang');
     if (langParam === 'en') return 'en';
     
@@ -299,6 +336,13 @@ export const earlyLanguageDetectionScript = `
   
   function needsRedirect(storedLang, currentUrlLang) {
     if (!storedLang) return false;
+    
+    // Don't redirect if user has explicitly chosen a language
+    const urlParams = new URLSearchParams(window.location.search);
+    const explicitLang = urlParams.get('explicit_lang');
+    if (explicitLang === 'en' || explicitLang === 'zh') {
+      return false;
+    }
     
     const currentPath = window.location.pathname;
     const articleMatch = currentPath.match(/^\\/blog\\/article\\/(.+?)\\/?$/);
