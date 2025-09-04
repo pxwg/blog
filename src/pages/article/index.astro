@@ -18,18 +18,15 @@ const allPosts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 
-// Get current language preference from URL parameters  
-const currentLanguage = getLanguageFromUrl(Astro.url);
-
-// Filter all posts by selected language
-const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
+// In static mode, render all posts and filter on client side
+const posts = allPosts;
 
 // Debug information
 const debugInfo = {
-  currentLanguage,
   totalPosts: allPosts.length,
-  filteredPostsCount: filteredPosts.length,
-  urlSearch: Astro.url.search
+  astroUrlSearch: Astro.url.search,
+  astroFullUrl: Astro.url.href,
+  astroSearchParams: Object.fromEntries(Astro.url.searchParams.entries())
 };
 ---
 
@@ -58,18 +55,20 @@ const debugInfo = {
     {kEnableSearch && <Search />}
     <main class={kEnableSearch ? "search-enabled" : ""}>
       <section>
-        <h1 style="margin-bottom: 1rem;">
+        <h1 style="margin-bottom: 1rem;" id="all-posts-title">
           All Posts 
-          <span style="font-size: 0.6em; color: var(--gray-color); font-weight: normal;">
-            ({currentLanguage === 'en' ? 'English' : '中文'} - {filteredPosts.length} posts)
+          <span id="all-posts-info" style="font-size: 0.6em; color: var(--gray-color); font-weight: normal;">
+            (Loading...)
           </span>
         </h1>
-        <ul class={`accent block-list posts${kEnableSearch ? " loading" : ""}`}>
+        <ul class={`accent block-list posts${kEnableSearch ? " loading" : ""}`} id="all-posts-list">
           {
-            filteredPosts.map((post) => (
+            posts.map((post) => (
               <li
                 data-article-id={post.id}
                 data-article-meta={JSON.stringify(post.data)}
+                data-post-id={post.id}
+                data-post-data={JSON.stringify(post.data)}
               >
                 <a class="heading" href={`${kUrlBase}/article/${post.id}/`}>
                   <h2>
@@ -88,6 +87,87 @@ const debugInfo = {
         <script is:inline>
           if (!window.location.search) {
             document.querySelector(".posts").classList.remove("loading");
+          }
+        </script>
+        
+        <!-- Client-side language filtering for All Posts -->
+        <script is:inline define:vars={{allPosts}}>
+          // Language filtering utilities (client-side)
+          function getLanguageFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const langParam = urlParams.get('lang');
+            return langParam === 'en' ? 'en' : 'zh';
+          }
+
+          function getArticleLanguage(articleId, posts) {
+            if (articleId.startsWith('en/')) return 'en';
+            if (articleId.startsWith('zh/')) return 'zh';
+            
+            const baseId = articleId.replace(/^en\//, '').replace(/^zh\//, '');
+            
+            if (posts.some(post => post.id === `en/${baseId}`)) return 'zh';
+            if (posts.some(post => post.id === `zh/${baseId}`)) return 'en';
+            
+            return 'zh';
+          }
+
+          function filterPostsByLanguage(posts, language) {
+            return posts.filter(post => {
+              const articleLang = getArticleLanguage(post.id, posts);
+              return articleLang === language;
+            });
+          }
+
+          function updateAllPosts() {
+            const currentLanguage = getLanguageFromUrl();
+            const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
+            
+            // Update the title
+            const titleElement = document.getElementById('all-posts-info');
+            if (titleElement) {
+              titleElement.textContent = `(${currentLanguage === 'en' ? 'English' : '中文'} - ${filteredPosts.length} posts)`;
+            }
+            
+            // Update the post list
+            const listElement = document.getElementById('all-posts-list');
+            if (listElement) {
+              const allListItems = listElement.querySelectorAll('li[data-post-id]');
+              
+              // Hide all posts first
+              allListItems.forEach(item => {
+                item.style.display = 'none';
+              });
+              
+              // Show only filtered posts
+              filteredPosts.forEach(post => {
+                const postElement = listElement.querySelector(`li[data-post-id="${post.id}"]`);
+                if (postElement) {
+                  postElement.style.display = 'block';
+                }
+              });
+            }
+            
+            // Remove loading class if posts are filtered
+            const postsElement = document.querySelector('.posts');
+            if (postsElement) {
+              postsElement.classList.remove('loading');
+            }
+          }
+
+          // Update on page load
+          document.addEventListener('DOMContentLoaded', updateAllPosts);
+          
+          // Update when URL changes (for SPA navigation)
+          window.addEventListener('popstate', updateAllPosts);
+          
+          // Listen to language change events from the toggle component
+          window.addEventListener('languageChanged', updateAllPosts);
+          
+          // Also update immediately if DOM is already ready
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', updateAllPosts);
+          } else {
+            updateAllPosts();
           }
         </script>
       </section>

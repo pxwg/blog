@@ -91,6 +91,7 @@ const links = getLanguageLinks(Astro.url.href, articleId);
     class:list={["lang-link", { active: links.current === 'zh' }]}
     title="切换到中文"
     aria-label="Switch to Chinese"
+    data-lang="zh"
   >
     中文
   </a>
@@ -100,17 +101,42 @@ const links = getLanguageLinks(Astro.url.href, articleId);
     class:list={["lang-link", { active: links.current === 'en' }]}
     title="Switch to English"
     aria-label="Switch to English"
+    data-lang="en"
   >
     EN
   </a>
 </div>
 
-<!-- Debug information (remove in production) -->
-{import.meta.env.DEV && (
-  <div style="font-size: 0.7em; color: var(--gray-color); margin-top: 0.5em;">
-    Current: {links.current} | ZH: {links.zh} | EN: {links.en}
-  </div>
-)}
+<!-- Client-side language toggle updates -->
+<script is:inline>
+  function updateLanguageToggle() {
+    const currentLang = new URLSearchParams(window.location.search).get('lang') === 'en' ? 'en' : 'zh';
+    
+    // Update active states
+    document.querySelectorAll('.lang-link').forEach(link => {
+      const linkLang = link.getAttribute('data-lang');
+      if (linkLang === currentLang) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+    
+    // Trigger custom event for other components to listen to
+    window.dispatchEvent(new CustomEvent('languageChanged', { detail: { language: currentLang } }));
+  }
+
+  // Update on page load and URL changes
+  document.addEventListener('DOMContentLoaded', updateLanguageToggle);
+  window.addEventListener('popstate', updateLanguageToggle);
+  
+  // Update immediately if DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateLanguageToggle);
+  } else {
+    updateLanguageToggle();
+  }
+</script>
 
 <style>
   .language-toggle {

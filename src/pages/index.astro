@@ -25,19 +25,15 @@ const allPosts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 
-// Get current language preference from URL parameters
-const currentLanguage = getLanguageFromUrl(Astro.url);
-
-// Filter posts by selected language for Recent Posts
-const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
-const recent5Posts = filteredPosts.slice(0, 5);
+// In static mode, render all posts and filter on client side
+const recent5Posts = allPosts.slice(0, 5);
 
 // Debug information (only in development)
 const debugInfo = {
-  currentLanguage,
   totalPosts: allPosts.length,
-  filteredPostsCount: filteredPosts.length,
-  urlSearch: Astro.url.search
+  astroUrlSearch: Astro.url.search,
+  astroFullUrl: Astro.url.href,
+  astroSearchParams: Object.fromEntries(Astro.url.searchParams.entries())
 };
 ---
 
@@ -78,15 +74,15 @@ const debugInfo = {
         <AboutContent />
       </section>
       <section aria-label="Recent Posts">
-        <h2>Recent Posts 
-          <span style="font-size: 0.7em; color: var(--gray-color); font-weight: normal;">
-            ({currentLanguage === 'en' ? 'English' : '中文'} - {recent5Posts.length} posts)
+        <h2 id="recent-posts-title">Recent Posts 
+          <span id="recent-posts-info" style="font-size: 0.7em; color: var(--gray-color); font-weight: normal;">
+            (Loading...)
           </span>
         </h2>
-        <ul class="accent block-list posts">
+        <ul class="accent block-list posts" id="recent-posts-list">
           {
             recent5Posts.map((post) => (
-              <li>
+              <li data-post-id={post.id} data-post-data={JSON.stringify(post.data)}>
                 <a class="heading" href={`${kUrlBase}/article/${post.id}/`}>
                   <h2>
                     <span class="title">{post.data.title}</span>
@@ -102,6 +98,82 @@ const debugInfo = {
           }
         </ul>
       </section>
+      
+      <!-- Client-side language filtering -->
+      <script is:inline define:vars={{allPosts}}>
+        // Language filtering utilities (client-side)
+        function getLanguageFromUrl() {
+          const urlParams = new URLSearchParams(window.location.search);
+          const langParam = urlParams.get('lang');
+          return langParam === 'en' ? 'en' : 'zh';
+        }
+
+        function getArticleLanguage(articleId, posts) {
+          if (articleId.startsWith('en/')) return 'en';
+          if (articleId.startsWith('zh/')) return 'zh';
+          
+          const baseId = articleId.replace(/^en\//, '').replace(/^zh\//, '');
+          
+          if (posts.some(post => post.id === `en/${baseId}`)) return 'zh';
+          if (posts.some(post => post.id === `zh/${baseId}`)) return 'en';
+          
+          return 'zh';
+        }
+
+        function filterPostsByLanguage(posts, language) {
+          return posts.filter(post => {
+            const articleLang = getArticleLanguage(post.id, posts);
+            return articleLang === language;
+          });
+        }
+
+        function updateRecentPosts() {
+          const currentLanguage = getLanguageFromUrl();
+          const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
+          const recent5Posts = filteredPosts.slice(0, 5);
+          
+          // Update the title
+          const titleElement = document.getElementById('recent-posts-info');
+          if (titleElement) {
+            titleElement.textContent = `(${currentLanguage === 'en' ? 'English' : '中文'} - ${recent5Posts.length} posts)`;
+          }
+          
+          // Update the post list
+          const listElement = document.getElementById('recent-posts-list');
+          if (listElement) {
+            const allListItems = listElement.querySelectorAll('li[data-post-id]');
+            
+            // Hide all posts first
+            allListItems.forEach(item => {
+              item.style.display = 'none';
+            });
+            
+            // Show only filtered posts (up to 5)
+            recent5Posts.forEach(post => {
+              const postElement = listElement.querySelector(`li[data-post-id="${post.id}"]`);
+              if (postElement) {
+                postElement.style.display = 'block';
+              }
+            });
+          }
+        }
+
+        // Update on page load
+        document.addEventListener('DOMContentLoaded', updateRecentPosts);
+        
+        // Update when URL changes (for SPA navigation)
+        window.addEventListener('popstate', updateRecentPosts);
+        
+        // Listen to language change events from the toggle component
+        window.addEventListener('languageChanged', updateRecentPosts);
+        
+        // Also update immediately if DOM is already ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', updateRecentPosts);
+        } else {
+          updateRecentPosts();
+        }
+      </script>
     </main>
     <Footer />
   </body>
