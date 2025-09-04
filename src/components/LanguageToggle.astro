@@ -23,12 +23,12 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
     return listingUrls;
   }
 
-  // Article page logic
+  // Article page logic - follow user's exact requirements
   let articlePath = articleMatch[1];
   let currentLang: 'zh' | 'en' = 'zh';
   let baseArticle = articlePath;
 
-  // Always strip language prefix for baseArticle
+  // Determine current language and base article name
   if (articlePath.startsWith('en/')) {
     currentLang = 'en';
     baseArticle = articlePath.replace(/^en\//, '');
@@ -43,38 +43,35 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
 
   let zhLink, enLink;
 
-  // Always use /blog/article/[baseArticle]/ for Chinese (base)
-  zhLink = `/blog/article/${baseArticle}/`;
-  enLink = `/blog/article/${baseArticle}/`;
+  // Apply user's exact requirements:
+  if (articlePath.startsWith('en/')) {
+    // Rule: /blog/article/en/xxx/ → /blog/article/xxx/ (remove /en/ when switching to Chinese)
+    zhLink = `/blog/article/${baseArticle}/`;
+    enLink = `/blog/article/en/${baseArticle}/`;
+  } else if (articlePath.startsWith('zh/')) {
+    // Rule: /blog/article/zh/xxx/ → /blog/article/xxx/ (remove /zh/ when switching to English)
+    zhLink = `/blog/article/zh/${baseArticle}/`;
+    enLink = `/blog/article/${baseArticle}/`;
+  } else {
+    // Rule: /blog/article/xxx/ → generate /en/xxx/ or /zh/xxx/ based on file existence
+    const projectRoot = process.cwd();
+    const zhPath = path.join(projectRoot, 'content/article/zh', `${baseArticle}.typ`);
+    const enPath = path.join(projectRoot, 'content/article/en', `${baseArticle}.typ`);
+    
+    const zhExists = fs.existsSync(zhPath);
+    const enExists = fs.existsSync(enPath);
 
-  // Check if translations exist and provide language-specific links
-  const projectRoot = process.cwd();
-  const zhPath = path.join(projectRoot, 'content/article/zh', `${baseArticle}.typ`);
-  const enPath = path.join(projectRoot, 'content/article/en', `${baseArticle}.typ`);
-  const basePath = path.join(projectRoot, 'content/article', `${baseArticle}.typ`);
-  
-  const zhExists = fs.existsSync(zhPath);
-  const enExists = fs.existsSync(enPath);
-  const baseExists = fs.existsSync(basePath);
+    // Base article links
+    zhLink = `/blog/article/${baseArticle}/`;
+    enLink = `/blog/article/${baseArticle}/`;
 
-  // Set proper links based on what exists
-  if (currentLang === 'zh') {
-    // Currently viewing Chinese
+    // Add language-specific links if translations exist
+    if (zhExists) {
+      zhLink = `/blog/article/zh/${baseArticle}/`;
+    }
     if (enExists) {
       enLink = `/blog/article/en/${baseArticle}/`;
     }
-    // Keep zhLink as base path
-  } else if (currentLang === 'en') {
-    // Currently viewing English
-    if (baseExists || zhExists) {
-      // If base exists, link to base; if zh translation exists, link to zh
-      if (baseExists) {
-        zhLink = `/blog/article/${baseArticle}/`;
-      } else if (zhExists) {
-        zhLink = `/blog/article/zh/${baseArticle}/`;
-      }
-    }
-    enLink = `/blog/article/en/${baseArticle}/`;
   }
 
   return {
