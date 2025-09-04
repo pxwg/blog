@@ -2,16 +2,10 @@
 // Generates disclaimer notices for LLM-translated content
 
 #let translation-disclaimer(original-path: "", lang: "en") = {
-  // Convert .typ file path to proper article URL
-  let article-url = {
-    if original-path.ends-with(".typ") {
-      // Extract filename without extension from paths like "content/article/float_and_pin.typ" or "../../float_and_pin.typ"
-      let filename = original-path.split("/").last().replace(".typ", "")
-      "/article/" + filename
-    } else {
-      original-path
-    }
-  }
+  // Convert .typ file path to proper article URL by extracting filename and removing .typ extension
+  let filename = original-path.split("/").last()
+  let article-name = filename.replace(regex("\.typ$"), "")  // Remove .typ extension using regex
+  let article-url = "/article/" + article-name
   
   let disclaimer-text = if lang == "zh" [
     #text(fill: rgb("#888"), size: 0.9em)[
