@@ -1,6 +1,7 @@
 ---
 import fs from 'fs';
 import path from 'path';
+import { getListingLanguageUrls, getLanguageFromUrl } from '../utils/languageFilter';
 
 interface Props {
   articleId?: string;
@@ -17,12 +18,9 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
   const articleMatch = pathname.match(/^\/blog\/article\/(.+?)\/?$/);
   
   if (!articleMatch) {
-    // Not on an article page, return default homepage links
-    return {
-      zh: '/blog/',
-      en: '/blog/',
-      current: 'zh' as const
-    };
+    // Not on an article page, use listing page language URLs
+    const listingUrls = getListingLanguageUrls(url);
+    return listingUrls;
   }
   
   const articlePath = articleMatch[1];
