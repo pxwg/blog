@@ -61,6 +61,7 @@ export function filterPostsByLanguage(posts: BlogPost[], language: Language): Bl
 
 /**
  * Generate language toggle URLs for listing pages
+ * CONSISTENCY RULE: English URLs always have ?lang=en, Chinese URLs never have parameters
  */
 export function getListingLanguageUrls(currentUrl: URL) {
   // Create URLs with language parameters for consistent navigation
@@ -68,7 +69,7 @@ export function getListingLanguageUrls(currentUrl: URL) {
   zhUrl.searchParams.delete('lang'); // Chinese is default, no param needed
   
   const enUrl = new URL(currentUrl);
-  enUrl.searchParams.set('lang', 'en');
+  enUrl.searchParams.set('lang', 'en'); // English always has ?lang=en for consistency
   
   const currentLang = getLanguageFromUrl(currentUrl);
 
