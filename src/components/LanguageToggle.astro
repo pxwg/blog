@@ -228,6 +228,9 @@ const links = getLanguageLinks(Astro.url.href, articleId);
     align-items: center;
     gap: 0.5em;
     font-size: 0.9em;
+    position: relative;
+    z-index: 10;
+    right: 9px;
   }
   
   .lang-link {
@@ -236,7 +239,7 @@ const links = getLanguageLinks(Astro.url.href, articleId);
     padding: 0.25em 0.5em;
     border-radius: 3px;
     transition: color 0.2s, background-color 0.2s, border-bottom 0.2s;
-    font-weight: 500;
+    font-weight: 300;
     border-bottom: 2px solid transparent;
     background: none;
     border: none;
@@ -248,15 +251,16 @@ const links = getLanguageLinks(Astro.url.href, articleId);
   .lang-link:hover {
     color: var(--main-hover-color);
     background-color: var(--accent-bg-color, rgba(128, 128, 128, 0.1));
-    border-bottom-color: var(--main-hover-color);
+    /* border-bottom-color: var(--main-hover-color); */
   }
   
   .lang-link.active {
     color: var(--accent);
-    font-weight: 600;
-    background-color: var(--accent-bg-color, rgba(207, 130, 158, 0.15));
+    font-weight: 400;
+    /* background-color: var(--accent-bg-color, rgba(207, 130, 158, 0.15)); */
     border-bottom-color: var(--accent);
-    text-shadow: 0 0 2px var(--accent);
+    text-decoration: underline;
+    /* text-shadow: 0 0 2px var(--accent); */
   }
   
   .lang-link.disabled {
