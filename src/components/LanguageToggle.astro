@@ -36,8 +36,13 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
     currentLang = 'zh';
     baseArticle = articlePath.replace(/^zh\//, '');
   } else {
-    // No language prefix - this is a base article (Chinese by default)
-    currentLang = 'zh';
+    // No language prefix - check for lang parameter to determine user intent
+    const langParam = url.searchParams.get('lang');
+    if (langParam === 'en') {
+      currentLang = 'en';
+    } else {
+      currentLang = 'zh'; // Default to Chinese
+    }
     baseArticle = articlePath;
   }
 
@@ -70,13 +75,13 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
     // Rule: /blog/article/zh/xxx/ → /blog/article/xxx/ (remove /zh/ when switching to English)
     // For Chinese: stay on current Chinese path
     zhLink = `/blog/article/zh/${baseArticle}/`;
-    // For English: prefer en/ version if exists, otherwise fall back to base
+    // For English: prefer en/ version if exists, otherwise fall back to base with language intent
     if (enExists) {
       enLink = `/blog/article/en/${baseArticle}/`;
     } else if (baseExists) {
-      enLink = `/blog/article/${baseArticle}/`;
+      enLink = `/blog/article/${baseArticle}/?lang=en`; // Add lang parameter to preserve intent
     } else {
-      enLink = `/blog/article/${baseArticle}/`; // fallback even if doesn't exist
+      enLink = `/blog/article/${baseArticle}/?lang=en`; // fallback with language intent
     }
   } else {
     // Rule: /blog/article/xxx/ → generate /en/xxx/ or /zh/xxx/ based on file existence
@@ -86,11 +91,11 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
     } else {
       zhLink = `/blog/article/${baseArticle}/`;
     }
-    // For English: prefer en/ version if exists, otherwise stay on base
+    // For English: prefer en/ version if exists, otherwise stay on base with language intent
     if (enExists) {
       enLink = `/blog/article/en/${baseArticle}/`;
     } else {
-      enLink = `/blog/article/${baseArticle}/`;
+      enLink = `/blog/article/${baseArticle}/?lang=en`; // Add lang parameter to preserve intent
     }
   }
 
@@ -132,7 +137,7 @@ const links = getLanguageLinks(Astro.url.href, articleId);
     const path = window.location.pathname;
     const search = window.location.search;
     
-    // Check for URL parameter (used on listing pages like Home and Posts)
+    // Check for URL parameter (used on listing pages like Home and Posts, and fallback articles)
     const urlParams = new URLSearchParams(search);
     const langParam = urlParams.get('lang');
     if (langParam === 'en') return 'en';
@@ -144,7 +149,7 @@ const links = getLanguageLinks(Astro.url.href, articleId);
       return articleMatch[1];
     }
     
-    // Default to Chinese
+    // For base articles without language parameters, default to Chinese
     return 'zh';
   }
 
