@@ -5,7 +5,7 @@
 #show: main-zh.with(
   title: "Typst 语法",
   desc: [Typst 语法列表，用于渲染测试。],
-  date: "2025-08-15",
+  date: "2025-08-14",
   tags: (
     blog-tags.programming,
     blog-tags.typst,
@@ -13,7 +13,7 @@
 )
 
 #translation-disclaimer(
-  original-path: "../../float_and_pin",
+  original-path: "../../en/syntax/",
   lang: "zh",
 )
 
