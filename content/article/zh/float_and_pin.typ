@@ -1,8 +1,12 @@
-#import "../../typ/templates/blog.typ": *
-#let title = "在 MacOS 中置顶浮动窗口"
-#show: main-zh.with(
+#import "../../../typ/templates/blog.typ": *
+#import "../../../typ/templates/translation-disclaimer.typ": (
+  translation-disclaimer,
+)
+
+#let title = "Pinning Floating Windows on Top in MacOS"
+#show: main.with(
   title: title,
-  desc: [利用 Objective-C 代码注入在 MacOS 中实现置顶浮动窗口，无需禁止 SIP，以 kitty 终端为例。],
+  desc: [Implementing pinned floating windows on MacOS via Objective-C code injection, using the kitty terminal as an example, without disabling SIP.],
   date: "2025-09-01",
   tags: (
     blog-tags.macos,
@@ -10,37 +14,43 @@
   ),
 )
 
-= 缘起
+#translation-disclaimer(
+  original-path: "../../float_and_pin",
+  lang: "en",
+)
 
-MacOS 系统中，部分系统原生应用可以支持置顶窗口功能 (官方名称为“浮动在最前面”)，例如`Stickies`。部分非原生应用也可以实现浮动功能，例如`Typora`。
+= Origin
 
-#figure(code-image(image("../assets/float_and_pin_2.png")))
+In the MacOS system, some native applications support the window pinning feature (officially called "Float on Top"), such as `Stickies`. Some non-native applications can also achieve the floating feature, such as `Typora`.
 
-将部分窗口置顶的功能在部分场景下非常有用，例如阅读文献时可以将笔记窗口置顶，方便随时记录笔记，即使切换到其他应用也不会遮挡笔记窗口，干扰笔记记录流程。
+#figure(code-image(image("../../assets/float_and_pin_2.png")))
 
-这个想法起源于大二学年量子力学数学方法结课报告的准备过程中，我就是使用类似的工作流 (但是当时没有置顶功能) 来阅读 Kontsevich 的 #link("https://link.springer.com/article/10.1023/B:MATH.0000027508.00421.bf")[Deformation Quantization of Poisson Manifolds] 论文并记录笔记的。
+The ability to pin certain windows on top is very useful in specific scenarios. For example, when reading literature, you can pin a note-taking window on top, making it convenient to take notes at any time. Even when switching to other applications, the note window won't be obscured, thus not interfering with the note-taking process.
 
-然而，对于我常用的笔记工具 `kitty`+`neovim`，并没有原生的置顶功能，而例如`Afloat`等第三方工具也无法在 Apple Silicon 芯片的 MacOS 上使用，并且长期未更新。因此，在很长一段时间内，我只能通过手动调整窗口位置来实现类似的功能，效率较低。
+This idea originated during the preparation for the final report of the Quantum Mechanics Mathematical Methods course in my sophomore year. I used a similar workflow (but without the pinning feature back then) to read Kontsevich's #link("https://link.springer.com/article/10.1023/B:MATH.0000027508.00421.bf")[Deformation Quantization of Poisson Manifolds] paper and take notes.
 
-= 初步解决
+However, for my commonly used note-taking tools `kitty`+`neovim`, there is no native pinning feature. Third-party tools like `Afloat` do not work on Apple Silicon Macs and haven't been updated for a long time. Therefore, for a long time, I could only achieve a similar effect by manually adjusting window positions, which was inefficient.
+
+= Initial Solution
 // $
-//   #text(size: 20pt, weight: 800, font: pdf-fonts)[警告！接下来的操作需要禁止部分系统完整保护 (SIP)，请你务必了解相关风险并自行承担后果！]
+//   #text(size: 20pt, weight: 800, font: pdf-fonts)[Warning! The following operations require disabling parts of System Integrity Protection (SIP). You must understand the associated risks and proceed at your own responsibility!]
 // $
-最近因为需要频繁地在阅读文献和记录笔记之间切换，因此我决定尝试寻找一种可行的解决方案。首先出局的是`hammerspoon`，因为他压根就没有这个功能。`yabai` (我是它的长期用户) 在尝试一阵子之后也放弃了，主要是因为在禁用 `nvram` 保护的情况下，我的电脑桌面会直接崩溃#footnote([这个事情非常吓人，我当时一度以为我的电脑坏了，后来全部重启 SIP 保护后才恢复正常。])。
+Recently, due to the frequent need to switch between reading literature and taking notes, I decided to try to find a feasible solution. The first option ruled out was `hammerspoon` because it simply doesn't have this functionality. After some attempts, I also gave up on `yabai` (I've been a long-term user) mainly because, with `nvram` protection disabled, my desktop would crash completely#footnote([This was very frightening; I thought my computer was broken at one point. It only returned to normal after fully restarting SIP protection.]).
 
-在阅读了#link("https://github.com/kovidgoyal/kitty")[kitty 仓库]之后，我发现 kitty 的窗口是通过 Cocoa API 创建的，因此理论上可以通过 Objective-C 代码注入的方式来修改窗口属性，从而实现置顶功能。#link("https://apple.stackexchange.com/questions/219116/any-nice-stable-ways-to-keep-a-window-always-on-top-on-the-mac")[Stack Exchange] 上也有相关的讨论，主要是基于`lldb` 调整窗口的`level`属性来实现置顶功能。
+After reading the #link("https://github.com/kovidgoyal/kitty")[kitty repository], I found that kitty windows are created using the Cocoa API. Therefore, in theory, the window properties could be modified by injecting Objective-C code to achieve the pinning feature. There are also relevant discussions on #link("https://apple.stackexchange.com/questions/219116/any-nice-stable-ways-to-keep-a-window-always-on-top-on-the-mac")[Stack Exchange], primarily based on using `lldb` to adjust the window's `level` property for pinning.
 ```bash
 lldb -p pid -o 'expr for (NSWindow *w in (NSArray *)[(NSApplication *)NSApp windows]) { [w setLevel:10]; }' -o 'detach' -o 'quit'
 ```
-其中`pid`是目标进程的进程 ID，`level`属性的值越大，窗口越靠前。通常`NSNormalWindowLevel`的值为`0`，设置为`10`可以比较安全地实现置顶功能#footnote([对于系统程序 (保存在 `/System/` 目录) 启用 `lldb` 需要利用禁用 `debug` SIP 保护。对于这种情况，我不会介绍具体的实现方案，如果你没有这样基本的信息检索能力，*请不要尝试本方案*。_对于修改 `kitty` 窗口 level 的工作场景，本方案不需要关闭 SIP_])。
+Here, pid is the target process's process ID. The larger the value of the level property, the more frontmost the window. Typically, the value of NSNormalWindowLevel is 0. Setting it to 10 can safely achieve the pinning effect#footnote([Using lldb on system applications (located in the /System/ directory) requires disabling the debug SIP protection. I will not detail the implementation for this scenario. If you lack this basic information retrieval capability, please do not attempt this solution. For the use case of modifying the kitty window level, this solution does NOT require disabling SIP.]).
 
-= 封装
+= Packaging
 
-每一次运行`lldb` 都会花费较长的时间。受到`Afloat`的启发，我认识到可以直接在目标进程 (在这里是 kitty) 中注入#link("https://gist.github.com/pxwg/d7a8c44ca280a81bf19b1e9ea6e63c1e")[代码]实现置顶功能，这样只需要在启动 kitty 时注入一次代码，此后通过 WebSocket 向注入的代码通信即可实现对置顶功能的调控。这样还能很方便地实现热更新，并集成到常见的`Hammerspoon`等工具中，成为工作流的一部分。
+Running lldb each time takes a relatively long time. Inspired by Afloat, I realized that code could be injected directly into the target process (here, kitty) to #link("https://gist.github.com/pxwg/d7a8c44ca280a81bf19b1e9ea6e63c1e")[implement] the pinning feature. This way, the code only needs to be injected once when starting kitty. Subsequently, a WebSocket can be used to communicate with the injected code to control the pinning feature. This also allows for easy hot-swapping and integration into common tools like Hammerspoon as part of the workflow.
 
-由于只需要传递一个参数，WebSocket 的实现非常简单，但由于单次打开 kitty 对应了多个进程 (`kitty` 本体，工具集`kitten` 以及一些桌面渲染的进程)，需要通过锁来保证只有一个进程在监听 WebSocket 套接字，否则会出现端口冲突的问题，进而导致无法正常通信#footnote([在#link("https://gist.github.com/pxwg/d7a8c44ca280a81bf19b1e9ea6e63c1e")[Gist]中我加入了一些 Debug print，就是因为这个问题。])。
+Since only one parameter needs to be passed, the WebSocket implementation is very simple. However, because a single kitty instance corresponds to multiple processes (the kitty itself, the kitten toolset, and some desktop rendering processes), a lock is needed to ensure only one process listens on the WebSocket socket. Otherwise, port conflicts will occur, preventing normal communication#footnote([I added some Debug prints in the #link("https://gist.github.com/pxwg/d7a8c44ca280a81bf19b1e9ea6e63c1e")[Gist] precisely because of this issue.]).
 
-这个代码展示了基本的逻辑，省略了错误处理和信号处理等细节。
+This code shows the basic logic, omitting details like error handling and signal handling.
+
 ```objc
 static void *socket_server(void *arg) {
   // Acquire lock to ensure only one process listens
@@ -92,9 +102,9 @@ static void *socket_server(void *arg) {
   // Cleanup omitted
   return NULL;
 }
-```
-注入的窗口置顶操作则只需要将窗口的`level`属性设置为指定的值即可，完全类似`lldb`中的操作。
-```objc
+The injected window pinning operation simply sets the window's level property to the specified value, exactly like the operation in lldb.
+
+objc
 static void setAllWindowsLevel(NSInteger level) {
   dispatch_async(dispatch_get_main_queue(), ^{
     NSArray *windows = [(NSApplication *)NSApp windows];
@@ -104,21 +114,22 @@ static void setAllWindowsLevel(NSInteger level) {
   });
 }
 ```
+After compiling the dylib file according to the #link("https://gist.github.com/pxwg/d7a8c44ca280a81bf19b1e9ea6e63c1e")[code], starting a kitty window that exposes the WebSocket interface can be done with:
 
-根据#link("https://gist.github.com/pxwg/d7a8c44ca280a81bf19b1e9ea6e63c1e")[代码]编译完 `dylib` 文件后，只要通过
 ```bash
 DYLD_INSERT_LIBRARIES=~/window_level/libwindow_level.dylib /Applications/kitty.app/Contents/MacOS/kitty nvim -c "SideNoteMode"
 ```
-即可启动一个暴露了 WebSocket 接口的 kitty 窗口，之后通过例如
+Subsequently, using, for example:
+
 ```bash
 echo level | ncat -U /tmp/kitty_level.sock
 ```
-即可改变当前窗口的置顶级别，`level`为整数，值越大窗口越靠前。将这个命令封装为 Hammerspoon 的快捷键即可实现快速置顶窗口。
+can change the current window's pinning level, where level is an integer. The larger the value, the more frontmost the window. Wrapping this command into a Hammerspoon hotkey enables quick window pinning.
 
-#figure(code-image(image("../assets/float_and_pin_1.png")))
+#figure(code-image(image("../../assets/float_and_pin_1.png")))
 
-= 总结
+= Summary
 
-这个方案不需要使用 SIP(对于非系统 App)，好处是原生感较强，调用的是原生 API，不会出现体验问题。坏处就是相对而言较难操作，可能需要一些基础的编程知识。
+This solution does not require disabling SIP (for non-system apps). The advantage is a strong native feel, as it uses native APIs without experience issues. The drawback is that it is relatively difficult to operate and may require some basic programming knowledge.
 
-在 github 上也存在基于辅助功能实现置顶功能的#link("https://github.com/lihaoyun6/Topit")[工具]，好处是无需编程，坏处是稳定性不佳、原生感不强、并且 Apple Watch 无法在其使用时解锁，如果不想写代码的朋友可以尝试。
+There are also #link("https://github.com/lihaoyun6/Topit")[tools] on GitHub that implement the pinning feature based on accessibility functions. The advantage is that no programming is required. The disadvantages are poor stability, a less native feel, and the inability to use Apple Watch to unlock the Mac while such a tool is active. Friends who don't want to write code can try this.

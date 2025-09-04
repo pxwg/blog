@@ -24,7 +24,6 @@ export function getLanguageFromUrl(url: URL): Language {
 export function exists(articleId: string, posts: BlogPost[]): boolean {
   const normalizedId = articleId.replace(/^en\//, '').replace(/^zh\//, '');
   return posts.some((post: BlogPost) =>
-    post.id === articleId ||
     post.id === `en/${normalizedId}` ||
     post.id === `zh/${normalizedId}`
   );
@@ -32,20 +31,16 @@ export function exists(articleId: string, posts: BlogPost[]): boolean {
 
 /**
  * Classify an article by its ID to determine its language
- * rules:
+ * NEW SIMPLIFIED RULES:
  * - If it starts with 'en/', it's English
  * - If it starts with 'zh/', it's Chinese
- * - If it has no prefix, its language is the opposite of the same-named post with en/xxx or zh/xxx.
+ * - No more base articles - all articles are now in language-specific folders
  */
 export function getArticleLanguage(articleId: string, posts: BlogPost[]): Language {
   if (articleId.startsWith('en/')) return 'en';
   if (articleId.startsWith('zh/')) return 'zh';
 
-  const baseId = articleId.replace(/^en\//, '').replace(/^zh\//, '');
-
-  if (posts.some(post => post.id === `en/${baseId}`)) return 'zh';
-  if (posts.some(post => post.id === `zh/${baseId}`)) return 'en';
-
+  // This shouldn't happen in the new structure, but default to Chinese
   return 'zh';
 }
 

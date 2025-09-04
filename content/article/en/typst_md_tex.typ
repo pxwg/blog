@@ -1,5 +1,5 @@
-#import "../../typ/templates/blog.typ": *
-#import "../../typ/packages/metalogo.typ": *
+#import "../../../typ/packages/metalogo.typ": *
+#import "../../../typ/templates/blog.typ": *
 
 #show: main.with(
   title: [Using Typst to Mark Everything Down, Instead of TeX Them],

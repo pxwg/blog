@@ -112,11 +112,7 @@ const debugInfo = {
           if (articleId.startsWith('en/')) return 'en';
           if (articleId.startsWith('zh/')) return 'zh';
           
-          const baseId = articleId.replace(/^en\//, '').replace(/^zh\//, '');
-          
-          if (posts.some(post => post.id === `en/${baseId}`)) return 'zh';
-          if (posts.some(post => post.id === `zh/${baseId}`)) return 'en';
-          
+          // This shouldn't happen in the new structure, but default to Chinese
           return 'zh';
         }
 

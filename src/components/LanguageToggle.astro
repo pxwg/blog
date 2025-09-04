@@ -23,7 +23,7 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
     return listingUrls;
   }
 
-  // Article page logic - follow user's exact requirements
+  // Article page logic - NEW SIMPLIFIED STRUCTURE
   let articlePath = articleMatch[1];
   let currentLang: 'zh' | 'en' = 'zh';
   let baseArticle = articlePath;
@@ -36,68 +36,39 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
     currentLang = 'zh';
     baseArticle = articlePath.replace(/^zh\//, '');
   } else {
-    // No language prefix - check for lang parameter to determine user intent
-    const langParam = url.searchParams.get('lang');
-    if (langParam === 'en') {
-      currentLang = 'en';
-    } else {
-      currentLang = 'zh'; // Default to Chinese
-    }
+    // This shouldn't happen in the new structure, but handle gracefully
+    // All articles should now be in zh/ or en/ folders
+    currentLang = 'zh'; // Default fallback
     baseArticle = articlePath;
   }
 
-  // Check file existence for all possible versions
+  // Check file existence for both language versions
   const projectRoot = process.cwd();
-  const basePath = path.join(projectRoot, 'content/article', `${baseArticle}.typ`);
   const zhPath = path.join(projectRoot, 'content/article/zh', `${baseArticle}.typ`);
   const enPath = path.join(projectRoot, 'content/article/en', `${baseArticle}.typ`);
   
-  const baseExists = fs.existsSync(basePath);
   const zhExists = fs.existsSync(zhPath);
   const enExists = fs.existsSync(enPath);
 
   let zhLink, enLink;
 
-  // Apply user's exact requirements with proper file existence checking:
+  // SIMPLIFIED LANGUAGE SWITCHING RULES:
   // CONSISTENCY RULE: English URLs always have ?lang=en, Chinese URLs never have parameters
-  if (articlePath.startsWith('en/')) {
-    // Rule: /blog/article/en/xxx/ → /blog/article/xxx/ (remove /en/ when switching to Chinese)
-    // For Chinese: prefer zh/ version if exists, otherwise fall back to base (NO parameters)
-    if (zhExists) {
-      zhLink = `/blog/article/zh/${baseArticle}/`;
-    } else if (baseExists) {
-      zhLink = `/blog/article/${baseArticle}/`;
-    } else {
-      zhLink = `/blog/article/${baseArticle}/`; // fallback even if doesn't exist
-    }
-    // For English: stay on current English path with ?lang=en for consistency
-    enLink = `/blog/article/en/${baseArticle}/?lang=en`;
-  } else if (articlePath.startsWith('zh/')) {
-    // Rule: /blog/article/zh/xxx/ → /blog/article/xxx/ (remove /zh/ when switching to English)
-    // For Chinese: stay on current Chinese path (NO parameters)
+  
+  // For Chinese: always use /blog/article/zh/xxx/ if it exists
+  if (zhExists) {
     zhLink = `/blog/article/zh/${baseArticle}/`;
-    // For English: prefer en/ version if exists, otherwise fall back to base with ?lang=en
-    if (enExists) {
-      enLink = `/blog/article/en/${baseArticle}/?lang=en`;
-    } else if (baseExists) {
-      enLink = `/blog/article/${baseArticle}/?lang=en`;
-    } else {
-      enLink = `/blog/article/${baseArticle}/?lang=en`; // fallback with language intent
-    }
   } else {
-    // Rule: /blog/article/xxx/ → generate /en/xxx/ or /zh/xxx/ based on file existence
-    // For Chinese: prefer zh/ version if exists, otherwise stay on base (NO parameters)
-    if (zhExists) {
-      zhLink = `/blog/article/zh/${baseArticle}/`;
-    } else {
-      zhLink = `/blog/article/${baseArticle}/`;
-    }
-    // For English: prefer en/ version if exists, otherwise stay on base with ?lang=en
-    if (enExists) {
-      enLink = `/blog/article/en/${baseArticle}/?lang=en`;
-    } else {
-      enLink = `/blog/article/${baseArticle}/?lang=en`;
-    }
+    // If Chinese version doesn't exist, disable the link or show as unavailable
+    zhLink = null;
+  }
+  
+  // For English: always use /blog/article/en/xxx/ with ?lang=en if it exists
+  if (enExists) {
+    enLink = `/blog/article/en/${baseArticle}/?lang=en`;
+  } else {
+    // If English version doesn't exist, disable the link or show as unavailable
+    enLink = null;
   }
 
   return {
@@ -112,21 +83,23 @@ const links = getLanguageLinks(Astro.url.href, articleId);
 
 <div class="language-toggle">
   <a 
-    href={links.zh} 
-    class:list={["lang-link", { active: links.current === 'zh' }]}
-    title="切换到中文"
-    aria-label="Switch to Chinese"
+    href={links.zh || '#'} 
+    class:list={["lang-link", { active: links.current === 'zh', disabled: !links.zh }]}
+    title={links.zh ? "切换到中文" : "中文版本不存在"}
+    aria-label={links.zh ? "Switch to Chinese" : "Chinese version not available"}
     data-lang="zh"
+    onclick={!links.zh ? 'event.preventDefault(); return false;' : ''}
   >
     中文
   </a>
   <span class="separator" aria-hidden="true">|</span>
   <a 
-    href={links.en} 
-    class:list={["lang-link", { active: links.current === 'en' }]}
-    title="Switch to English"
-    aria-label="Switch to English"
+    href={links.en || '#'} 
+    class:list={["lang-link", { active: links.current === 'en', disabled: !links.en }]}
+    title={links.en ? "Switch to English" : "English version not available"}
+    aria-label={links.en ? "Switch to English" : "English version not available"}
     data-lang="en"
+    onclick={!links.en ? 'event.preventDefault(); return false;' : ''}
   >
     EN
   </a>
@@ -143,14 +116,20 @@ const links = getLanguageLinks(Astro.url.href, articleId);
     const langParam = urlParams.get('lang');
     if (langParam === 'en') return 'en';
     
-    // Check for path-based Chinese language (explicit Chinese articles)
-    // Pattern: /blog/article/zh/xxx/
+    // Check for path-based language in the NEW SIMPLIFIED STRUCTURE
+    // Pattern: /blog/article/en/xxx/ (English articles)
+    const enArticleMatch = path.match(/\/blog\/article\/en\/[^\/]+\/?$/);
+    if (enArticleMatch) {
+      return 'en';
+    }
+    
+    // Pattern: /blog/article/zh/xxx/ (Chinese articles)  
     const zhArticleMatch = path.match(/\/blog\/article\/zh\/[^\/]+\/?$/);
     if (zhArticleMatch) {
       return 'zh';
     }
     
-    // For all other cases (base articles, English articles without param), default to Chinese
+    // For all other cases (listing pages, other pages), default to Chinese
     // unless ?lang=en parameter is present (which we checked above)
     return 'zh';
   }
@@ -214,6 +193,19 @@ const links = getLanguageLinks(Astro.url.href, articleId);
     background-color: var(--accent-bg-color, rgba(207, 130, 158, 0.15));
     border-bottom-color: var(--accent);
     text-shadow: 0 0 2px var(--accent);
+  }
+  
+  .lang-link.disabled {
+    color: var(--gray-color);
+    opacity: 0.4;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+  
+  .lang-link.disabled:hover {
+    color: var(--gray-color);
+    background-color: transparent;
+    border-bottom-color: transparent;
   }
   
   .separator {

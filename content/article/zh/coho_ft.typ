@@ -1,4 +1,4 @@
-#import "../coho_ft.typ": *
+#import "../../../typ/templates/blog.typ": *
 #let title = "上同调场论"
 #show: main-zh.with(
   title: title,
