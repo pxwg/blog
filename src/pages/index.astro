@@ -75,9 +75,9 @@ const debugInfo = {
       </section>
       <section aria-label="Recent Posts">
         <h2 id="recent-posts-title">Recent Posts 
-          <span id="recent-posts-info" style="font-size: 0.7em; color: var(--gray-color); font-weight: normal;">
-            (Loading...)
-          </span>
+          <!-- <span id="recent-posts-info" style="font-size: 0.7em; color: var(--gray-color); font-weight: normal;"> -->
+            <!-- (Loading...) -->
+          <!-- </span> -->
         </h2>
         <ul class="accent block-list posts" id="recent-posts-list">
           {
@@ -134,9 +134,9 @@ const debugInfo = {
           
           // Update the title
           const titleElement = document.getElementById('recent-posts-info');
-          if (titleElement) {
-            titleElement.textContent = `(${currentLanguage === 'en' ? 'English' : '中文'} - ${recent5Posts.length} posts)`;
-          }
+          // if (titleElement) {
+          //   titleElement.textContent = `(${currentLanguage === 'en' ? 'English' : '中文'} - ${recent5Posts.length} posts)`;
+          // }
           
           // Update the post list
           const listElement = document.getElementById('recent-posts-list');
