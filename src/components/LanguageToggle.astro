@@ -41,36 +41,56 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
     baseArticle = articlePath;
   }
 
+  // Check file existence for all possible versions
+  const projectRoot = process.cwd();
+  const basePath = path.join(projectRoot, 'content/article', `${baseArticle}.typ`);
+  const zhPath = path.join(projectRoot, 'content/article/zh', `${baseArticle}.typ`);
+  const enPath = path.join(projectRoot, 'content/article/en', `${baseArticle}.typ`);
+  
+  const baseExists = fs.existsSync(basePath);
+  const zhExists = fs.existsSync(zhPath);
+  const enExists = fs.existsSync(enPath);
+
   let zhLink, enLink;
 
-  // Apply user's exact requirements:
+  // Apply user's exact requirements with proper file existence checking:
   if (articlePath.startsWith('en/')) {
     // Rule: /blog/article/en/xxx/ → /blog/article/xxx/ (remove /en/ when switching to Chinese)
-    zhLink = `/blog/article/${baseArticle}/`;
+    // For Chinese: prefer zh/ version if exists, otherwise fall back to base
+    if (zhExists) {
+      zhLink = `/blog/article/zh/${baseArticle}/`;
+    } else if (baseExists) {
+      zhLink = `/blog/article/${baseArticle}/`;
+    } else {
+      zhLink = `/blog/article/${baseArticle}/`; // fallback even if doesn't exist
+    }
+    // For English: stay on current English path (even if file doesn't exist, user is already here)
     enLink = `/blog/article/en/${baseArticle}/`;
   } else if (articlePath.startsWith('zh/')) {
     // Rule: /blog/article/zh/xxx/ → /blog/article/xxx/ (remove /zh/ when switching to English)
+    // For Chinese: stay on current Chinese path
     zhLink = `/blog/article/zh/${baseArticle}/`;
-    enLink = `/blog/article/${baseArticle}/`;
-  } else {
-    // Rule: /blog/article/xxx/ → generate /en/xxx/ or /zh/xxx/ based on file existence
-    const projectRoot = process.cwd();
-    const zhPath = path.join(projectRoot, 'content/article/zh', `${baseArticle}.typ`);
-    const enPath = path.join(projectRoot, 'content/article/en', `${baseArticle}.typ`);
-    
-    const zhExists = fs.existsSync(zhPath);
-    const enExists = fs.existsSync(enPath);
-
-    // Base article links
-    zhLink = `/blog/article/${baseArticle}/`;
-    enLink = `/blog/article/${baseArticle}/`;
-
-    // Add language-specific links if translations exist
-    if (zhExists) {
-      zhLink = `/blog/article/zh/${baseArticle}/`;
-    }
+    // For English: prefer en/ version if exists, otherwise fall back to base
     if (enExists) {
       enLink = `/blog/article/en/${baseArticle}/`;
+    } else if (baseExists) {
+      enLink = `/blog/article/${baseArticle}/`;
+    } else {
+      enLink = `/blog/article/${baseArticle}/`; // fallback even if doesn't exist
+    }
+  } else {
+    // Rule: /blog/article/xxx/ → generate /en/xxx/ or /zh/xxx/ based on file existence
+    // For Chinese: prefer zh/ version if exists, otherwise stay on base
+    if (zhExists) {
+      zhLink = `/blog/article/zh/${baseArticle}/`;
+    } else {
+      zhLink = `/blog/article/${baseArticle}/`;
+    }
+    // For English: prefer en/ version if exists, otherwise stay on base
+    if (enExists) {
+      enLink = `/blog/article/en/${baseArticle}/`;
+    } else {
+      enLink = `/blog/article/${baseArticle}/`;
     }
   }
 
