@@ -1,8 +1,10 @@
 #import "../../../typ/packages/metalogo.typ": *
 #import "../../../typ/templates/blog.typ": *
-#import "../../../typ/templates/translation-disclaimer.typ": translation-disclaimer
+#import "../../../typ/templates/translation-disclaimer.typ": (
+  translation-disclaimer,
+)
 
-#show: main.with(
+#show: main-zh.with(
   title: [Using Typst to Mark Everything Down, Instead of TeX Them],
   desc: [烦恼即菩提。],
   date: "2025-08-16",
@@ -12,7 +14,10 @@
   ),
 )
 
-#translation-disclaimer(original-path: "content/article/typst_md_tex.typ", lang: "zh")
+#translation-disclaimer(
+  original-path: "content/article/typst_md_tex",
+  lang: "zh",
+)
 
 #let blank(body) = {
   underline[~~~#body~~~]

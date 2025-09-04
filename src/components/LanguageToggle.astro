@@ -1,4 +1,7 @@
 ---
+import fs from 'fs';
+import path from 'path';
+
 interface Props {
   articleId?: string;
 }
@@ -9,54 +12,67 @@ const { articleId } = Astro.props;
 function getLanguageLinks(currentUrl: string, articleId?: string) {
   const url = new URL(currentUrl);
   const pathname = url.pathname;
-  
-  // Determine current language from URL or article content
-  let currentLang = 'zh'; // default to Chinese
+
+  let currentLang: 'zh' | 'en' = 'zh';
   let basePath = pathname;
-  
-  if (pathname.includes('/en/') || pathname.includes('_en')) {
+  let langDetected = false;
+
+  if (pathname.includes('/zh/')) {
+    currentLang = 'zh';
+    basePath = pathname.replace('/zh/', '/');
+    langDetected = true;
+  } else if (pathname.includes('/en/')) {
     currentLang = 'en';
-    basePath = pathname.replace(/\/en\//, '/').replace(/_en/, '');
-  } else if (pathname.includes('/zh/') || pathname.includes('_zh')) {
-    currentLang = 'zh'; 
-    basePath = pathname.replace(/\/zh\//, '/').replace(/_zh/, '');
+    basePath = pathname.replace('/en/', '/');
+    langDetected = true;
   }
-  
-  // For article pages, construct relative paths for different languages
-  if (articleId) {
-    // Clean up the pathname to get the base article path
-    // Remove any language segments and duplicate article IDs
-    let cleanPath = pathname;
-    
-    // Remove language segments like /en/ or /zh/
-    cleanPath = cleanPath.replace(/\/(zh|en)\//g, '/');
-    
-    // For paths like /article/float_and_pin/en/float_and_pin, extract the base article
-    const articleMatch = cleanPath.match(/\/article\/([^\/]+)/);
-    const baseArticle = articleMatch ? articleMatch[1] : articleId;
-    
-    const zhLink = currentLang === 'en' ? 
-      `/article/${baseArticle}/` : 
-      `/article/${baseArticle}/zh/${baseArticle}/`;
-    const enLink = currentLang === 'zh' ? 
-      `/article/${baseArticle}/en/${baseArticle}/` : 
-      `/article/${baseArticle}/`;
-      
-    return {
-      zh: zhLink,
-      en: enLink,
-      current: currentLang
-    };
+
+  if (!langDetected && articleId) {
+    const projectRoot = process.cwd();
+    const baseFile = `${articleId}.typ`;
+    const zhPath = path.join(projectRoot, 'content/article/zh', baseFile);
+    const enPath = path.join(projectRoot, 'content/article/en', baseFile);
+
+    const zhExists = fs.existsSync(zhPath);
+    const enExists = fs.existsSync(enPath);
+
+    if (zhExists && enExists) {
+      throw new Error(`Ambiguous language: both zh and en files exist for ${articleId}`);
+    } else if (zhExists) {
+      currentLang = 'en';
+      basePath = `/blog/article/${articleId}/`;
+      langDetected = true;
+    } else if (enExists) {
+      currentLang = 'zh';
+      basePath = `/blog/article/${articleId}/`;
+      langDetected = true;
+    }
   }
-  
-  // For other pages, construct language-specific relative URLs
-  const zhLink = currentLang === 'en' ? 
-    basePath.replace('/en/', '/zh/') : 
-    basePath.includes('/zh/') ? basePath : basePath + '/zh/';
-  const enLink = currentLang === 'zh' ? 
-    basePath.replace('/zh/', '/en/') : 
-    basePath.includes('/en/') ? basePath : basePath + '/en/';
-  
+
+  let zhLink, enLink;
+  if (langDetected) {
+    if (pathname.includes('/zh/')) {
+      zhLink = pathname;
+      enLink = pathname.replace('/zh/', '/');
+    } else if (pathname.includes('/en/')) {
+      enLink = pathname;
+      zhLink = pathname.replace('/en/', '/');
+    } else {
+      zhLink = basePath.replace(/^\/blog\/article\/en\//, '/blog/article/');
+      enLink = basePath.replace(/^\/blog\/article\//, '/blog/article/en/');
+      if (currentLang === 'en') {
+        zhLink = basePath.replace(/^\/blog\/article\/en\//, '/blog/article/');
+        enLink = basePath;
+      } else {
+        zhLink = basePath;
+        enLink = basePath.replace(/^\/blog\/article\//, '/blog/article/en/');
+      }
+    }
+  } else {
+    zhLink = basePath + (basePath.endsWith('/') ? '' : '/') + 'zh/';
+    enLink = basePath + (basePath.endsWith('/') ? '' : '/') + 'en/';
+  }
+
   return {
     zh: zhLink,
     en: enLink,
