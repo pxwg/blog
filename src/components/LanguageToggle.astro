@@ -22,16 +22,18 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
     basePath = pathname.replace(/\/zh\//, '/').replace(/_zh/, '');
   }
   
-  const baseUrl = url.origin + basePath.replace(/\/[^\/]*$/, '');
-  
-  // For article pages, try to find the corresponding translation
+  // For article pages, construct relative paths for different languages
   if (articleId) {
+    // Remove any existing language path to get the base article path
+    const cleanBasePath = basePath.replace(/\/(zh|en)\//, '/');
+    const baseArticlePath = cleanBasePath.replace(/\/[^\/]*$/, '');
+    
     const zhLink = currentLang === 'en' ? 
-      `${baseUrl}/zh/${articleId}` : 
-      `${baseUrl}/${articleId}`;
+      `${baseArticlePath}/zh/${articleId}` : 
+      `${baseArticlePath}/${articleId}`;
     const enLink = currentLang === 'zh' ? 
-      `${baseUrl}/en/${articleId}` : 
-      `${baseUrl}/${articleId}`;
+      `${baseArticlePath}/en/${articleId}` : 
+      `${baseArticlePath}/${articleId}`;
       
     return {
       zh: zhLink,
@@ -40,7 +42,7 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
     };
   }
   
-  // For other pages, construct language-specific URLs
+  // For other pages, construct language-specific relative URLs
   const zhLink = currentLang === 'en' ? 
     basePath.replace('/en/', '/zh/') : 
     basePath.includes('/zh/') ? basePath : basePath + '/zh/';
@@ -91,19 +93,22 @@ const links = getLanguageLinks(Astro.url.href, articleId);
     text-decoration: none;
     padding: 0.25em 0.5em;
     border-radius: 3px;
-    transition: color 0.2s, background-color 0.2s;
+    transition: color 0.2s, background-color 0.2s, border-bottom 0.2s;
     font-weight: 500;
+    border-bottom: 2px solid transparent;
   }
   
   .lang-link:hover {
     color: var(--main-hover-color);
     background-color: var(--accent-bg-color, rgba(128, 128, 128, 0.1));
+    border-bottom-color: var(--main-hover-color);
   }
   
   .lang-link.active {
     color: var(--accent);
     font-weight: 600;
     background-color: var(--accent-bg-color, rgba(207, 130, 158, 0.15));
+    border-bottom-color: var(--accent);
   }
   
   .separator {
