@@ -36,43 +36,45 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
     currentLang = 'zh';
     baseArticle = articlePath.replace(/^zh\//, '');
   } else {
-    // No language prefix, determine from file existence
-    const projectRoot = process.cwd();
-    const baseFile = `${articlePath}.typ`;
-    const zhPath = path.join(projectRoot, 'content/article/zh', baseFile);
-    const enPath = path.join(projectRoot, 'content/article/en', baseFile);
-
-    const zhExists = fs.existsSync(zhPath);
-    const enExists = fs.existsSync(enPath);
-
-    if (zhExists && enExists) {
-      currentLang = 'zh';
-    } else if (zhExists) {
-      currentLang = 'en';
-    } else if (enExists) {
-      currentLang = 'zh';
-    }
+    // No language prefix - this is a base article (Chinese by default)
+    currentLang = 'zh';
     baseArticle = articlePath;
   }
 
   let zhLink, enLink;
 
-  // Always use /blog/article/[baseArticle]/ for root
+  // Always use /blog/article/[baseArticle]/ for Chinese (base)
   zhLink = `/blog/article/${baseArticle}/`;
   enLink = `/blog/article/${baseArticle}/`;
 
-  // If translation exists, provide language-prefixed link
+  // Check if translations exist and provide language-specific links
   const projectRoot = process.cwd();
   const zhPath = path.join(projectRoot, 'content/article/zh', `${baseArticle}.typ`);
   const enPath = path.join(projectRoot, 'content/article/en', `${baseArticle}.typ`);
+  const basePath = path.join(projectRoot, 'content/article', `${baseArticle}.typ`);
+  
   const zhExists = fs.existsSync(zhPath);
   const enExists = fs.existsSync(enPath);
+  const baseExists = fs.existsSync(basePath);
 
-  if (currentLang === 'zh' && enExists) {
+  // Set proper links based on what exists
+  if (currentLang === 'zh') {
+    // Currently viewing Chinese
+    if (enExists) {
+      enLink = `/blog/article/en/${baseArticle}/`;
+    }
+    // Keep zhLink as base path
+  } else if (currentLang === 'en') {
+    // Currently viewing English
+    if (baseExists || zhExists) {
+      // If base exists, link to base; if zh translation exists, link to zh
+      if (baseExists) {
+        zhLink = `/blog/article/${baseArticle}/`;
+      } else if (zhExists) {
+        zhLink = `/blog/article/zh/${baseArticle}/`;
+      }
+    }
     enLink = `/blog/article/en/${baseArticle}/`;
-  }
-  if (currentLang === 'en' && zhExists) {
-    zhLink = `/blog/article/zh/${baseArticle}/`;
   }
 
   return {
@@ -109,8 +111,28 @@ const links = getLanguageLinks(Astro.url.href, articleId);
 
 <!-- Client-side language toggle updates -->
 <script is:inline>
+  function getCurrentLanguageFromPath() {
+    const path = window.location.pathname;
+    const search = window.location.search;
+    
+    // Check for URL parameter (used on listing pages like Home and Posts)
+    const urlParams = new URLSearchParams(search);
+    const langParam = urlParams.get('lang');
+    if (langParam === 'en') return 'en';
+    
+    // Check for path-based language (used on individual blog posts)
+    // Pattern: /blog/article/en/xxx/ or /blog/article/zh/xxx/
+    const articleMatch = path.match(/\/blog\/article\/(en|zh)\/[^\/]+\/?$/);
+    if (articleMatch) {
+      return articleMatch[1];
+    }
+    
+    // Default to Chinese
+    return 'zh';
+  }
+
   function updateLanguageToggle() {
-    const currentLang = new URLSearchParams(window.location.search).get('lang') === 'en' ? 'en' : 'zh';
+    const currentLang = getCurrentLanguageFromPath();
     
     // Update active states
     document.querySelectorAll('.lang-link').forEach(link => {
