@@ -12,7 +12,7 @@ import Header from "$components/Header.astro";
 import { kUrlBase, kSiteTitle, kSiteDescription, kEnableSearch } from "$consts";
 
 import "$styles/IndexPostList.css";
-import { getLanguageFromUrl, filterPostsByLanguage } from "$utils/languageFilter";
+import { getLanguageFromUrl, filterPostsByLanguage, getCurrentLanguage } from "$utils/languageFilter";
 
 const allPosts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
@@ -90,10 +90,25 @@ const debugInfo = {
           }
         </script>
         
-        <!-- Client-side language filtering for All Posts -->
+        <!-- Client-side language filtering for All Posts with global state support -->
         <script is:inline define:vars={{allPosts}}>
+          // Import global language state
+          let globalLanguageState = null;
+          
+          function initializeGlobalLanguage() {
+            if (window.globalLanguageState) {
+              globalLanguageState = window.globalLanguageState;
+            }
+          }
+
           // Language filtering utilities (client-side)
           function getLanguageFromUrl() {
+            // Use global state if available
+            if (globalLanguageState) {
+              return globalLanguageState.getCurrentLanguage();
+            }
+            
+            // Fallback to URL parameter detection
             const urlParams = new URLSearchParams(window.location.search);
             const langParam = urlParams.get('lang');
             return langParam === 'en' ? 'en' : 'zh';
@@ -150,23 +165,40 @@ const debugInfo = {
             }
           }
 
+          function initialize() {
+            initializeGlobalLanguage();
+            updateAllPosts();
+          }
+
           // Update on page load
-          document.addEventListener('DOMContentLoaded', updateAllPosts);
+          document.addEventListener('DOMContentLoaded', initialize);
           
           // Update when URL changes (for SPA navigation)
           window.addEventListener('popstate', updateAllPosts);
           
           // Listen to language change events from the toggle component
           window.addEventListener('languageChanged', updateAllPosts);
+          window.addEventListener('globalLanguageChanged', updateAllPosts);
           
           // Also update immediately if DOM is already ready
           if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', updateAllPosts);
+            document.addEventListener('DOMContentLoaded', initialize);
           } else {
-            updateAllPosts();
+            initialize();
           }
         </script>
       </section>
+      
+      <!-- Load global language state module -->
+      <script>
+        import { globalLanguageState, initializeGlobalLanguageState } from "$utils/globalLanguageState";
+        
+        // Make global state available to inline scripts
+        window.globalLanguageState = globalLanguageState;
+        
+        // Initialize global language state
+        initializeGlobalLanguageState();
+      </script>
     </main>
     <Footer />
   </body>

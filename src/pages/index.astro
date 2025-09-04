@@ -19,7 +19,7 @@ import {
 import AboutContent from "../../content/other/about.typ?html&body";
 
 import "$styles/IndexPostList.css";
-import { getLanguageFromUrl, filterPostsByLanguage } from "$utils/languageFilter";
+import { getLanguageFromUrl, filterPostsByLanguage, getCurrentLanguage } from "$utils/languageFilter";
 
 const allPosts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
@@ -99,10 +99,36 @@ const debugInfo = {
         </ul>
       </section>
       
-      <!-- Client-side language filtering -->
+      <!-- Load global language state module -->
+      <script>
+        import { globalLanguageState, initializeGlobalLanguageState } from "$utils/globalLanguageState";
+        
+        // Make global state available to inline scripts
+        window.globalLanguageState = globalLanguageState;
+        
+        // Initialize global language state
+        initializeGlobalLanguageState();
+      </script>
+      
+      <!-- Client-side language filtering with global state support -->
       <script is:inline define:vars={{allPosts}}>
+        // Import global language state
+        let globalLanguageState = null;
+        
+        function initializeGlobalLanguage() {
+          if (window.globalLanguageState) {
+            globalLanguageState = window.globalLanguageState;
+          }
+        }
+
         // Language filtering utilities (client-side)
         function getLanguageFromUrl() {
+          // Use global state if available
+          if (globalLanguageState) {
+            return globalLanguageState.getCurrentLanguage();
+          }
+          
+          // Fallback to URL parameter detection
           const urlParams = new URLSearchParams(window.location.search);
           const langParam = urlParams.get('lang');
           return langParam === 'en' ? 'en' : 'zh';
@@ -128,12 +154,6 @@ const debugInfo = {
           const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
           const recent5Posts = filteredPosts.slice(0, 5);
           
-          // Update the title
-          const titleElement = document.getElementById('recent-posts-info');
-          // if (titleElement) {
-          //   titleElement.textContent = `(${currentLanguage === 'en' ? 'English' : '中文'} - ${recent5Posts.length} posts)`;
-          // }
-          
           // Update the post list
           const listElement = document.getElementById('recent-posts-list');
           if (listElement) {
@@ -154,20 +174,26 @@ const debugInfo = {
           }
         }
 
+        function initialize() {
+          initializeGlobalLanguage();
+          updateRecentPosts();
+        }
+
         // Update on page load
-        document.addEventListener('DOMContentLoaded', updateRecentPosts);
+        document.addEventListener('DOMContentLoaded', initialize);
         
         // Update when URL changes (for SPA navigation)
         window.addEventListener('popstate', updateRecentPosts);
         
         // Listen to language change events from the toggle component
         window.addEventListener('languageChanged', updateRecentPosts);
+        window.addEventListener('globalLanguageChanged', updateRecentPosts);
         
         // Also update immediately if DOM is already ready
         if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', updateRecentPosts);
+          document.addEventListener('DOMContentLoaded', initialize);
         } else {
-          updateRecentPosts();
+          initialize();
         }
       </script>
     </main>

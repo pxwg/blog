@@ -1,7 +1,8 @@
 ---
 import fs from 'fs';
 import path from 'path';
-import { getListingLanguageUrls, getLanguageFromUrl } from '../utils/languageFilter';
+import { getListingLanguageUrls, getCurrentLanguage } from '../utils/languageFilter';
+import { globalLanguageState } from '../utils/globalLanguageState';
 
 interface Props {
   articleId?: string;
@@ -82,68 +83,89 @@ const links = getLanguageLinks(Astro.url.href, articleId);
 ---
 
 <div class="language-toggle">
-  <a 
-    href={links.zh || '#'} 
+  <button 
     class:list={["lang-link", { active: links.current === 'zh', disabled: !links.zh }]}
     title={links.zh ? "切换到中文" : "中文版本不存在"}
     aria-label={links.zh ? "Switch to Chinese" : "Chinese version not available"}
     data-lang="zh"
+    data-target-url={links.zh}
     onclick={!links.zh ? 'event.preventDefault(); return false;' : ''}
   >
     中文
-  </a>
+  </button>
   <span class="separator" aria-hidden="true">|</span>
-  <a 
-    href={links.en || '#'} 
+  <button 
     class:list={["lang-link", { active: links.current === 'en', disabled: !links.en }]}
     title={links.en ? "Switch to English" : "English version not available"}
     aria-label={links.en ? "Switch to English" : "English version not available"}
     data-lang="en"
+    data-target-url={links.en}
     onclick={!links.en ? 'event.preventDefault(); return false;' : ''}
   >
     EN
-  </a>
+  </button>
 </div>
 
-<!-- Client-side language toggle updates -->
+<!-- Global Language State Management -->
 <script is:inline>
+  // Import global language state (will be available after module loads)
+  let globalLanguageState = null;
+  
+  // Initialize when module is available
+  function initializeGlobalLanguage() {
+    // This will be set by the module loading script
+    if (window.globalLanguageState) {
+      globalLanguageState = window.globalLanguageState;
+    }
+  }
+
   function getCurrentLanguageFromPath() {
+    // Use global state if available, otherwise fall back to URL detection
+    if (globalLanguageState) {
+      return globalLanguageState.getCurrentLanguage();
+    }
+    
+    // Fallback to URL-based detection
     const path = window.location.pathname;
     const search = window.location.search;
     
-    // CONSISTENCY RULE: Check for ?lang=en parameter first (takes precedence for English)
+    // Check for ?lang=en parameter first (takes precedence for English)
     const urlParams = new URLSearchParams(search);
     const langParam = urlParams.get('lang');
     if (langParam === 'en') return 'en';
     
     // Check for path-based language in the NEW SIMPLIFIED STRUCTURE
-    // Pattern: /blog/article/en/xxx/ (English articles)
     const enArticleMatch = path.match(/\/blog\/article\/en\/[^\/]+\/?$/);
-    if (enArticleMatch) {
-      return 'en';
-    }
+    if (enArticleMatch) return 'en';
     
-    // Pattern: /blog/article/zh/xxx/ (Chinese articles)  
     const zhArticleMatch = path.match(/\/blog\/article\/zh\/[^\/]+\/?$/);
-    if (zhArticleMatch) {
-      return 'zh';
-    }
+    if (zhArticleMatch) return 'zh';
     
-    // For all other cases (listing pages, other pages), default to Chinese
-    // unless ?lang=en parameter is present (which we checked above)
     return 'zh';
+  }
+
+  function handleLanguageToggle(targetLanguage, targetUrl) {
+    if (!targetUrl) return;
+    
+    // Save language preference using global state
+    if (globalLanguageState) {
+      globalLanguageState.switchToLanguage(targetLanguage);
+    } else {
+      // Fallback: just navigate to the URL
+      window.location.href = targetUrl;
+    }
   }
 
   function updateLanguageToggle() {
     const currentLang = getCurrentLanguageFromPath();
     
     // Update active states
-    document.querySelectorAll('.lang-link').forEach(link => {
-      const linkLang = link.getAttribute('data-lang');
+    document.querySelectorAll('.lang-link').forEach(button => {
+      const linkLang = button.getAttribute('data-lang');
       if (linkLang === currentLang) {
-        link.classList.add('active');
+        button.classList.add('active');
       } else {
-        link.classList.remove('active');
+        button.classList.remove('active');
       }
     });
     
@@ -151,16 +173,53 @@ const links = getLanguageLinks(Astro.url.href, articleId);
     window.dispatchEvent(new CustomEvent('languageChanged', { detail: { language: currentLang } }));
   }
 
+  function setupLanguageToggleButtons() {
+    // Add click handlers to language toggle buttons
+    document.querySelectorAll('.lang-link').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetLang = this.getAttribute('data-lang');
+        const targetUrl = this.getAttribute('data-target-url');
+        
+        if (!this.classList.contains('disabled') && targetUrl) {
+          handleLanguageToggle(targetLang, targetUrl);
+        }
+      });
+    });
+  }
+
+  // Initialize when DOM is ready
+  function initialize() {
+    initializeGlobalLanguage();
+    setupLanguageToggleButtons();
+    updateLanguageToggle();
+  }
+
   // Update on page load and URL changes
-  document.addEventListener('DOMContentLoaded', updateLanguageToggle);
+  document.addEventListener('DOMContentLoaded', initialize);
   window.addEventListener('popstate', updateLanguageToggle);
+  
+  // Listen for global language state changes
+  window.addEventListener('globalLanguageChanged', updateLanguageToggle);
   
   // Update immediately if DOM is ready
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', updateLanguageToggle);
+    document.addEventListener('DOMContentLoaded', initialize);
   } else {
-    updateLanguageToggle();
+    initialize();
   }
+</script>
+
+<!-- Load global language state module -->
+<script>
+  import { globalLanguageState, initializeGlobalLanguageState } from '../utils/globalLanguageState';
+  
+  // Make global state available to inline scripts
+  window.globalLanguageState = globalLanguageState;
+  
+  // Initialize global language state
+  initializeGlobalLanguageState();
 </script>
 
 <style>
@@ -179,6 +238,11 @@ const links = getLanguageLinks(Astro.url.href, articleId);
     transition: color 0.2s, background-color 0.2s, border-bottom 0.2s;
     font-weight: 500;
     border-bottom: 2px solid transparent;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
   }
   
   .lang-link:hover {

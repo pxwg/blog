@@ -9,15 +9,24 @@ export interface BlogPost {
   };
 }
 
-export type Language = 'zh' | 'en';
+import { globalLanguageState, type Language } from './globalLanguageState';
 
 /**
  * Get the language preference from URL search parameters
+ * @deprecated Use globalLanguageState.getCurrentLanguage() instead for global language support
  */
 export function getLanguageFromUrl(url: URL): Language {
   const langParam = url.searchParams.get('lang');
   if (langParam === 'en') return 'en';
   return 'zh'; // Default to Chinese
+}
+
+/**
+ * Get current language with global state support
+ * Priority: stored preference > URL parameters > path patterns > default
+ */
+export function getCurrentLanguage(): Language {
+  return globalLanguageState.getCurrentLanguage();
 }
 
 
@@ -66,7 +75,7 @@ export function getListingLanguageUrls(currentUrl: URL) {
   const enUrl = new URL(currentUrl);
   enUrl.searchParams.set('lang', 'en'); // English always has ?lang=en for consistency
   
-  const currentLang = getLanguageFromUrl(currentUrl);
+  const currentLang = getCurrentLanguage(); // Use global state
 
   return {
     zh: zhUrl.pathname + (zhUrl.search || ''),
