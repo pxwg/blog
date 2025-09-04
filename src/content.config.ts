@@ -3,8 +3,8 @@ import { glob } from "astro/loaders";
 import { defineCollection, z } from "astro:content";
 
 const blog = defineCollection({
-  // Temporarily disable for demonstration - Typst compilation issues to be resolved separately
-  loader: glob({ base: "./content/article", pattern: ["__none__/*.typ"] }),
+  // Load Typst files in the `content/article/` directory.
+  loader: glob({ base: "./content/article", pattern: ["**/*.typ", "!**/coho_ft.typ", "!**/morse_phy.typ"] }),
   // Type-check frontmatter using a schema
   schema: z.object({
     title: z.string(),
