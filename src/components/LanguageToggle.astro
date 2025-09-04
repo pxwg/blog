@@ -24,16 +24,23 @@ function getLanguageLinks(currentUrl: string, articleId?: string) {
   
   // For article pages, construct relative paths for different languages
   if (articleId) {
-    // Remove any existing language path to get the base article path
-    const cleanBasePath = basePath.replace(/\/(zh|en)\//, '/');
-    const baseArticlePath = cleanBasePath.replace(/\/[^\/]*$/, '');
+    // Clean up the pathname to get the base article path
+    // Remove any language segments and duplicate article IDs
+    let cleanPath = pathname;
+    
+    // Remove language segments like /en/ or /zh/
+    cleanPath = cleanPath.replace(/\/(zh|en)\//g, '/');
+    
+    // For paths like /article/float_and_pin/en/float_and_pin, extract the base article
+    const articleMatch = cleanPath.match(/\/article\/([^\/]+)/);
+    const baseArticle = articleMatch ? articleMatch[1] : articleId;
     
     const zhLink = currentLang === 'en' ? 
-      `${baseArticlePath}/zh/${articleId}` : 
-      `${baseArticlePath}/${articleId}`;
+      `/article/${baseArticle}/` : 
+      `/article/${baseArticle}/zh/${baseArticle}/`;
     const enLink = currentLang === 'zh' ? 
-      `${baseArticlePath}/en/${articleId}` : 
-      `${baseArticlePath}/${articleId}`;
+      `/article/${baseArticle}/en/${baseArticle}/` : 
+      `/article/${baseArticle}/`;
       
     return {
       zh: zhLink,
