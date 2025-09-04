@@ -39,7 +39,8 @@ Place original articles in `content/article/*.typ`:
 ```typst
 #import "../../typ/templates/blog.typ": *
 
-#show: main-zh.with(  // Use main-zh for Chinese, main for English
+#show: main-zh.with(
+  // Use main-zh for Chinese, main for English
   title: "Article Title",
   desc: [Article description.],
   date: "2025-09-03",
@@ -56,9 +57,11 @@ Place original articles in `content/article/*.typ`:
 1. **For Chinese translations** (`content/article/zh/*.typ`):
 ```typst
 #import "../../../typ/templates/blog.typ": *
-#import "../../../typ/templates/translation-disclaimer.typ": translation-disclaimer
+#import "../../../typ/templates/translation-disclaimer.typ": (
+  translation-disclaimer,
+)
 
-#show: main.with(
+#show: main-zh.with(
   title: [Translated Title],
   desc: [Translated description.],
   date: "2025-09-03",
@@ -67,15 +70,19 @@ Place original articles in `content/article/*.typ`:
   ),
 )
 
-#translation-disclaimer(original-path: "content/article/original-file.typ", lang: "zh")
-
+#translation-disclaimer(
+  original-path: "content/article/original-file.typ",
+  lang: "zh",
+)
 = Translated Content Here
 ```
 
 2. **For English translations** (`content/article/en/*.typ`):
 ```typst
 #import "../../../typ/templates/blog.typ": *
-#import "../../../typ/templates/translation-disclaimer.typ": translation-disclaimer
+#import "../../../typ/templates/translation-disclaimer.typ": (
+  translation-disclaimer,
+)
 
 #show: main.with(
   title: [Translated Title],
@@ -86,7 +93,10 @@ Place original articles in `content/article/*.typ`:
   ),
 )
 
-#translation-disclaimer(original-path: "content/article/original-file.typ", lang: "en")
+#translation-disclaimer(
+  original-path: "content/article/original-file.typ",
+  lang: "en",
+)
 
 = Translated Content Here
 ```
@@ -130,4 +140,3 @@ See the existing localized files for reference:
 - Automatic content discovery for missing translations
 - Language-specific RSS feeds
 - SEO meta tags for language variants
-- Automatic language detection based on browser preferences
