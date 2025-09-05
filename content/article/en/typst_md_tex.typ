@@ -14,11 +14,6 @@
   ),
 )
 
-#translation-disclaimer(
-  original-path: "typst_md_tex",
-  lang: "en",
-)
-
 #let blank(body) = {
   underline[~~~#body~~~]
 }
