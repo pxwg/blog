@@ -2,7 +2,7 @@
 #import "../../../typ/templates/blog.typ": *
 
 #show: main-zh.with(
-  title: [Using Typst to Mark Everything Down, Instead of TeX Them],
+  title: [以 Typst Mark 万物，而非用 TeX 排版],
   desc: [烦恼即菩提。],
   date: "2025-08-16",
   tags: (
