@@ -10,7 +10,7 @@
 )
 
 #translation-disclaimer(
-  original-path: "float_and_pin",
+  original-path: "syntax",
   lang: "zh",
 )
 
