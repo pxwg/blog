@@ -59,6 +59,11 @@ export default defineConfig({
   ],
 
   vite: {
+    resolve: {
+      alias: {
+        "$utils": resolve("src/utils"),
+      },
+    },
     build: {
       assetsInlineLimit(filePath, content) {
         const KB = 1024;

@@ -1,4 +1,4 @@
-#import "../../typ/templates/blog.typ": *
+#import "../../../typ/templates/blog.typ": *
 #let title = "在 MacOS 中置顶浮动窗口"
 #show: main-zh.with(
   title: title,

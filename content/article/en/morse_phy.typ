@@ -1,5 +1,5 @@
-#import "../../typ/templates/blog.typ": *
-#import "../../typ/packages/physica.typ": *
+#import "../../../typ/templates/blog.typ": *
+#import "../../../typ/packages/physica.typ": *
 #let title = "I Know What Mountain Looks Like: A Brief Story about Morse Theory in Physics"
 #let grad = math.nabla
 #show: main.with(

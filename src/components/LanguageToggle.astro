@@ -1,0 +1,306 @@
+---
+import fs from 'fs';
+import path from 'path';
+import { getListingLanguageUrls, getCurrentLanguage } from '../utils/languageFilter';
+import { globalLanguageState } from '../utils/globalLanguageState';
+
+interface Props {
+  articleId?: string;
+}
+
+const { articleId } = Astro.props;
+
+// Helper function to get language toggle links
+function getLanguageLinks(currentUrl: string, articleId?: string) {
+  const url = new URL(currentUrl);
+  const pathname = url.pathname;
+
+  // Check if we're on an article page
+  const articleMatch = pathname.match(/^\/blog\/article\/(.+?)\/?$/);
+
+  if (!articleMatch) {
+    // Not on an article page (Home, Posts, etc.), use listing page language URLs
+    const listingUrls = getListingLanguageUrls(url);
+    return listingUrls;
+  }
+
+  // Article page logic - NEW SIMPLIFIED STRUCTURE
+  let articlePath = articleMatch[1];
+  let currentLang: 'zh' | 'en' = 'zh';
+  let baseArticle = articlePath;
+
+  // Determine current language and base article name
+  if (articlePath.startsWith('en/')) {
+    currentLang = 'en';
+    baseArticle = articlePath.replace(/^en\//, '');
+  } else if (articlePath.startsWith('zh/')) {
+    currentLang = 'zh';
+    baseArticle = articlePath.replace(/^zh\//, '');
+  } else {
+    // This shouldn't happen in the new structure, but handle gracefully
+    // All articles should now be in zh/ or en/ folders
+    currentLang = 'zh'; // Default fallback
+    baseArticle = articlePath;
+  }
+
+  // Check file existence for both language versions
+  const projectRoot = process.cwd();
+  const zhPath = path.join(projectRoot, 'content/article/zh', `${baseArticle}.typ`);
+  const enPath = path.join(projectRoot, 'content/article/en', `${baseArticle}.typ`);
+  
+  const zhExists = fs.existsSync(zhPath);
+  const enExists = fs.existsSync(enPath);
+
+  let zhLink, enLink;
+
+  // SIMPLIFIED LANGUAGE SWITCHING RULES:
+  // CONSISTENCY RULE: English URLs always have ?lang=en, Chinese URLs never have parameters
+  
+  // For Chinese: always use /blog/article/zh/xxx/ if it exists
+  if (zhExists) {
+    zhLink = `/blog/article/zh/${baseArticle}/`;
+  } else {
+    // If Chinese version doesn't exist, disable the link or show as unavailable
+    zhLink = null;
+  }
+  
+  // For English: always use /blog/article/en/xxx/ with ?lang=en if it exists
+  if (enExists) {
+    enLink = `/blog/article/en/${baseArticle}/?lang=en`;
+  } else {
+    // If English version doesn't exist, disable the link or show as unavailable
+    enLink = null;
+  }
+
+  return {
+    zh: zhLink,
+    en: enLink,
+    current: currentLang
+  };
+}
+
+const links = getLanguageLinks(Astro.url.href, articleId);
+---
+
+<div class="language-toggle">
+  <button 
+    class:list={["lang-link", { active: links.current === 'zh', disabled: !links.zh }]}
+    title={links.zh ? "切换到中文" : "中文版本不存在"}
+    aria-label={links.zh ? "Switch to Chinese" : "Chinese version not available"}
+    data-lang="zh"
+    data-target-url={links.zh}
+    onclick={!links.zh ? 'event.preventDefault(); return false;' : ''}
+  >
+    中文
+  </button>
+  <span class="separator" aria-hidden="true">|</span>
+  <button 
+    class:list={["lang-link", { active: links.current === 'en', disabled: !links.en }]}
+    title={links.en ? "Switch to English" : "English version not available"}
+    aria-label={links.en ? "Switch to English" : "English version not available"}
+    data-lang="en"
+    data-target-url={links.en}
+    onclick={!links.en ? 'event.preventDefault(); return false;' : ''}
+  >
+    EN
+  </button>
+</div>
+
+<!-- Global Language State Management -->
+<script is:inline>
+  // Import global language state (will be available after module loads)
+  let globalLanguageState = null;
+  
+  // Initialize when module is available
+  function initializeGlobalLanguage() {
+    // This will be set by the module loading script
+    if (window.globalLanguageState) {
+      globalLanguageState = window.globalLanguageState;
+    }
+  }
+
+  function getCurrentLanguageFromPath() {
+    // Use immediate language detection if available (prevents flickering)
+    if (window.immediateLanguage) {
+      return window.immediateLanguage;
+    }
+    
+    // Use global state if available, otherwise fall back to URL detection
+    if (globalLanguageState) {
+      return globalLanguageState.getCurrentLanguage();
+    }
+    
+    // Fallback to URL-based detection
+    const path = window.location.pathname;
+    const search = window.location.search;
+    
+    // Check for ?lang=en parameter (takes precedence for English)
+    const urlParams = new URLSearchParams(search);
+    const langParam = urlParams.get('lang');
+    if (langParam === 'en') return 'en';
+    
+    // Check for path-based language in the NEW SIMPLIFIED STRUCTURE
+    const enArticleMatch = path.match(/\/blog\/article\/en\/[^\/]+\/?$/);
+    if (enArticleMatch) return 'en';
+    
+    const zhArticleMatch = path.match(/\/blog\/article\/zh\/[^\/]+\/?$/);
+    if (zhArticleMatch) return 'zh';
+    
+    return 'zh';
+  }
+
+  function handleLanguageToggle(targetLanguage, targetUrl) {
+    if (!targetUrl) return;
+    
+    // Save language preference using global state
+    if (globalLanguageState) {
+      globalLanguageState.switchToLanguage(targetLanguage);
+    } else {
+      // Fallback: just navigate to the URL
+      window.location.href = targetUrl;
+    }
+  }
+
+  function updateLanguageToggle() {
+    const currentLang = getCurrentLanguageFromPath();
+    
+    // Update active states
+    document.querySelectorAll('.lang-link').forEach(button => {
+      const linkLang = button.getAttribute('data-lang');
+      if (linkLang === currentLang) {
+        button.classList.add('active');
+      } else {
+        button.classList.remove('active');
+      }
+    });
+    
+    // Trigger custom event for other components to listen to
+    window.dispatchEvent(new CustomEvent('languageChanged', { detail: { language: currentLang } }));
+  }
+
+  function setupLanguageToggleButtons() {
+    // Add click handlers to language toggle buttons
+    document.querySelectorAll('.lang-link').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetLang = this.getAttribute('data-lang');
+        const targetUrl = this.getAttribute('data-target-url');
+        
+        if (!this.classList.contains('disabled') && targetUrl) {
+          handleLanguageToggle(targetLang, targetUrl);
+        }
+      });
+    });
+  }
+
+  // Initialize when DOM is ready
+  function initialize() {
+    initializeGlobalLanguage();
+    setupLanguageToggleButtons();
+    updateLanguageToggle();
+  }
+
+  // Update on page load and URL changes
+  document.addEventListener('DOMContentLoaded', initialize);
+  window.addEventListener('popstate', updateLanguageToggle);
+  
+  // Listen for global language state changes
+  window.addEventListener('globalLanguageChanged', updateLanguageToggle);
+  
+  // Update immediately if DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize);
+  } else {
+    initialize();
+  }
+</script>
+
+<!-- Load global language state module -->
+<script>
+  import { globalLanguageState, initializeGlobalLanguageState } from '../utils/globalLanguageState';
+  
+  // Make global state available to inline scripts
+  window.globalLanguageState = globalLanguageState;
+  
+  // Initialize global language state
+  initializeGlobalLanguageState();
+</script>
+
+<style>
+  .language-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: 0.9em;
+    position: relative;
+    z-index: 10;
+    right: 9px;
+  }
+  
+  .lang-link {
+    color: var(--gray-color);
+    text-decoration: none;
+    padding: 0.25em 0.5em;
+    border-radius: 3px;
+    transition: color 0.2s, background-color 0.2s, border-bottom 0.2s;
+    font-weight: 300;
+    border-bottom: 2px solid transparent;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+  }
+  
+  .lang-link:hover {
+    color: var(--main-hover-color);
+    background-color: var(--accent-bg-color, rgba(128, 128, 128, 0.1));
+    /* border-bottom-color: var(--main-hover-color); */
+  }
+  
+  .lang-link.active {
+    color: var(--accent);
+    font-weight: 400;
+    /* background-color: var(--accent-bg-color, rgba(207, 130, 158, 0.15)); */
+    border-bottom-color: var(--accent);
+    text-decoration: underline;
+    /* text-shadow: 0 0 2px var(--accent); */
+  }
+  
+  .lang-link.disabled {
+    color: var(--gray-color);
+    opacity: 0.4;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+  
+  .lang-link.disabled:hover {
+    color: var(--gray-color);
+    background-color: transparent;
+    border-bottom-color: transparent;
+  }
+  
+  .separator {
+    color: var(--gray-color);
+    opacity: 0.5;
+    font-weight: 300;
+  }
+  
+  @media (max-width: 680px) {
+    .language-toggle {
+      font-size: 0.8em;
+      gap: 0.4em;
+    }
+    
+    .lang-link {
+      padding: 0.2em 0.4em;
+    }
+  }
+  
+  @media (max-width: 400px) {
+    .language-toggle {
+      font-size: 0.75em;
+    }
+  }
+</style>

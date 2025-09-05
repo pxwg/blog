@@ -1,12 +1,20 @@
 #import "../../../typ/templates/blog.typ": *
-#show: main.with(
-  title: "Typst 语法",
+#import "../../../typ/templates/translation-disclaimer.typ": (
+  translation-disclaimer,
+)
+#show: main-zh.with(
+  title: [Typst 语法],
   desc: [Typst 语法列表，用于渲染测试。],
-  date: "2025-08-15",
+  date: "2025-08-14",
   tags: (
     blog-tags.programming,
     blog-tags.typst,
   ),
+)
+
+#translation-disclaimer(
+  original-path: "syntax",
+  lang: "zh",
 )
 
 = 原始代码块

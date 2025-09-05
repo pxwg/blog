@@ -1,0 +1,85 @@
+export interface BlogPost {
+  id: string;
+  data: {
+    title: string;
+    date: Date;
+    description?: string;
+    tags?: string[];
+    [key: string]: any;
+  };
+}
+
+import { globalLanguageState, type Language } from './globalLanguageState';
+
+/**
+ * Get the language preference from URL search parameters
+ * @deprecated Use globalLanguageState.getCurrentLanguage() instead for global language support
+ */
+export function getLanguageFromUrl(url: URL): Language {
+  const langParam = url.searchParams.get('lang');
+  if (langParam === 'en') return 'en';
+  return 'zh'; // Default to Chinese
+}
+
+/**
+ * Get current language with global state support
+ * Priority: stored preference > URL parameters > path patterns > default
+ */
+export function getCurrentLanguage(): Language {
+  return globalLanguageState.getCurrentLanguage();
+}
+
+
+export function exists(articleId: string, posts: BlogPost[]): boolean {
+  const normalizedId = articleId.replace(/^en\//, '').replace(/^zh\//, '');
+  return posts.some((post: BlogPost) =>
+    post.id === `en/${normalizedId}` ||
+    post.id === `zh/${normalizedId}`
+  );
+}
+
+/**
+ * Classify an article by its ID to determine its language
+ * NEW SIMPLIFIED RULES:
+ * - If it starts with 'en/', it's English
+ * - If it starts with 'zh/', it's Chinese
+ * - No more base articles - all articles are now in language-specific folders
+ */
+export function getArticleLanguage(articleId: string, posts: BlogPost[]): Language {
+  if (articleId.startsWith('en/')) return 'en';
+  if (articleId.startsWith('zh/')) return 'zh';
+
+  // This shouldn't happen in the new structure, but default to Chinese
+  return 'zh';
+}
+
+/**
+ * Filter blog posts by language preference
+ */
+export function filterPostsByLanguage(posts: BlogPost[], language: Language): BlogPost[] {
+  return posts.filter(post => {
+    const articleLang = getArticleLanguage(post.id, posts);
+    return articleLang === language;
+  });
+}
+
+/**
+ * Generate language toggle URLs for listing pages
+ * CONSISTENCY RULE: English URLs always have ?lang=en, Chinese URLs never have parameters
+ */
+export function getListingLanguageUrls(currentUrl: URL) {
+  // Create URLs with language parameters for consistent navigation
+  const zhUrl = new URL(currentUrl);
+  zhUrl.searchParams.delete('lang'); // Chinese is default, no param needed
+  
+  const enUrl = new URL(currentUrl);
+  enUrl.searchParams.set('lang', 'en'); // English always has ?lang=en for consistency
+  
+  const currentLang = getCurrentLanguage(); // Use global state
+
+  return {
+    zh: zhUrl.pathname + (zhUrl.search || ''),
+    en: enUrl.pathname + enUrl.search,
+    current: currentLang
+  };
+}
