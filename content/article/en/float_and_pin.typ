@@ -1,7 +1,4 @@
 #import "../../../typ/templates/blog.typ": *
-#import "../../../typ/templates/translation-disclaimer.typ": (
-  translation-disclaimer,
-)
 
 #let title = "Pinning Floating Windows on Top in MacOS"
 #show: main.with(
