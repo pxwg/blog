@@ -15,7 +15,7 @@
 )
 
 #translation-disclaimer(
-  original-path: "../../zh/float_and_pin/",
+  original-path: "float_and_pin",
   lang: "en",
 )
 

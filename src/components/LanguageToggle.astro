@@ -134,14 +134,8 @@ const links = getLanguageLinks(Astro.url.href, articleId);
     const path = window.location.pathname;
     const search = window.location.search;
     
-    // Check for explicit language parameter first (highest priority)
+    // Check for ?lang=en parameter (takes precedence for English)
     const urlParams = new URLSearchParams(search);
-    const explicitLang = urlParams.get('explicit_lang');
-    if (explicitLang === 'en' || explicitLang === 'zh') {
-      return explicitLang;
-    }
-    
-    // Check for ?lang=en parameter second (takes precedence for English)
     const langParam = urlParams.get('lang');
     if (langParam === 'en') return 'en';
     

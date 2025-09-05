@@ -3,7 +3,7 @@
   translation-disclaimer,
 )
 #show: main-zh.with(
-  title: "Typst 语法",
+  title: [Typst 语法],
   desc: [Typst 语法列表，用于渲染测试。],
   date: "2025-08-14",
   tags: (
@@ -13,7 +13,7 @@
 )
 
 #translation-disclaimer(
-  original-path: "../../en/syntax/",
+  original-path: "syntax",
   lang: "zh",
 )
 
