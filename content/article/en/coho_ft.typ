@@ -1,4 +1,4 @@
-#import "../../typ/templates/blog.typ": *
+#import "../../../typ/templates/blog.typ": *
 #let title = "Cohomological Field Theory"
 #show: main.with(
   title: title,

@@ -4,6 +4,7 @@ import { kUrlBase, kSiteLogo } from "$consts";
 import { ThemeToggle } from "@myriaddreamin/tylant-theme-toggle";
 
 import HeaderLink from "./HeaderLink.astro";
+import LanguageToggle from "./LanguageToggle.astro";
 
 interface Props {
   articleId?: string;
@@ -23,6 +24,7 @@ const { articleId } = Astro.props;
     </div>
     <div class="social-links">
       <span style="width: 2em;" aria-hidden="true">&nbsp;</span>
+      <LanguageToggle articleId={articleId} />
       <ThemeToggle />
       <a
         href="https://github.com/pxwg/blog"

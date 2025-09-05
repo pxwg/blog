@@ -1,0 +1,11 @@
+---
+const { postId, locale } = Astro.props;
+let targetLocale = locale === 'zh' ? 'en' : 'zh';
+let targetPath = Astro.url.pathname.replace(`/${locale}/`, `/${targetLocale}/`);
+if (!Astro.url.pathname.startsWith('/zh/') && !Astro.url.pathname.startsWith('/en/')) {
+  targetPath = '/zh' + Astro.url.pathname;
+}
+---
+<a href={targetPath}>
+  {locale === 'zh' ? '切换到英文' : 'Switch to Chinese'}
+</a>
