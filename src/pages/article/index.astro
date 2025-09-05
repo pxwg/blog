@@ -132,12 +132,10 @@ const debugInfo = {
     {kEnableSearch && <Search />}
     <main class={kEnableSearch ? "search-enabled" : ""}>
       <section>
-        <h1 style="margin-bottom: 1rem;" id="all-posts-title">
-          All Posts 
-          <span id="all-posts-info" style="font-size: 0.6em; color: var(--gray-color); font-weight: normal;">
-            (Loading...)
-          </span>
-        </h1>
+        <h2 style="margin-bottom: 1rem; font-size: 2rem;" id="all-posts-title">
+          <span class="en-text" style="display: none;">All Posts</span>
+          <span class="zh-text" style="display: none;">全部文章</span>
+        </h2>
         <ul class={`accent block-list posts${kEnableSearch ? " loading" : ""}`} id="all-posts-list">
           {
             posts.map((post) => (
@@ -212,14 +210,25 @@ const debugInfo = {
           }
 
           function updateAllPosts() {
-            const currentLanguage = getLanguageFromUrl();
-            const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
-            
-            // Update the title
-            const titleElement = document.getElementById('all-posts-info');
-            if (titleElement) {
-              titleElement.textContent = `(${currentLanguage === 'en' ? 'English' : '中文'} - ${filteredPosts.length} posts)`;
-            }
+             const currentLanguage = getLanguageFromUrl();
+             const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
+             
+             // Update the title
+             const enText = document.querySelector('#all-posts-title .en-text');
+             const zhText = document.querySelector('#all-posts-title .zh-text');
+             if (enText && zhText) {
+               if (currentLanguage === 'en') {
+                 enText.style.display = 'inline';
+                 zhText.style.display = 'none';
+               } else {
+                 enText.style.display = 'none';
+                 zhText.style.display = 'inline';
+               }
+             }
+             const titleElement = document.getElementById('all-posts-info');
+             if (titleElement) {
+               titleElement.textContent = `(${currentLanguage === 'en' ? 'English' : '中文'} - ${filteredPosts.length} posts)`;
+             }
             
             // Update the post list
             const listElement = document.getElementById('all-posts-list');
