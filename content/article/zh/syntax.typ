@@ -1,9 +1,6 @@
 #import "../../../typ/templates/blog.typ": *
-#import "../../../typ/templates/translation-disclaimer.typ": (
-  translation-disclaimer,
-)
 #show: main-zh.with(
-  title: [Typst 语法],
+  title: "Typst 语法",
   desc: [Typst 语法列表，用于渲染测试。],
   date: "2025-08-14",
   tags: (
@@ -13,7 +10,7 @@
 )
 
 #translation-disclaimer(
-  original-path: "syntax",
+  original-path: "float_and_pin",
   lang: "zh",
 )
 
