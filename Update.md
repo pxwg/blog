@@ -27,7 +27,7 @@ content/article/
 
 ### Template Usage
 
-In your Typst articles, use the `translation-disclaimer` function as follows:
+In your Typst articles, use the `translation-disclaimer` function with just the article name:
 
 ```typst
 #import "../../../typ/templates/translation-disclaimer.typ": (
@@ -36,13 +36,13 @@ In your Typst articles, use the `translation-disclaimer` function as follows:
 
 // For Chinese articles pointing to English version:
 #translation-disclaimer(
-  original-path: "../../en/article-name/",  // or just "article-name"
+  original-path: "article-name",  // Just the article name
   lang: "zh",
 )
 
 // For English articles pointing to Chinese version:
 #translation-disclaimer(
-  original-path: "../../zh/article-name/",  // or just "article-name"
+  original-path: "article-name",  // Just the article name  
   lang: "en",
 )
 ```
@@ -52,11 +52,11 @@ In your Typst articles, use the `translation-disclaimer` function as follows:
 The `translation-disclaimer` template automatically generates appropriate URLs:
 
 1. **From Chinese to English**:
-   - Input: `original-path: "../../en/article-name/"`, `lang: "zh"`
+   - Input: `original-path: "article-name"`, `lang: "zh"`
    - Generated URL: `/blog/article/en/article-name/?lang=en`
 
 2. **From English to Chinese**:
-   - Input: `original-path: "../../zh/article-name/"`, `lang: "en"`
+   - Input: `original-path: "article-name"`, `lang: "en"`
    - Generated URL: `/blog/article/zh/article-name/`
 
 ### URL Consistency Rules
@@ -89,16 +89,23 @@ Generates link to: `/blog/article/zh/typst_md_tex/`
 
 Translation disclaimer links now work seamlessly with the global language toggle system:
 
-1. **No Special Parameters**: Disclaimer links use standard language URLs (no `explicit_lang` parameter)
-2. **Consistent Behavior**: Clicking disclaimer links behaves exactly like clicking language toggle buttons
-3. **Persistent Preferences**: Language choices from disclaimer links properly update stored language preferences
-4. **Smooth Transitions**: No conflicts between disclaimer links and language toggle buttons
+1. **Standard URL Generation**: Disclaimer links use the same URL patterns as language toggle buttons
+2. **Preference Updates**: Clicking disclaimer links automatically updates the stored language preference  
+3. **No Redirect Conflicts**: Articles respect user's explicit navigation choices from disclaimer links
+4. **Smooth Transitions**: Language preference persists across all page navigation after using disclaimer links
+
+### How It Works
+
+1. **Translation Disclaimer Navigation**: When users click disclaimer links, they navigate directly to the target language article
+2. **Preference Update**: The global language state detects the navigation and updates the stored preference to match
+3. **Consistent Experience**: All subsequent navigation (Home, Posts, other articles) respects the updated language preference
+4. **No Redirect Loops**: Article pages never force redirects back to stored preferences - they update preferences instead
 
 ## Migration Notes
 
 ### From Previous Implementation
 
-If you have existing articles with old-style disclaimer paths like `../../en/article-name/?explicit_lang=en`, they should be updated to:
+If you have existing articles with old-style disclaimer paths, they should be updated to use clean article names:
 
 ```typst
 // Old (problematic):
@@ -117,6 +124,7 @@ If you have existing articles with old-style disclaimer paths like `../../en/art
 ### Benefits of New Implementation
 
 1. **Consistency**: All language switching uses the same URL patterns
-2. **Reliability**: No conflicts between disclaimer links and language toggles
-3. **Simplicity**: Clean, predictable URL generation
-4. **Maintainability**: Easier to understand and debug language switching behavior
+2. **Reliability**: No conflicts between disclaimer links and language toggles  
+3. **Simplicity**: Clean, predictable URL generation with just article names
+4. **User Experience**: Translation disclaimer links update language preferences automatically
+5. **Maintainability**: Easier to understand and debug language switching behavior

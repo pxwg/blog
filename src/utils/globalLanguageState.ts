@@ -167,60 +167,57 @@ export class GlobalLanguageState {
   
   /**
    * Initialize global language state on page load
-   * Only redirects if absolutely necessary (different article or incompatible URL structure)
+   * Updates stored preference based on current URL (for translation disclaimer navigation)
+   * Only redirects for listing pages to maintain language consistency
    */
   initialize(): void {
     if (typeof window === 'undefined') return;
     
     const storedLang = this.getStoredLanguage();
     const currentUrlLang = this.getLanguageFromCurrentUrl();
-    
-    // Only redirect if we have a stored preference AND the current URL structure 
-    // cannot represent that language (e.g., wrong article language folder)
-    if (storedLang && this.needsRedirectForLanguage(storedLang, currentUrlLang)) {
-      this.switchToLanguage(storedLang);
-    }
-  }
-  
-  /**
-   * Check if a redirect is needed to properly display the stored language
-   */
-  private needsRedirectForLanguage(storedLang: Language, currentUrlLang: Language): boolean {
-    if (typeof window === 'undefined') return false;
-    
     const currentPath = window.location.pathname;
     const articleMatch = currentPath.match(/^\/blog\/article\/(.+?)\/?$/);
     
     if (articleMatch) {
-      // For article pages, redirect only if we're on the wrong language version of the article
-      const articlePath = articleMatch[1];
-      
-      if (storedLang === 'en' && !articlePath.startsWith('en/')) {
-        // Want English but not on English article - need to check if English version exists
-        return true;
+      // For article pages: Update stored preference to match current article language
+      // This handles translation disclaimer navigation correctly
+      if (currentUrlLang !== storedLang) {
+        this.setStoredLanguageQuiet(currentUrlLang);
       }
-      
-      if (storedLang === 'zh' && !articlePath.startsWith('zh/')) {
-        // Want Chinese but not on Chinese article - need to check if Chinese version exists  
-        return true;
-      }
-      
-      // We're already on the correct language version of the article
-      return false;
     } else {
-      // For listing pages (Home, Posts), only redirect if URL parameters don't match preference
-      const hasEnParam = window.location.search.includes('lang=en');
-      
-      if (storedLang === 'en' && !hasEnParam) {
-        return true; // Need to add ?lang=en
+      // For listing pages: Only redirect if URL parameters don't match preference
+      if (storedLang && this.needsRedirectForListingPage(storedLang)) {
+        this.switchToLanguage(storedLang);
       }
-      
-      if (storedLang === 'zh' && hasEnParam) {
-        return true; // Need to remove ?lang=en
-      }
-      
-      return false;
     }
+  }
+  
+  /**
+   * Check if a redirect is needed for listing pages only
+   */
+  private needsRedirectForListingPage(storedLang: Language): boolean {
+    if (typeof window === 'undefined') return false;
+    
+    // Only apply to listing pages (not article pages)
+    const currentPath = window.location.pathname;
+    const articleMatch = currentPath.match(/^\/blog\/article\/(.+?)\/?$/);
+    
+    if (articleMatch) {
+      return false; // Never redirect for article pages
+    }
+    
+    // For listing pages (Home, Posts), only redirect if URL parameters don't match preference
+    const hasEnParam = window.location.search.includes('lang=en');
+    
+    if (storedLang === 'en' && !hasEnParam) {
+      return true; // Need to add ?lang=en
+    }
+    
+    if (storedLang === 'zh' && hasEnParam) {
+      return true; // Need to remove ?lang=en
+    }
+    
+    return false;
   }
   
   /**
@@ -319,17 +316,7 @@ export const earlyLanguageDetectionScript = `
     const articleMatch = currentPath.match(/^\\/blog\\/article\\/(.+?)\\/?$/);
     
     if (articleMatch) {
-      const articlePath = articleMatch[1];
-      
-      if (storedLang === 'en' && !articlePath.startsWith('en/')) {
-        return true;
-      }
-      
-      if (storedLang === 'zh' && !articlePath.startsWith('zh/')) {
-        return true;
-      }
-      
-      return false;
+      return false; // Never redirect for article pages - update preference instead
     } else {
       const hasEnParam = window.location.search.includes('lang=en');
       
