@@ -112,7 +112,7 @@ $
 i.e., the difference of zero modes is the index of $overline(diff)$ operator acting on sections of bundle $L^(lambda)$.
 Moreover, it is well-known that the difference of zero modes could be rephrased as the charge of ghost number current, which is given by the $U(1)$ generator
 $
-  Q := integral_(X) (c frac(delta, delta c) + b frac(delta, delta b)) = frac(1, pi)integral_(X) J(z) = frac(2 upright(i), pi) integral_(X) dif^(2) z thin j(z),
+  Q := integral_(X) (c frac(delta, delta c) + b frac(delta, delta b)) = frac(1, pi)integral_(X) overline(diff) J(z) = frac(2 upright(i), pi) integral_(X) dif^(2) z thin overline(diff)_(z) j(z),
 $
 the minus sign comes from the fermionic nature of $b$ field.
 

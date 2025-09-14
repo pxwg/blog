@@ -102,7 +102,7 @@ $
 $
 即零模差为$overline(diff)$算子在线丛$L^(lambda)$截面空间上的指标。零模差也可表示为鬼数流的荷，即$U(1)$生成元：
 $
-  Q := integral_(X) (c frac(delta, delta c) + b frac(delta, delta b)) = frac(1, pi)integral_(X) dif^(2) sigma j(z) = frac(2 upright(i), pi) integral_(X) J(z),
+  Q := integral_(X) (c frac(delta, delta c) + b frac(delta, delta b)) = frac(1, pi)integral_(X) overline(diff) J(z) = frac(2 upright(i), pi) integral_(X) dif^(2) z thin overline(diff)_(z) j(z),
 $
 负号源于$b$场的费米性。
 
