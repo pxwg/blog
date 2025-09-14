@@ -1,8 +1,8 @@
 #import "../../../typ/templates/blog.typ": *
-#let title = "Ghost Number Anomaly, Riemann-Roch Theorem and VOA"
+#let title = "Ghost Number Anomaly, Riemann-Roch Theorem and Vertex Operator Algebras"
 #show: main.with(
   title: title,
-  desc: [Ghost anomaly in bc ghost system could be viewed as Riemann-Roch Theorem],
+  desc: [Ghost anomaly in bc ghost system manifests as Riemann-Roch Theorem],
   date: "2025-09-11",
   tags: (
     blog-tags.physics,
@@ -10,12 +10,12 @@
   ),
 )
 
-= Intro: Monopole inside a Sphere
+= Introduction: Monopole Inside a Sphere
 
 Consider a monopole inside a sphere $bb(S)^(2)$, there is no global well-defined gauge connection $A$ over $bb(S)^(2)$.
 One needs to use some patches ${U_(i)}$ to cover $bb(S)^(2)$, then define $A_(i) in Omega^(1)(U_(i))$ (after identify a reference connection), and using transition functions ${f_("ij")}$ to obtain global $U(1)$ connection.
 
-For the situation of $bb(S)^(2)$, the simplest choice of patches might be 两个半球合在一起，where 两个 patches 的交是一个圆周$bb(S)^(1)$.
+For the situation of $bb(S)^(2)$, the simplest choice of patches might be two hemispheres, where the intersection of two patches is a circle $bb(S)^(1)$.
 Thus, one can easily prove that, the connection could be written as:
 $
   A(theta, phi) = cases(
@@ -73,19 +73,19 @@ $
 $
 
 Now consider the general case, the transition function for $J(z)$ is given by $f_(i j): z_(j) |-> f_(i j)(z_(i))$, thus
-Thus, 对于一个好覆盖 ${U_(i)}$ of $X$, 我们来考虑两两相交，并且有全相交的三个补丁 $U_(i)$, $U_(j)$, $U_(k)$.
-两两相交部分的转移函数为 $f_("ij")$, $f_("jk")$, $f_("ki")$.
-这样，在三个补丁之上的积分就可以转换为
+For a good cover ${U_(i)}$ of $X$, consider pairwise intersections and triple intersections $U_(i)$, $U_(j)$, $U_(k)$.
+The transition functions on pairwise intersections are $f_("ij")$, $f_("jk")$, $f_("ki")$.
+The integral over three patches can be transformed as
 $
   integral_(U_("ij")) f_("ij") + integral_(U_("jk")) f_("jk") + integral_(U_("ki")) f_("ki") = integral_(U_("ijk")) (f_("ij") + f_("jk") + f_("ki")) = 2pi upright(i) n_("ijk").
 $
-其中容易验证最后的积分将会是整数倍的 $2 pi upright(i)$，并且当$f_("ij") |-> f_("ij") + phi("i") - phi("j") := f_("ij") + delta phi_("ij")$ 时不变，即整数$n_("ijk")$ 的等价类将会落在 $H^(2)(X, ZZ)$ 中。
-因此，$overline(diff) J$ 在 Riemann surface $X$ 上的积分将会给出
+It can be verified that the final integral will be an integer multiple of $2 pi upright(i)$, and remains invariant under $f_("ij") |-> f_("ij") + phi("i") - phi("j") := f_("ij") + delta phi_("ij")$, meaning the equivalence class of integer $n_("ijk")$ lies in $H^(2)(X, ZZ)$.
+Therefore, the integral of $overline(diff) J$ over Riemann surface $X$ gives
 $
   integral_(X) overline(diff) J = (1 - 2 lambda) pi upright(i) c_(1)(L),
 $
-其中 $c_(1)(L) in H^(2)(X, ZZ)$ 是 line bundle $K$ 的第一 Chern 类。
-代入$c_(1)(L) = Chi(L) = 2 - 2g$，我们得到
+where $c_(1)(L) in H^(2)(X, ZZ)$ is the first Chern class of line bundle $K$.
+Substituting $c_(1)(L) = Chi(L) = 2 - 2g$, we obtain
 $
   integral_(X) dif^(2) sigma thin overline(partial)_(z) j(z) = pi frac(1 - 2 lambda, 2) Chi(L).
 $
@@ -116,16 +116,16 @@ $
 $
 the minus sign comes from the fermionic nature of $b$ field.
 
-回顾我们在前面得到的结果，这事实上给出了 ghost number 与流形 Euler characteristic 之间的关系：
+Recalling our previous result, this actually gives the relationship between ghost number and manifold Euler characteristic:
 $
   Q = (1 - 2 lambda) Chi(L) = ("deg"(L^(lambda))+ 1- g),
 $
-注意到鬼数与指标的等价性，我们最终得到的是关于 elliptic operator $overline(partial)$的指标定理
+Noting the equivalence between ghost number and index, we finally obtain the index theorem for elliptic operator $overline(partial)$
 $
   "ind"(overline(partial)_(L^(lambda))) = (1 - 2 lambda) Chi(L) = "deg"(L^(lambda)) + 1 - g,
 $
-利用指标的表达式$"ind"(overline(diff)) = h^(0)(X, cal(O)(L^(lambda))) - h^(1)(X, cal(O)(L^(lambda)))$，这事实上就是 Rimann-Roch 定理：
+Using the index expression $"ind"(overline(diff)) = h^(0)(X, cal(O)(L^(lambda))) - h^(1)(X, cal(O)(L^(lambda)))$, this is precisely the Riemann-Roch theorem:
 $
   h^(0)(X, cal(O)(L^(lambda))) - h^(1)(X, cal(O)(L^(lambda))) = "deg"(L^(lambda)) + 1 - g.
 $
-利用 line bundle-divisor 对应，上述定理也可以转换为教科书中常见的 Riemann-Roch 定理形式。
+Using the line bundle-divisor correspondence, this theorem can be transformed into the standard form found in textbooks.
