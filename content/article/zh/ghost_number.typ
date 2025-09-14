@@ -11,7 +11,7 @@
 )
 
 #translation-disclaimer(
-  original-path: "typst_md_tex",
+  original-path: "ghost_number",
   lang: "zh",
 )
 
