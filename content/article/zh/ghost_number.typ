@@ -73,7 +73,7 @@ $
 $
   integral_(U_("ij")) f_("ij") + integral_(U_("jk")) f_("jk") + integral_(U_("ki")) f_("ki") = integral_(U_("ijk")) (f_("ij") + f_("jk") + f_("ki")) = 2pi upright(i) n_("ijk").
 $
-可验证该积分为$2 pi upright(i)$的整数倍，且在$f_("ij") |-> f_("ij") + phi("i") - phi("j") := f_("ij") + delta phi_("ij")$变换下不变，即整数$n_("ijk")$的等价类属于$H^(2)(X, ZZ)$。因此，$overline(partial) J$在黎曼曲面$X$上的积分为：
+可验证该积分为$2 pi upright(i)$的整数倍，且在$f_("ij") |-> f_("ij") + phi_("i") - phi_("j") := f_("ij") + delta phi_("ij")$变换下不变，即整数$n_("ijk")$的等价类属于$H^(2)(X, ZZ)$。因此，$overline(partial) J$在黎曼曲面$X$上的积分为：
 $
   integral_(X) overline(diff) J = (1 - 2 lambda) pi upright(i) c_(1)(L),
 $
