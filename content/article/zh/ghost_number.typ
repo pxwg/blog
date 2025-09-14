@@ -28,7 +28,7 @@ $
 $
 对应的规范曲率为$F = frac(1, 2) dif S$，转移函数为$upright(e)^(upright(i) phi): A |-> A + dif phi$。通量计算为：
 $
-  "通量" = integral_(bb(S)^(2)) F = integral_(U_(1)) dif A + integral_(U_(2)) dif A = integral_(partial U_(1)) A + integral_(partial U_(2)) A = integral_(bb(S)^(1)) dif phi in ZZ.
+  "Flux" = integral_(bb(S)^(2)) F = integral_(U_(1)) dif A + integral_(U_(2)) dif A = integral_(partial U_(1)) A + integral_(partial U_(2)) A = integral_(bb(S)^(1)) dif phi in ZZ.
 $
 
 = 鬼系统与鬼数流
