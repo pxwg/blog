@@ -79,7 +79,7 @@ The integral over three patches can be transformed as
 $
   integral_(U_("ij")) f_("ij") + integral_(U_("jk")) f_("jk") + integral_(U_("ki")) f_("ki") = integral_(U_("ijk")) (f_("ij") + f_("jk") + f_("ki")) = 2pi upright(i) n_("ijk").
 $
-It can be verified that the final integral will be an integer multiple of $2 pi upright(i)$, and remains invariant under $f_("ij") |-> f_("ij") + phi("i") - phi("j") := f_("ij") + delta phi_("ij")$, meaning the equivalence class of integer $n_("ijk")$ lies in $H^(2)(X, ZZ)$.
+It can be verified that the final integral will be an integer multiple of $2 pi upright(i)$, and remains invariant under $f_("ij") |-> f_("ij") + phi_("i") - phi_("j") := f_("ij") + delta phi_("ij")$, meaning the equivalence class of integer $n_("ijk")$ lies in $H^(2)(X, ZZ)$.
 Therefore, the integral of $overline(diff) J$ over Riemann surface $X$ gives
 $
   integral_(X) overline(diff) J = (1 - 2 lambda) pi upright(i) c_(1)(L),
