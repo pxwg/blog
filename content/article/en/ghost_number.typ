@@ -40,7 +40,7 @@ The energy-momentum tensor is
 $
   T(z) = - lambda :b diff c: + (1-lambda) : diff b c :,
 $
-, and the $U(1)$ current is:
+and the $U(1)$ current is:
 $
   J(z) = :b c: := lim_(w -> z) b(w) c(z) - frac(dif z, w - z),
 $
