@@ -71,7 +71,24 @@ To translate the result above into a more familiar form, note that $dif^(2) sigm
 $
   integral_(X) dif^(2) sigma thin overline(partial)_(z) j(z) = pi(1-2 lambda).
 $
-// TODO: Cech Cohomology
+
+Now consider the general case, the transition function for $J(z)$ is given by $f_(i j): z_(j) |-> f_(i j)(z_(i))$, thus
+Thus, 对于一个好覆盖 ${U_(i)}$ of $X$, 我们来考虑两两相交，并且有全相交的三个补丁 $U_(i)$, $U_(j)$, $U_(k)$.
+两两相交部分的转移函数为 $f_("ij")$, $f_("jk")$, $f_("ki")$.
+这样，在三个补丁之上的积分就可以转换为
+$
+  integral_(U_("ij")) f_("ij") + integral_(U_("jk")) f_("jk") + integral_(U_("ki")) f_("ki") = integral_(U_("ijk")) (f_("ij") + f_("jk") + f_("ki")) = 2pi upright(i) n_("ijk").
+$
+其中容易验证最后的积分将会是整数倍的 $2 pi upright(i)$，并且当$f_("ij") |-> f_("ij") + phi("i") - phi("j") := f_("ij") + delta phi_("ij")$ 时不变，即整数$n_("ijk")$ 的等价类将会落在 $H^(2)(X, ZZ)$ 中。
+因此，$overline(diff) J$ 在 Riemann surface $X$ 上的积分将会给出
+$
+  integral_(X) overline(diff) J = (1 - 2 lambda) pi upright(i) c_(1)(L),
+$
+其中 $c_(1)(L) in H^(2)(X, ZZ)$ 是 line bundle $K$ 的第一 Chern 类。
+代入$c_(1)(L) = Chi(L) = 2 - 2g$，我们得到
+$
+  integral_(X) dif^(2) sigma thin overline(partial)_(z) j(z) = pi frac(1 - 2 lambda, 2) Chi(L).
+$
 
 = Zero Modes, Riemann-Roch and Index
 
@@ -80,7 +97,7 @@ $
   overline(diff) c = 0, quad overline(diff) b = 0.
 $
 We denote the number of zero modes for $b$, $c$ fields as $B$ and $C$ respectively.
-It is easy to identify that $C = ker(overline(diff)_(K times L^(-lambda)))$ and $B = ker(overline(diff)_(L^(lambda)))$, thus the 零模式的差值将会给出：
+It is easy to identify that $C = ker(overline(diff)_(K times L^(-lambda)))$ and $B = ker(overline(diff)_(L^(lambda)))$, thus the difference of the zero modes is given by:
 $
   C - B = dim(H^(0)(X, cal(O)(K times.circle L^(-lambda)))) - dim(H^(0)(X, cal(O)(L^(lambda)))),
 $
@@ -92,5 +109,23 @@ thus the index of elliptic operator $overline(diff)$ could be rephrased as
 $
   "ind"(overline(diff)) = B - C.
 $
+i.e., the difference of zero modes is the index of $overline(diff)$ operator acting on sections of bundle $L^(lambda)$.
+Moreover, it is well-known that the difference of zero modes could be rephrased as the charge of ghost number current, which is given by the $U(1)$ generator
+$
+  Q := integral_(X) (c frac(delta, delta c) + b frac(delta, delta b)) = frac(1, pi)integral_(X) dif^(2) sigma j(z) = frac(2 upright(i), pi) integral_(X) J(z),
+$
+the minus sign comes from the fermionic nature of $b$ field.
 
-= Vertex Algebra Bundle
+回顾我们在前面得到的结果，这事实上给出了 ghost number 与流形 Euler characteristic 之间的关系：
+$
+  Q = (1 - 2 lambda) Chi(L) = ("deg"(L^(lambda))+ 1- g),
+$
+注意到鬼数与指标的等价性，我们最终得到的是关于 elliptic operator $overline(partial)$的指标定理
+$
+  "ind"(overline(partial)_(L^(lambda))) = (1 - 2 lambda) Chi(L) = "deg"(L^(lambda)) + 1 - g,
+$
+利用指标的表达式$"ind"(overline(diff)) = h^(0)(X, cal(O)(L^(lambda))) - h^(1)(X, cal(O)(L^(lambda)))$，这事实上就是 Rimann-Roch 定理：
+$
+  h^(0)(X, cal(O)(L^(lambda))) - h^(1)(X, cal(O)(L^(lambda))) = "deg"(L^(lambda)) + 1 - g.
+$
+利用 line bundle-divisor 对应，上述定理也可以转换为教科书中常见的 Riemann-Roch 定理形式。
