@@ -3,11 +3,16 @@
 #show: main.with(
   title: title,
   desc: [bc 鬼系统中的鬼数反常可视为 Riemann-Roch 定理的体现],
-  date: "2025-09-11",
+  date: "2025-09-14",
   tags: (
     blog-tags.physics,
     blog-tags.quantum-field,
   ),
+)
+
+#translation-disclaimer(
+  original-path: "typst_md_tex",
+  lang: "zh",
 )
 
 = 引言：球面内的磁单极子
@@ -64,7 +69,7 @@ $
   integral_(X) dif^(2) sigma thin overline(partial)_(z) j(z) = pi(1-2 lambda).
 $
 
-一般情形下，$J(z)$的转移函数由$f_(i j): z_(j) |-> f_(i j)(z_(i))$给出。对$X$的好覆盖${U_(i)}$，考虑两两相交及三重重叠$U_(i) cap U_(j) cap U_(k)$。两两相交部分的转移函数为$f_("ij")$, $f_("jk")$, $f_("ki")$。三个开集上的积分可转换为：
+一般情形下，$J(z)$的转移函数由$f_(i j): z_(j) |-> f_(i j)(z_(i))$给出。对$X$的好覆盖${U_(i)}$，两两相交部分的转移函数为$f_("ij")$, $f_("jk")$, $f_("ki")$，而三重交上的转移函数将会给出对三个开集上的积分结果，其表达式为：
 $
   integral_(U_("ij")) f_("ij") + integral_(U_("jk")) f_("jk") + integral_(U_("ki")) f_("ki") = integral_(U_("ijk")) (f_("ij") + f_("jk") + f_("ki")) = 2pi upright(i) n_("ijk").
 $
@@ -103,7 +108,7 @@ $
 
 结合前文结果，可得鬼数与流形 Euler 示性数的关系：
 $
-  Q = (1 - 2 lambda) Chi(L) = ("deg"(L^(lambda))+ 1- g),
+  Q = (1 - 2 lambda) Chi(L) = "deg"(L^(lambda))+ 1- g,
 $
 由鬼数与指标的等价性，最终得到椭圆算子$overline(partial)$的指标定理：
 $

@@ -3,7 +3,7 @@
 #show: main.with(
   title: title,
   desc: [Ghost anomaly in bc ghost system manifests as Riemann-Roch Theorem],
-  date: "2025-09-11",
+  date: "2025-09-14",
   tags: (
     blog-tags.physics,
     blog-tags.quantum-field,
@@ -85,9 +85,9 @@ $
   integral_(X) overline(diff) J = (1 - 2 lambda) pi upright(i) c_(1)(L),
 $
 where $c_(1)(L) in H^(2)(X, ZZ)$ is the first Chern class of line bundle $K$.
-Substituting $c_(1)(L) = Chi(L) = 2 - 2g$, we obtain
+Substituting $c_(1)(L) = chi(L) = 2 - 2g$, we obtain
 $
-  integral_(X) dif^(2) sigma thin overline(partial)_(z) j(z) = pi frac(1 - 2 lambda, 2) Chi(L).
+  integral_(X) dif^(2) sigma thin overline(partial)_(z) j(z) = pi frac(1 - 2 lambda, 2) chi(L).
 $
 
 = Zero Modes, Riemann-Roch and Index
@@ -112,17 +112,17 @@ $
 i.e., the difference of zero modes is the index of $overline(diff)$ operator acting on sections of bundle $L^(lambda)$.
 Moreover, it is well-known that the difference of zero modes could be rephrased as the charge of ghost number current, which is given by the $U(1)$ generator
 $
-  Q := integral_(X) (c frac(delta, delta c) + b frac(delta, delta b)) = frac(1, pi)integral_(X) dif^(2) sigma j(z) = frac(2 upright(i), pi) integral_(X) J(z),
+  Q := integral_(X) (c frac(delta, delta c) + b frac(delta, delta b)) = frac(1, pi)integral_(X) J(z) = frac(2 upright(i), pi) integral_(X) dif^(2) z thin j(z),
 $
 the minus sign comes from the fermionic nature of $b$ field.
 
 Recalling our previous result, this actually gives the relationship between ghost number and manifold Euler characteristic:
 $
-  Q = (1 - 2 lambda) Chi(L) = ("deg"(L^(lambda))+ 1- g),
+  Q = (1 - 2 lambda) chi(L) = "deg"(L^(lambda))+ 1- g,
 $
 Noting the equivalence between ghost number and index, we finally obtain the index theorem for elliptic operator $overline(partial)$
 $
-  "ind"(overline(partial)_(L^(lambda))) = (1 - 2 lambda) Chi(L) = "deg"(L^(lambda)) + 1 - g,
+  "ind"(overline(partial)_(L^(lambda))) = (1 - 2 lambda) chi(L) = "deg"(L^(lambda)) + 1 - g,
 $
 Using the index expression $"ind"(overline(diff)) = h^(0)(X, cal(O)(L^(lambda))) - h^(1)(X, cal(O)(L^(lambda)))$, this is precisely the Riemann-Roch theorem:
 $
