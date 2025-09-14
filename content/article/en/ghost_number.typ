@@ -97,7 +97,7 @@ $
   overline(diff) c = 0, quad overline(diff) b = 0.
 $
 We denote the number of zero modes for $b$, $c$ fields as $B$ and $C$ respectively.
-It is easy to identify that $C = ker(overline(diff)_(K times L^(-lambda)))$ and $B = ker(overline(diff)_(L^(lambda)))$, thus the difference of the zero modes is given by:
+It is easy to identify that $C = ker(overline(diff)_(K times.circle L^(-lambda)))$ and $B = ker(overline(diff)_(L^(lambda)))$, thus the difference of the zero modes is given by:
 $
   C - B = dim(H^(0)(X, cal(O)(K times.circle L^(-lambda)))) - dim(H^(0)(X, cal(O)(L^(lambda)))),
 $
@@ -129,3 +129,5 @@ $
   h^(0)(X, cal(O)(L^(lambda))) - h^(1)(X, cal(O)(L^(lambda))) = "deg"(L^(lambda)) + 1 - g.
 $
 Using the line bundle-divisor correspondence, this theorem can be transformed into the standard form found in textbooks.
+
+// = Vertex Algebra Bundle

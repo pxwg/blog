@@ -88,7 +88,7 @@ $b c$鬼系统的零模方程为：
 $
   overline(diff) c = 0, quad overline(diff) b = 0.
 $
-记$b$, $c$场的零模数分别为$B$和$C$。易识别$C = ker(overline(diff)_(K times L^(-lambda)))$, $B = ker(overline(diff)_(L^(lambda)))$，故零模差为：
+记$b$, $c$场的零模数分别为$B$和$C$。易识别$C = ker(overline(diff)_(K times.circle L^(-lambda)))$, $B = ker(overline(diff)_(L^(lambda)))$，故零模差为：
 $
   C - B = dim(H^(0)(X, cal(O)(K times.circle L^(-lambda)))) - dim(H^(0)(X, cal(O)(L^(lambda)))),
 $
