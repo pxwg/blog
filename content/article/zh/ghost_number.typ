@@ -77,9 +77,9 @@ $
 $
   integral_(X) overline(diff) J = (1 - 2 lambda) pi upright(i) c_(1)(L),
 $
-其中$c_(1)(L) in H^(2)(X, ZZ)$为线丛$K$的第一陈类。代入$c_(1)(L) = Chi(L) = 2 - 2g$得：
+其中$c_(1)(L) in H^(2)(X, ZZ)$为线丛$K$的第一陈类。代入$c_(1)(L) = chi(L) = 2 - 2g$得：
 $
-  integral_(X) dif^(2) sigma thin overline(partial)_(z) j(z) = pi frac(1 - 2 lambda, 2) Chi(L).
+  integral_(X) dif^(2) sigma thin overline(partial)_(z) j(z) = pi frac(1 - 2 lambda, 2) chi(L).
 $
 
 = 零模、Riemann-Roch 与指标
@@ -108,11 +108,11 @@ $
 
 结合前文结果，可得鬼数与流形 Euler 示性数的关系：
 $
-  Q = (1 - 2 lambda) Chi(L) = "deg"(L^(lambda))+ 1- g,
+  Q = (1 - 2 lambda) chi(L) = "deg"(L^(lambda))+ 1- g,
 $
 由鬼数与指标的等价性，最终得到椭圆算子$overline(partial)$的指标定理：
 $
-  "ind"(overline(partial)_(L^(lambda))) = (1 - 2 lambda) Chi(L) = "deg"(L^(lambda)) + 1 - g,
+  "ind"(overline(partial)_(L^(lambda))) = (1 - 2 lambda) chi(L) = "deg"(L^(lambda)) + 1 - g,
 $
 利用指标表达式$"ind"(overline(diff)) = h^(0)(X, cal(O)(L^(lambda))) - h^(1)(X, cal(O)(L^(lambda)))$，此即 Riemann-Roch 定理：
 $
