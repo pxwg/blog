@@ -1,5 +1,5 @@
 #import "../../../typ/templates/blog.typ": *
-#let title = "Ghost Number Anomaly, Riemann-Roch Theorem and Vertex Operator Algebras"
+#let title = "Ghost Number Anomaly and Riemann-Roch Theorem"
 #show: main.with(
   title: title,
   desc: [Ghost anomaly in bc ghost system manifests as Riemann-Roch Theorem],

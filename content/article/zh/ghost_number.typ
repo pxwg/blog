@@ -1,5 +1,5 @@
 #import "../../../typ/templates/blog.typ": *
-#let title = "鬼数反常、Riemann-Roch 定理与顶点算子代数"
+#let title = "鬼数反常与 Riemann-Roch 定理"
 #show: main.with(
   title: title,
   desc: [bc 鬼系统中的鬼数反常可视为 Riemann-Roch 定理的体现],
