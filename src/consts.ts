@@ -100,6 +100,11 @@ export const kFriendLinks = [
     url: "https://blog.mgt.moe/",
     desc: "SIGSLEEP Fellow",
   },
+  {
+    name:" 菲兹克斯喵",
+    desc:"Eclipse first, the rest nowhere.",
+    url:"https://physnya.top",
+  },
 ];
 /**
  * A candidate list of servers to cover people in different regions.
