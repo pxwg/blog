@@ -23,7 +23,7 @@ $
     frac(1, 2)(-1 - cos theta) dif phi \, theta in (pi/2, pi)
   ),
 $
-where the associated gauge curvature could be written as $F = frac(1, 2) dif S$, and the transition function could be written as $upright(e)^(upright(i) phi): A |-> A + dif phi$.
+where the associated gauge curvature could be written as $F = frac(1, 2) dif S$, and the transition function could be written as $upright(e)^(i phi): A |-> A + dif phi$.
 Using the formula above, the flux could be calculated by:
 $
   "Flux" = integral_(bb(S)^(2)) F = integral_(U_(1)) dif A + integral_(U_(2)) dif A = integral_(partial U_(1)) A + integral_(partial U_(2)) A = integral_(bb(S)^(1)) dif phi in ZZ.
@@ -65,9 +65,9 @@ $
 Before reveal more abstract structures, consider a simple example $X = bb(S)^(2)$ might be helpful.
 In this case, transition function is $omega = frac(1, z)$, thus the integration could be written as:
 $
-  integral_(X) overline(diff) J = integral_(bb(S)^(1)) (1-2lambda) frac(dif w, w) = 2pi upright(i) (1 - 2lambda).
+  integral_(X) overline(diff) J = integral_(bb(S)^(1)) (1-2lambda) frac(dif w, w) = 2pi i (1 - 2lambda).
 $
-To translate the result above into a more familiar form, note that $dif^(2) sigma = 2 upright(i) dif z dif overline(z)$ and $J(z) = j(z) dif z$, one have
+To translate the result above into a more familiar form, note that $dif^(2) sigma = 2 i dif z dif overline(z)$ and $J(z) = j(z) dif z$, one have
 $
   integral_(X) dif^(2) sigma thin overline(partial)_(z) j(z) = pi(1-2 lambda).
 $
@@ -77,12 +77,12 @@ For a good cover ${U_(i)}$ of $X$, consider pairwise intersections and triple in
 The transition functions on pairwise intersections are $f_(i j)$, $f_(j k)$, $f_(k i)$.
 The integral over three patches can be transformed as
 $
-  integral_(U_(i j)) dif f_(i j) + integral_(U_(j k)) dif f_(j k) + integral_(U_(k i)) dif f_(k i) = integral_(U_(i j k)) f_(i j) + f_(j k) + f_(k i) = 2pi upright(i) n_(i j k).
+  integral_(U_(i j)) dif f_(i j) + integral_(U_(j k)) dif f_(j k) + integral_(U_(k i)) dif f_(k i) = integral_(U_(i j k)) f_(i j) + f_(j k) + f_(k i) = 2pi i n_(i j k).
 $
-It can be verified that the final integral will be an integer multiple of $2 pi upright(i)$, and remains invariant under $f_(i j) |-> f_(i j) + phi_(i) - phi_(j) := f_(i j) + delta phi_(i j)$, meaning the equivalence class of integer $n_(i j k)$ lies in $H^(2)(X, ZZ)$.
+It can be verified that the final integral will be an integer multiple of $2 pi i$, and remains invariant under $f_(i j) |-> f_(i j) + phi_(i) - phi_(j) := f_(i j) + delta phi_(i j)$, meaning the equivalence class of integer $n_(i j k)$ lies in $H^(2)(X, ZZ)$.
 Therefore, the integral of $overline(diff) J$ over Riemann surface $X$ gives
 $
-  integral_(X) overline(diff) J = (1 - 2 lambda) pi upright(i) c_(1)(L),
+  integral_(X) overline(diff) J = (1 - 2 lambda) pi i c_(1)(L),
 $
 where $c_(1)(L) in H^(2)(X, ZZ)$ is the first Chern class of line bundle $K$.
 Substituting $c_(1)(L) = chi(L) = 2 - 2g$, we obtain
@@ -112,7 +112,7 @@ $
 i.e., the difference of zero modes is the index of $overline(diff)$ operator acting on sections of bundle $L^(lambda)$.
 Moreover, it is well-known that the difference of zero modes could be rephrased as the charge of ghost number current, which is given by the $U(1)$ generator
 $
-  Q := integral_(X) (c frac(delta, delta c) + b frac(delta, delta b)) = frac(1, pi)integral_(X) overline(diff) J(z) = frac(2 upright(i), pi) integral_(X) dif^(2) z thin overline(diff)_(z) j(z),
+  Q := integral_(X) (c frac(delta, delta c) + b frac(delta, delta b)) = frac(1, pi)integral_(X) overline(diff) J(z) = frac(2 i, pi) integral_(X) dif^(2) z thin overline(diff)_(z) j(z),
 $
 the minus sign comes from the fermionic nature of $b$ field.
 
