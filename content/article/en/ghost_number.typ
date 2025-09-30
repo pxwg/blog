@@ -13,7 +13,7 @@
 = Introduction: Monopole Inside a Sphere
 
 Consider a monopole inside a sphere $bb(S)^(2)$, there is no global well-defined gauge connection $A$ over $bb(S)^(2)$.
-One needs to use some patches ${U_(i)}$ to cover $bb(S)^(2)$, then define $A_(i) in Omega^(1)(U_(i))$ (after identify a reference connection), and using transition functions ${f_("ij")}$ to obtain global $U(1)$ connection.
+One needs to use some patches ${U_(i)}$ to cover $bb(S)^(2)$, then define $A_(i) in Omega^(1)(U_(i))$ (after identify a reference connection), and using transition functions ${f_(i j)}$ to obtain global $U(1)$ connection.
 
 For the situation of $bb(S)^(2)$, the simplest choice of patches might be two hemispheres, where the intersection of two patches is a circle $bb(S)^(1)$.
 Thus, one can easily prove that, the connection could be written as:
@@ -74,12 +74,12 @@ $
 
 Now consider the general case, the transition function for $J(z)$ is given by $f_(i j): z_(j) |-> f_(i j)(z_(i))$, thus
 For a good cover ${U_(i)}$ of $X$, consider pairwise intersections and triple intersections $U_(i)$, $U_(j)$, $U_(k)$.
-The transition functions on pairwise intersections are $f_("ij")$, $f_("jk")$, $f_("ki")$.
+The transition functions on pairwise intersections are $f_(i j)$, $f_(j k)$, $f_(k i)$.
 The integral over three patches can be transformed as
 $
-  integral_(U_("ij")) dif f_("ij") + integral_(U_("jk")) dif f_("jk") + integral_(U_("ki")) dif f_("ki") = integral_(U_("ijk")) f_("ij") + f_("jk") + f_("ki") = 2pi upright(i) n_("ijk").
+  integral_(U_(i j)) dif f_(i j) + integral_(U_(j k)) dif f_(j k) + integral_(U_(k i)) dif f_(k i) = integral_(U_(i j k)) f_(i j) + f_(j k) + f_(k i) = 2pi upright(i) n_(i j k).
 $
-It can be verified that the final integral will be an integer multiple of $2 pi upright(i)$, and remains invariant under $f_("ij") |-> f_("ij") + phi_("i") - phi_("j") := f_("ij") + delta phi_("ij")$, meaning the equivalence class of integer $n_("ijk")$ lies in $H^(2)(X, ZZ)$.
+It can be verified that the final integral will be an integer multiple of $2 pi upright(i)$, and remains invariant under $f_(i j) |-> f_(i j) + phi_(i) - phi_(j) := f_(i j) + delta phi_(i j)$, meaning the equivalence class of integer $n_(i j k)$ lies in $H^(2)(X, ZZ)$.
 Therefore, the integral of $overline(diff) J$ over Riemann surface $X$ gives
 $
   integral_(X) overline(diff) J = (1 - 2 lambda) pi upright(i) c_(1)(L),
