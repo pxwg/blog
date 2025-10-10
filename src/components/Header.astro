@@ -42,37 +42,31 @@ const { articleId } = Astro.props;
 </header>
 
 <script>
-  /**
-   * This function ensures that the language state (?lang=en) persists
-   * across all main navigation links in the header.
-   */
   function updateHeaderLinks() {
     const urlParams = new URLSearchParams(window.location.search);
-    const isEnglish = urlParams.get('lang') === 'en';
+    const isChinese = urlParams.get('lang') === 'cn';
 
-    // Select all navigation links, including the logo.
     const navLinks = document.querySelectorAll('header nav a[href^="/"]');
 
     navLinks.forEach((link) => {
-      // Don't modify external links or the language toggle links.
       if (link.closest('.language-toggle') || link.hostname !== window.location.hostname) {
         return;
       }
       
       const originalHref = link.getAttribute('href').split('?')[0];
 
-      if (isEnglish) {
-        link.setAttribute('href', `${originalHref}?lang=en`);
+      if (isChinese) {
+        link.setAttribute('href', `${originalHref}?lang=cn`);
       } else {
         link.setAttribute('href', originalHref);
       }
     });
   }
 
-  // Run on initial page load.
+  // Run on initial page load
   document.addEventListener('DOMContentLoaded', updateHeaderLinks);
-  // Run after every Astro client-side page transition to keep links updated.
-  document.addEventListener('astro:page-load', updateHeaderLinks);
+  
+  document.addEventListener('astro:after-swap', updateHeaderLinks);
 </script>
 
 <style>

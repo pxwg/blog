@@ -33,6 +33,13 @@ const { title, description, image = "/blog-heading.webp" } = Astro.props;
 />
 <meta name="generator" content={Astro.generator} />
 
+<!-- Language Handling -->
+<script is:inline>
+  (function() {
+    const isChinese = new URL(document.location.href).searchParams.get('lang') === 'cn';
+    document.documentElement.setAttribute('lang', isChinese ? 'zh' : 'en');
+  })();
+</script>
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />

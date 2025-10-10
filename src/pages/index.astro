@@ -22,7 +22,7 @@ const allPosts = (await getCollection("blog")).sort(
 ---
 
 <!doctype html>
-<html lang="zh">
+<html lang="en">
   <head>
     <BaseHead title={kSiteTitle} description={kSiteDescription} />
     {
@@ -31,21 +31,10 @@ const allPosts = (await getCollection("blog")).sort(
       )
     }
     <style>
-      .comments a {
-        display: inline-block;
-      }
-      @media (max-width: 600px) {
-        .posts .heading {
-          display: flex;
-          flex-direction: column;
-        }
-      }
-      .comment-item {
-        background-color: var(--main-bg-color);
-      }
-      .monthly li {
-        font-style: italic;
-      }
+      .comments a { display: inline-block; }
+      @media (max-width: 600px) { .posts .heading { display: flex; flex-direction: column; } }
+      .comment-item { background-color: var(--main-bg-color); }
+      .monthly li { font-style: italic; }
     </style>
   </head>
   <body>
@@ -63,18 +52,15 @@ const allPosts = (await getCollection("blog")).sort(
         <ul class="accent block-list posts" id="recent-posts-list">
           {
             allPosts.map((post) => {
-              const postUrl = post.id.startsWith('en/')
-                ? `${kUrlBase}/article/${post.id}/?lang=en`
+              // English posts are default, Chinese posts get ?lang=cn
+              const postUrl = post.id.startsWith('zh/')
+                ? `${kUrlBase}/article/${post.id}/?lang=cn`
                 : `${kUrlBase}/article/${post.id}/`;
               return (
                 <li data-post-id={post.id} style="display: none;">
                   <a class="heading" href={postUrl}>
-                    <h2>
-                      <span class="title">{post.data.title}</span>
-                    </h2>
-                    <span class="date">
-                      <FormattedDate date={post.data.date} />
-                    </span>
+                    <h2><span class="title">{post.data.title}</span></h2>
+                    <span class="date"><FormattedDate date={post.data.date} /></span>
                   </a>
                   {post.data.tags && <TagList tags={post.data.tags} />}
                   {post.data.description || ""}
@@ -88,25 +74,22 @@ const allPosts = (await getCollection("blog")).sort(
       <script is:inline define:vars={{allPosts}}>
         function getLanguageFromUrl() {
           const urlParams = new URLSearchParams(window.location.search);
-          return urlParams.get('lang') === 'en' ? 'en' : 'zh';
+          return urlParams.get('lang') === 'cn' ? 'cn' : 'en';
         }
 
         function getArticleLanguage(articleId) {
+          if (articleId.startsWith('zh/')) return 'cn';
           if (articleId.startsWith('en/')) return 'en';
-          if (articleId.startsWith('zh/')) return 'zh';
-          return 'zh'; // Default
+          return 'en'; // Default to English
         }
 
         function filterPostsByLanguage(posts, language) {
-          return posts.filter(post => {
-            const articleLang = getArticleLanguage(post.id);
-            return articleLang === language;
-          });
+          return posts.filter(post => getArticleLanguage(post.id) === language);
         }
 
         function updateRecentPosts() {
           const currentLanguage = getLanguageFromUrl();
-          document.documentElement.lang = currentLanguage;
+          document.documentElement.lang = currentLanguage === 'cn' ? 'zh' : 'en';
 
           const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
           const recentPosts = filteredPosts.slice(0, 5);
@@ -115,7 +98,7 @@ const allPosts = (await getCollection("blog")).sort(
           const zhText = document.querySelector('#recent-posts-title .zh-text');
           if (enText && zhText) {
             enText.style.display = currentLanguage === 'en' ? 'inline' : 'none';
-            zhText.style.display = currentLanguage === 'zh' ? 'inline' : 'none';
+            zhText.style.display = currentLanguage === 'cn' ? 'inline' : 'none';
           }
           
           const listElement = document.getElementById('recent-posts-list');
