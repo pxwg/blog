@@ -44,23 +44,29 @@ const allPosts = (await getCollection("blog")).sort(
         </h2>
         <ul class={`accent block-list posts${kEnableSearch ? " loading" : ""}`} id="all-posts-list">
           {
-            allPosts.map((post) => (
-              <li
-                data-post-id={post.id}
-                style="display: none;"
-              >
-                <a class="heading" href={`${kUrlBase}/article/${post.id}/`}>
-                  <h2>
-                    <span class="title">{post.data.title}</span>
-                  </h2>
-                  <span class="date">
-                    <FormattedDate date={post.data.date} />
-                  </span>
-                </a>
-                {post.data.tags && <TagList tags={post.data.tags} />}
-                {post.data.description || ""}
-              </li>
-            ))
+            allPosts.map((post) => {
+              // MODIFICATION: Add ?lang=en to English article links
+              const postUrl = post.id.startsWith('en/')
+                ? `${kUrlBase}/article/${post.id}/?lang=en`
+                : `${kUrlBase}/article/${post.id}/`;
+              return (
+                <li
+                  data-post-id={post.id}
+                  style="display: none;"
+                >
+                  <a class="heading" href={postUrl}>
+                    <h2>
+                      <span class="title">{post.data.title}</span>
+                    </h2>
+                    <span class="date">
+                      <FormattedDate date={post.data.date} />
+                    </span>
+                  </a>
+                  {post.data.tags && <TagList tags={post.data.tags} />}
+                  {post.data.description || ""}
+                </li>
+              );
+            })
           }
         </ul>
         

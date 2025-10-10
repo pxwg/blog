@@ -19,8 +19,6 @@ import "$styles/IndexPostList.css";
 const allPosts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
-// Render all posts initially, client-side script will filter them.
-const recent5Posts = allPosts.slice(0, 5);
 ---
 
 <!doctype html>
@@ -64,20 +62,25 @@ const recent5Posts = allPosts.slice(0, 5);
         </h2>
         <ul class="accent block-list posts" id="recent-posts-list">
           {
-            allPosts.map((post) => (
-              <li data-post-id={post.id} style="display: none;">
-                <a class="heading" href={`${kUrlBase}/article/${post.id}/`}>
-                  <h2>
-                    <span class="title">{post.data.title}</span>
-                  </h2>
-                  <span class="date">
-                    <FormattedDate date={post.data.date} />
-                  </span>
-                </a>
-                {post.data.tags && <TagList tags={post.data.tags} />}
-                {post.data.description || ""}
-              </li>
-            ))
+            allPosts.map((post) => {
+              const postUrl = post.id.startsWith('en/')
+                ? `${kUrlBase}/article/${post.id}/?lang=en`
+                : `${kUrlBase}/article/${post.id}/`;
+              return (
+                <li data-post-id={post.id} style="display: none;">
+                  <a class="heading" href={postUrl}>
+                    <h2>
+                      <span class="title">{post.data.title}</span>
+                    </h2>
+                    <span class="date">
+                      <FormattedDate date={post.data.date} />
+                    </span>
+                  </a>
+                  {post.data.tags && <TagList tags={post.data.tags} />}
+                  {post.data.description || ""}
+                </li>
+              );
+            })
           }
         </ul>
       </section>
