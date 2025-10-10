@@ -1,13 +1,10 @@
 ---
 import { getCollection } from "astro:content";
-
 import { TagList } from "@myriaddreamin/tylant";
-
 import BaseHead from "$components/BaseHead.astro";
 import Header from "$components/Header.astro";
 import Footer from "$components/Footer.astro";
 import FormattedDate from "$components/FormattedDate.astro";
-
 import {
   kSiteTitle,
   kSiteIndexTitle,
@@ -17,114 +14,24 @@ import {
 } from "$consts";
 // @ts-ignore
 import AboutContent from "../../content/other/intro.typ?html&body";
-
 import "$styles/IndexPostList.css";
-import { getLanguageFromUrl, filterPostsByLanguage, getCurrentLanguage } from "$utils/languageFilter";
 
 const allPosts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
-
-// In static mode, render all posts and filter on client side
+// Render all posts initially, client-side script will filter them.
 const recent5Posts = allPosts.slice(0, 5);
-
-// Debug information (only in development)
-const debugInfo = {
-  totalPosts: allPosts.length,
-  astroUrlSearch: Astro.url.search,
-  astroFullUrl: Astro.url.href,
-  astroSearchParams: Object.fromEntries(Astro.url.searchParams.entries())
-};
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="zh">
   <head>
     <BaseHead title={kSiteTitle} description={kSiteDescription} />
-    <!-- Baidu -->
     {
       kBaiduVeriCode && (
         <meta name="baidu-site-verification" content={kBaiduVeriCode} />
       )
     }
-    
-    <!-- Early language detection to prevent flickering -->
-    <script is:inline>
-      (function() {
-        // Immediate language detection to prevent flickering
-        function getStoredLanguage() {
-          try {
-            const stored = localStorage.getItem('blog-language-preference');
-            return (stored === 'en' || stored === 'zh') ? stored : null;
-          } catch (e) {
-            return null;
-          }
-        }
-        
-        function getCurrentUrlLanguage() {
-          const urlParams = new URLSearchParams(window.location.search);
-          const langParam = urlParams.get('lang');
-          if (langParam === 'en') return 'en';
-          
-          const path = window.location.pathname;
-          if (path.match(/\/blog\/article\/en\/[^\/]+\/?$/)) return 'en';
-          if (path.match(/\/blog\/article\/zh\/[^\/]+\/?$/)) return 'zh';
-          
-          return 'zh';
-        }
-        
-        function needsRedirect(storedLang, currentUrlLang) {
-          if (!storedLang) return false;
-          
-          const currentPath = window.location.pathname;
-          const articleMatch = currentPath.match(/^\/blog\/article\/(.+?)\/?$/);
-          
-          if (articleMatch) {
-            const articlePath = articleMatch[1];
-            
-            if (storedLang === 'en' && !articlePath.startsWith('en/')) {
-              return true;
-            }
-            
-            if (storedLang === 'zh' && !articlePath.startsWith('zh/')) {
-              return true;
-            }
-            
-            return false;
-          } else {
-            const hasEnParam = window.location.search.includes('lang=en');
-            
-            if (storedLang === 'en' && !hasEnParam) {
-              return true;
-            }
-            
-            if (storedLang === 'zh' && hasEnParam) {
-              return true;
-            }
-            
-            return false;
-          }
-        }
-        
-        // Check if we need to redirect immediately
-        const storedLang = getStoredLanguage();
-        const currentUrlLang = getCurrentUrlLanguage();
-        
-        if (storedLang && needsRedirect(storedLang, currentUrlLang)) {
-          // Hide content to prevent flash during redirect
-          document.documentElement.style.visibility = 'hidden';
-          
-          // Show content after a short delay if redirect doesn't happen
-          setTimeout(function() {
-            document.documentElement.style.visibility = 'visible';
-          }, 100);
-        }
-        
-        // Make immediate language available globally
-        window.immediateLanguage = storedLang || currentUrlLang;
-      })();
-    </script>
-
     <style>
       .comments a {
         display: inline-block;
@@ -157,8 +64,8 @@ const debugInfo = {
         </h2>
         <ul class="accent block-list posts" id="recent-posts-list">
           {
-            recent5Posts.map((post) => (
-              <li data-post-id={post.id} data-post-data={JSON.stringify(post.data)}>
+            allPosts.map((post) => (
+              <li data-post-id={post.id} style="display: none;">
                 <a class="heading" href={`${kUrlBase}/article/${post.id}/`}>
                   <h2>
                     <span class="title">{post.data.title}</span>
@@ -175,115 +82,56 @@ const debugInfo = {
         </ul>
       </section>
       
-      <!-- Load global language state module -->
-      <script>
-        import { globalLanguageState, initializeGlobalLanguageState } from "$utils/globalLanguageState";
-        
-        // Make global state available to inline scripts
-        window.globalLanguageState = globalLanguageState;
-        
-        // Initialize global language state
-        initializeGlobalLanguageState();
-      </script>
-      
-      <!-- Client-side language filtering with global state support -->
       <script is:inline define:vars={{allPosts}}>
-        // Import global language state
-        let globalLanguageState = null;
-        
-        function initializeGlobalLanguage() {
-          if (window.globalLanguageState) {
-            globalLanguageState = window.globalLanguageState;
-          }
-        }
-
-        // Language filtering utilities (client-side)
         function getLanguageFromUrl() {
-          // Use immediate language detection if available (prevents flickering)
-          if (window.immediateLanguage) {
-            return window.immediateLanguage;
-          }
-          
-          // Use global state if available
-          if (globalLanguageState) {
-            return globalLanguageState.getCurrentLanguage();
-          }
-          
-          // Fallback to URL parameter detection
           const urlParams = new URLSearchParams(window.location.search);
-          const langParam = urlParams.get('lang');
-          return langParam === 'en' ? 'en' : 'zh';
+          return urlParams.get('lang') === 'en' ? 'en' : 'zh';
         }
 
-        function getArticleLanguage(articleId, posts) {
+        function getArticleLanguage(articleId) {
           if (articleId.startsWith('en/')) return 'en';
           if (articleId.startsWith('zh/')) return 'zh';
-          
-          // This shouldn't happen in the new structure, but default to Chinese
-          return 'zh';
+          return 'zh'; // Default
         }
 
         function filterPostsByLanguage(posts, language) {
           return posts.filter(post => {
-            const articleLang = getArticleLanguage(post.id, posts);
+            const articleLang = getArticleLanguage(post.id);
             return articleLang === language;
           });
         }
 
         function updateRecentPosts() {
           const currentLanguage = getLanguageFromUrl();
+          document.documentElement.lang = currentLanguage;
+
           const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
-          const recent5Posts = filteredPosts.slice(0, 6);
+          const recentPosts = filteredPosts.slice(0, 5);
           
-          // Update the section title based on language
           const enText = document.querySelector('#recent-posts-title .en-text');
           const zhText = document.querySelector('#recent-posts-title .zh-text');
           if (enText && zhText) {
-            if (currentLanguage === 'en') {
-              enText.style.display = 'inline';
-              zhText.style.display = 'none';
-            } else {
-              enText.style.display = 'none';
-              zhText.style.display = 'inline';
-            }
+            enText.style.display = currentLanguage === 'en' ? 'inline' : 'none';
+            zhText.style.display = currentLanguage === 'zh' ? 'inline' : 'none';
           }
           
-          // Update the post list
           const listElement = document.getElementById('recent-posts-list');
           if (listElement) {
             const allListItems = listElement.querySelectorAll('li[data-post-id]');
-            
-            // Hide all posts first
+            const recentIds = new Set(recentPosts.map(p => p.id));
+
             allListItems.forEach(item => {
-              item.style.display = 'none';
-            });
-            
-            // Show only filtered posts (up to 5)
-            recent5Posts.forEach(post => {
-              const postElement = listElement.querySelector(`li[data-post-id="${post.id}"]`);
-              if (postElement) {
-                postElement.style.display = 'block';
-              }
+              const postId = item.getAttribute('data-post-id');
+              item.style.display = recentIds.has(postId) ? 'block' : 'none';
             });
           }
         }
 
         function initialize() {
-          initializeGlobalLanguage();
           updateRecentPosts();
+          document.addEventListener('astro:page-load', updateRecentPosts);
         }
 
-        // Update on page load
-        document.addEventListener('DOMContentLoaded', initialize);
-        
-        // Update when URL changes (for SPA navigation)
-        window.addEventListener('popstate', updateRecentPosts);
-        
-        // Listen to language change events from the toggle component
-        window.addEventListener('languageChanged', updateRecentPosts);
-        window.addEventListener('globalLanguageChanged', updateRecentPosts);
-        
-        // Also update immediately if DOM is already ready
         if (document.readyState === 'loading') {
           document.addEventListener('DOMContentLoaded', initialize);
         } else {
