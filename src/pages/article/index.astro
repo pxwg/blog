@@ -21,6 +21,9 @@ const allPosts = (await getCollection("blog")).sort(
 // In static mode, render all posts and filter on client side
 const posts = allPosts;
 
+// Determine current language from URL for initial rendering
+const currentLanguage = getLanguageFromUrl(Astro.url);
+
 // Debug information
 const debugInfo = {
   totalPosts: allPosts.length,
@@ -31,17 +34,17 @@ const debugInfo = {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={currentLanguage}>
   <head>
     <BaseHead title={kSiteTitle} description={kSiteDescription} />
     
-    <!-- Early language detection to prevent flickering -->
+    <!-- Early language detection to prevent flickering and set html lang attribute -->
     <script is:inline>
       (function() {
         // Immediate language detection to prevent flickering
         function getStoredLanguage() {
           try {
-            const stored = localStorage.getItem('blog-language-preference');
+            const stored = localStorage.getItem('preferredLanguage');
             return (stored === 'en' || stored === 'zh') ? stored : null;
           } catch (e) {
             return null;
@@ -54,17 +57,21 @@ const debugInfo = {
           if (langParam === 'en') return 'en';
           
           const path = window.location.pathname;
-          if (path.match(/\/blog\/article\/en\/[^\/]+\/?$/)) return 'en';
-          if (path.match(/\/blog\/article\/zh\/[^\/]+\/?$/)) return 'zh';
+          if (path.match(/\/article\/en\/[^\/]+\/?$/)) return 'en';
+          if (path.match(/\/article\/zh\/[^\/]+\/?$/)) return 'zh';
           
           return 'zh';
         }
+        
+        // Update html lang attribute immediately
+        const detectedLang = getStoredLanguage() || getCurrentUrlLanguage();
+        document.documentElement.lang = detectedLang;
         
         function needsRedirect(storedLang, currentUrlLang) {
           if (!storedLang) return false;
           
           const currentPath = window.location.pathname;
-          const articleMatch = currentPath.match(/^\/blog\/article\/(.+?)\/?$/);
+          const articleMatch = currentPath.match(/^\/article\/(.+?)\/?$/);
           
           if (articleMatch) {
             const articlePath = articleMatch[1];
@@ -211,6 +218,10 @@ const debugInfo = {
 
           function updateAllPosts() {
              const currentLanguage = getLanguageFromUrl();
+             
+             // Update html lang attribute
+             document.documentElement.lang = currentLanguage;
+             
              const filteredPosts = filterPostsByLanguage(allPosts, currentLanguage);
              
              // Update the title
