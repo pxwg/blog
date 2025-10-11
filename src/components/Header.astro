@@ -15,7 +15,7 @@ const currentLocale = Astro.url.pathname.startsWith('/zh/') ? 'zh' : 'en';
 
 // Generate localized URLs
 const localizedUrls = {
-  home: currentLocale === 'zh' ? `${kUrlBase}/zh/` : `${kUrlBase}/`,
+  home: currentLocale === 'zh' ? `${kUrlBase}/zh/` : `${kUrlBase}/en/`,
   posts: currentLocale === 'zh' ? `${kUrlBase}/zh/article/` : `${kUrlBase}/en/article/`,
   friends: currentLocale === 'zh' ? `${kUrlBase}/zh/friend/` : `${kUrlBase}/en/friend/`,
   about: currentLocale === 'zh' ? `${kUrlBase}/zh/about/` : `${kUrlBase}/en/about/`
