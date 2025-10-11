@@ -23,6 +23,16 @@ export default defineConfig({
   site: SITE,
   base: URL_BASE,
 
+  // i18n configuration - English as default
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "zh"],
+    routing: {
+      prefixDefaultLocale: true,
+      redirectDefaultLocale: true,
+    },
+  },
+
   env: {
     schema: {
       SITE: MustEnvStr(),

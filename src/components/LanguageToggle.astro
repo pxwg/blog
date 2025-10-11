@@ -1,5 +1,5 @@
 ---
-import * as config from "astro:env/client";
+import { kUrlBase } from "$consts";
 
 interface Props {
   articleId?: string;
@@ -7,54 +7,73 @@ interface Props {
 
 const { articleId } = Astro.props;
 
-function getLanguageLinks(currentUrl: string) {
-  const url = new URL(currentUrl);
-  const pathname = url.pathname;
-  const searchParams = url.searchParams;
-  
-  const currentLang = searchParams.get('lang') === 'cn' ? 'cn' : 'en';
+// Get current locale from URL
+const currentLocale = Astro.url.pathname.startsWith('/zh/') ? 'zh' : 'en';
 
-  const articleMatch = pathname.match(/\/article\/(en|zh)\/([^/]+)/);
+// Generate language toggle links
+function getLanguageLinks() {
+  const currentPath = Astro.url.pathname;
+
+  // Handle article pages
+  const articleMatch = currentPath.match(/\/(en|zh)\/article\/([^/]+)/);
   if (articleMatch) {
-    const baseSlug = articleMatch[2];
+    const currentLang = articleMatch[1];
+    const articleSlug = articleMatch[2];
+    const targetLang = currentLang === 'en' ? 'zh' : 'en';
+
     return {
-      cn: `/article/zh/${baseSlug}/?lang=cn`,
-      en: `/article/en/${baseSlug}/`,
+      zh: `${kUrlBase}/zh/article/${articleSlug}/`,
+      en: `${kUrlBase}/en/article/${articleSlug}/`,
       current: currentLang,
     };
   }
 
-  const cnParams = new URLSearchParams(searchParams);
-  cnParams.set('lang', 'cn');
-  const cnLink = `${pathname}?${cnParams.toString()}`;
+  // Handle other pages
+  const pageMatch = currentPath.match(/\/(en|zh)\/([^/]*)/);
+  if (pageMatch) {
+    const currentLang = pageMatch[1];
+    const pagePath = pageMatch[2] || '';
+    const targetLang = currentLang === 'en' ? 'zh' : 'en';
 
-  const enParams = new URLSearchParams(searchParams);
-  enParams.delete('lang');
-  const enQuery = enParams.toString();
-  const enLink = enQuery ? `${pathname}?${enQuery}` : pathname;
+    return {
+      zh: `${kUrlBase}/zh/${pagePath}`,
+      en: `${kUrlBase}/${pagePath}`,
+      current: currentLang,
+    };
+  }
 
+  // Handle about page
+  if (currentPath.includes('/about')) {
+    return {
+      zh: `${kUrlBase}/zh/about/`,
+      en: `${kUrlBase}/en/about/`,
+      current: currentPath.includes('/zh/') ? 'zh' : 'en',
+    };
+  }
+
+  // Default case (English home page)
   return {
-    cn: cnLink,
-    en: enLink || '/',
-    current: currentLang,
+    zh: `${kUrlBase}/zh/`,
+    en: `${kUrlBase}/`,
+    current: 'en',
   };
 }
 
-const links = getLanguageLinks(Astro.url.href);
+const links = getLanguageLinks();
 ---
 
 <div class="language-toggle">
-  <a 
-    href={links.cn}
+  <a
+    href={links.zh}
     class="lang-link"
     title="切换到中文"
     aria-label="Switch to Chinese"
-    data-lang="cn"
+    data-lang="zh"
   >
     中文
   </a>
   <span class="separator" aria-hidden="true">|</span>
-  <a 
+  <a
     href={links.en}
     class="lang-link"
     title="Switch to English"
@@ -64,45 +83,6 @@ const links = getLanguageLinks(Astro.url.href);
     EN
   </a>
 </div>
-
-<script>
-  /**
-   * This script now has only two simple jobs:
-   * 1. After a page transition, update the global <html> lang attribute.
-   * 2. Save the user's preference to localStorage on click.
-   */
-  function updateGlobalLangState() {
-    const isChinese = new URL(window.location.href).searchParams.get('lang') === 'cn';
-    document.documentElement.setAttribute('lang', isChinese ? 'zh' : 'en');
-  }
-
-  function setLanguagePreference(event) {
-    const target = event.currentTarget;
-    const lang = target.dataset.lang;
-    if (lang) {
-      try {
-        localStorage.setItem('preferredLanguage', lang);
-      } catch (e) {
-        // Fails silently.
-      }
-    }
-  }
-
-  function attachClickListeners() {
-    document.querySelectorAll('.language-toggle a.lang-link').forEach(link => {
-      link.removeEventListener('click', setLanguagePreference); // Prevent duplicates
-      link.addEventListener('click', setLanguagePreference);
-    });
-  }
-
-  // Use 'astro:after-swap' to update the global state before the next paint.
-  document.addEventListener('astro:after-swap', updateGlobalLangState);
-
-  // Attach listeners on initial load.
-  document.addEventListener('DOMContentLoaded', attachClickListeners);
-  // Re-attach after transitions.
-  document.addEventListener('astro:page-load', attachClickListeners);
-</script>
 
 <style>
   .language-toggle {
@@ -134,7 +114,7 @@ const links = getLanguageLinks(Astro.url.href);
     color: var(--main-hover-color);
   }
   
-  html[lang="zh"] .language-toggle .lang-link[data-lang="cn"],
+  html[lang="zh"] .language-toggle .lang-link[data-lang="zh"],
   /* When the html tag has lang="en", highlight the English link. */
   html[lang="en"] .language-toggle .lang-link[data-lang="en"] {
     color: var(--accent);

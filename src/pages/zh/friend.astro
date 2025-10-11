@@ -1,0 +1,34 @@
+---
+import BaseHead from "$components/BaseHead.astro";
+import Header from "$components/Header.astro";
+import Footer from "$components/Footer.astro";
+import { kSiteTitle, kSiteDescription, kFriendLinks } from "$consts";
+---
+
+<!doctype html>
+<html lang="zh">
+  <head>
+    <BaseHead title="友链 - " + kSiteTitle} description={kSiteDescription} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section>
+        <h1>友链</h1>
+        <ul class="accent block-list">
+          {
+            kFriendLinks.map((friend) => (
+              <li>
+                <a href={friend.url} target="_blank" rel="noopener noreferrer">
+                  <h2>{friend.name}</h2>
+                  <p>{friend.desc}</p>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>

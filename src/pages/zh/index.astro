@@ -1,0 +1,76 @@
+---
+import { getCollection } from "astro:content";
+import { TagList } from "@myriaddreamin/tylant";
+import BaseHead from "$components/BaseHead.astro";
+import Header from "$components/Header.astro";
+import Footer from "$components/Footer.astro";
+import FormattedDate from "$components/FormattedDate.astro";
+import {
+  kSiteTitle,
+  kSiteIndexTitle,
+  kSiteDescription,
+  kUrlBase,
+  kBaiduVeriCode,
+} from "$consts";
+// @ts-ignore
+import AboutContent from "../../../content/other/intro.typ?html&body";
+import "$styles/IndexPostList.css";
+
+const allPosts = (await getCollection("blog")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+// Filter posts for Chinese language
+const zhPosts = allPosts.filter(post => post.id.startsWith('zh/'));
+const recentPosts = zhPosts.slice(0, 5);
+---
+
+<!doctype html>
+<html lang="zh">
+  <head>
+    <BaseHead title={kSiteTitle} description={kSiteDescription} />
+    {
+      kBaiduVeriCode && (
+        <meta name="baidu-site-verification" content={kBaiduVeriCode} />
+      )
+    }
+    <style>
+      .comments a { display: inline-block; }
+      @media (max-width: 600px) { .posts .heading { display: flex; flex-direction: column; } }
+      .comment-item { background-color: var(--main-bg-color); }
+      .monthly li { font-style: italic; }
+    </style>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section aria-label="Prelude">
+        <h1 set:html={kSiteIndexTitle} />
+        <AboutContent />
+      </section>
+      <section aria-label="Recent Posts">
+        <h2 id="recent-posts-title">
+          最近文章
+        </h2>
+        <ul class="accent block-list posts">
+          {
+            recentPosts.map((post) => {
+              const postUrl = `${kUrlBase}/zh/article/${post.id.replace('zh/', '')}/`;
+              return (
+                <li>
+                  <a class="heading" href={postUrl}>
+                    <h2><span class="title">{post.data.title}</span></h2>
+                    <span class="date"><FormattedDate date={post.data.date} /></span>
+                  </a>
+                  {post.data.tags && <TagList tags={post.data.tags} />}
+                  {post.data.description || ""}
+                </li>
+              );
+            })
+          }
+        </ul>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>
