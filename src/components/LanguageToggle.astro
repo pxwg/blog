@@ -37,7 +37,7 @@ function getLanguageLinks() {
 
     return {
       zh: `${kUrlBase}/zh/${pagePath}`,
-      en: `${kUrlBase}/${pagePath}`,
+      en: `${kUrlBase}/en/${pagePath}`,
       current: currentLang,
     };
   }
@@ -54,7 +54,7 @@ function getLanguageLinks() {
   // Default case (English home page)
   return {
     zh: `${kUrlBase}/zh/`,
-    en: `${kUrlBase}/`,
+    en: `${kUrlBase}/en/`,
     current: 'en',
   };
 }
