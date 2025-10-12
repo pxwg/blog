@@ -7,6 +7,7 @@
     blog-tags.programming,
     blog-tags.typst,
   ),
+  llm-translated: false,
 )
 
 = Raw Blocks
