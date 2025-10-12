@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { execSync } from 'node:child_process'; 
 import TagList from "$components/TagList.astro";
 import { Search } from "@myriaddreamin/tylant";
 import BaseHead from "$components/BaseHead.astro";
@@ -22,12 +23,47 @@ export async function getStaticPaths() {
 
 const { lang } = Astro.params;
 
-const allPosts = (await getCollection("blog")).sort(
+const allPosts = await getCollection("blog");
+
+const postsWithModifiedDate = allPosts.map(post => {
+  const filePath = `content/article/${post.id}.typ`;
+  
+  try {
+    console.log('Checking filePath:', filePath);
+    // Get the last commit date and remove any trailing whitespace
+    const lastUpdated = execSync(`git log -1 --pretty="format:%cI" -- "${filePath}"`).toString().trim();
+    console.log('Git log output for', filePath, ':', lastUpdated);
+    
+    if (lastUpdated) {
+      return {
+        ...post,
+        data: {
+          ...post.data,
+          modifiedDate: new Date(lastUpdated),
+          debug: { filePath, lastUpdated, success: true }
+        }
+      };
+    }
+  } catch (e) {
+    console.log('Error for', filePath, ':', e.message);
+  }
+  
+  // If git log fails or returns empty, use the pubDate as fallback
+  return {
+    ...post,
+    data: {
+      ...post.data,
+      modifiedDate: post.data.date,
+      debug: { filePath, lastUpdated: null, success: false, fallback: true }
+    }
+  };
+});
+
+const sortedPosts = postsWithModifiedDate.sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 
-// Filter posts for the current language
-const posts = allPosts.filter(post => post.id.startsWith(`${lang}/`));
+const posts = sortedPosts.filter(post => post.id.startsWith(`${lang}/`));
 
 // Language-specific configurations
 const languageConfig = {
@@ -75,8 +111,8 @@ const config = languageConfig[lang as keyof typeof languageConfig] || languageCo
                     title: post.data.title,
                     description: post.data.description,
                     tags: post.data.tags,
-                    date: post.data.date,
-                    modifiedDate: post.data.modifiedDate
+                    date: post.data.date.toISOString(),
+                    modifiedDate: post.data.modifiedDate ? post.data.modifiedDate.toISOString() : null
                   })}
                 >
                   <a class="heading" href={postUrl}>
