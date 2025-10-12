@@ -2,6 +2,7 @@
 import { render } from "astro:content";
 import { type CollectionEntry, getCollection } from "astro:content";
 import { execSync } from "node:child_process";
+import { getGitModifiedDate } from "../../../utils/git";
 
 import BlogPost from "$layouts/BlogPost.astro";
 interface Props {
@@ -15,21 +16,14 @@ export async function getStaticPaths() {
     const [lang, ...slugParts] = post.id.split('/');
     const slug = slugParts.join('/');
 
-    // Construct the correct path to the source file
-    const filePath = `content/article/${post.id}.typ`;
+    const modifiedDate = getGitModifiedDate(post.id, {
+      contentDir: 'content/article',
+      fileExtension: '.typ',
+      fallbackDate: post.data.date,
+      debug: false
+    });
 
-    try {
-      // Get the last commit date and remove any trailing whitespace
-      const lastUpdated = execSync(`git log -1 --pretty="format:%cI" -- "${filePath}"`).toString().trim();
-
-      // Only update the date if the command returned a valid string
-      if (lastUpdated) {
-        post.data.updatedDate = new Date(lastUpdated);
-      }
-    } catch (e) {
-      // If git log fails (e.g., for a new untracked file),
-      // we can silently ignore it and the updatedDate will not be set.
-    }
+    post.data.modifiedDate = modifiedDate;
 
     return {
       params: {

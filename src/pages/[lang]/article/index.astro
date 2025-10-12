@@ -9,6 +9,7 @@ import FormattedDate from "$components/FormattedDate.astro";
 import Header from "$components/Header.astro";
 import { kUrlBase, kSiteTitle, kSiteDescription, kEnableSearch } from "$consts";
 import "$styles/IndexPostList.css";
+import { getGitModifiedDate } from "../../../utils/git";
 
 interface Props {
   lang: string;
@@ -26,35 +27,18 @@ const { lang } = Astro.params;
 const allPosts = await getCollection("blog");
 
 const postsWithModifiedDate = allPosts.map(post => {
-  const filePath = `content/article/${post.id}.typ`;
-  
-  try {
-    console.log('Checking filePath:', filePath);
-    // Get the last commit date and remove any trailing whitespace
-    const lastUpdated = execSync(`git log -1 --pretty="format:%cI" -- "${filePath}"`).toString().trim();
-    console.log('Git log output for', filePath, ':', lastUpdated);
-    
-    if (lastUpdated) {
-      return {
-        ...post,
-        data: {
-          ...post.data,
-          modifiedDate: new Date(lastUpdated),
-          debug: { filePath, lastUpdated, success: true }
-        }
-      };
-    }
-  } catch (e) {
-    console.log('Error for', filePath, ':', e.message);
-  }
-  
-  // If git log fails or returns empty, use the pubDate as fallback
+  const modifiedDate = getGitModifiedDate(post.id, {
+    contentDir: 'content/article',
+    fileExtension: '.typ',
+    fallbackDate: post.data.date,
+    debug: true
+  });
+
   return {
     ...post,
     data: {
       ...post.data,
-      modifiedDate: post.data.date,
-      debug: { filePath, lastUpdated: null, success: false, fallback: true }
+      modifiedDate
     }
   };
 });
