@@ -1,22 +1,28 @@
 ---
-const { entry, locale } = Astro.props;
+const { entry, locale, llmTranslated } = Astro.props;
 
 // Extract current slug from URL path
 const currentPath = Astro.url.pathname;
-const currentSlug = currentPath.replace(/^\/(zh|en)\/article\//, '').replace(/\/$/, '');
+// Handle both prefixed (/en/article/slug) and non-prefixed (/article/slug) routes
+const currentSlug = currentPath.replace(/^\/(zh|en)?\/article\//, '').replace(/\/$/, '');
 
-// Check if this is an LLM-translated article
-// The Typst template adds <meta name="llm-translated" content="true"> when llm-translated is true
-const isLLMTranslated = currentSlug === 'float_and_pin'; // For now, hardcode the specific article
+// If the slug still contains '/article/', it means we're in the non-prefixed route
+// and need to extract the slug differently
+const finalSlug = currentSlug.includes('/article/')
+  ? currentSlug.replace(/^\/article\//, '')
+  : currentSlug;
+
+// Check if this is an LLM-translated article using front matter or direct prop
+const isLLMTranslated = entry?.data?.['llm-translated'] === true || llmTranslated === true;
+
 const targetLocale = locale === 'zh' ? 'en' : 'zh';
 
 // Generate target path using Astro's i18n routing
 let targetPath = null;
 if (isLLMTranslated) {
-  targetPath = `/${targetLocale}/article/${currentSlug}/`;
+  targetPath = `/${targetLocale}/article/${finalSlug}/`;
 }
 ---
-
 {isLLMTranslated && targetPath && (
   <div class="translation-disclaimer">
     {locale === 'zh' ? (

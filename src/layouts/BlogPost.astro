@@ -22,6 +22,7 @@ type Props = CollectionEntry<"blog">["data"] & (IdExt | { id: false }) & {
 
 const { id, title, description, date, updatedDate, tags, author, entry, ...rest } =
   Astro.props;
+console.log('BlogPost entry:', entry);
 
 const stat: { like?: number; click?: number } =
   ((kEnableClick || kEnableReaction) &&
@@ -33,6 +34,7 @@ const pdfArchives = await getCollection("archive");
 
 // Determine current language from URL
 const currentLocale = Astro.url.pathname.startsWith('/zh/') ? 'zh' : 'en';
+const llmTranslated = rest?.['llm-translated'] === true;
 ---
 
 <html lang={currentLocale}>
@@ -166,10 +168,10 @@ const currentLocale = Astro.url.pathname.startsWith('/zh/') ? 'zh' : 'en';
               }
             </div>
             <h1>{title}</h1>
+            <TranslationLink entry={entry} locale={currentLocale} llmTranslated={llmTranslated} />
             <hr />
           </section>
           <slot />
-          <TranslationLink entry={entry} locale={currentLocale} />
         </div>
       </article>
       {tags && <TagList tags={tags} />}

@@ -8,12 +8,13 @@
     blog-tags.physics,
     blog-tags.quantum-field,
   ),
+  llm-translated: true,
 )
 
-#translation-disclaimer(
-  original-path: "ghost_number",
-  lang: "zh",
-)
+// #translation-disclaimer(
+//   original-path: "ghost_number",
+//   lang: "zh",
+// )
 
 = 引言：球面内的磁单极子
 
