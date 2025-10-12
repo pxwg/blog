@@ -4,9 +4,12 @@ import type { CollectionEntry } from "astro:content";
 
 import BlogPost from "$layouts/BlogPost.astro";
 import { getGitModifiedDate } from "../../../utils/git";
+import { buildTranslationMap, findTranslation } from "../../../utils/translation";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
+  const translationMap = await buildTranslationMap(posts);
+
   return posts.map((post) => {
     const [lang, ...slugParts] = post.id.split('/');
     const slug = slugParts.join('/');
@@ -21,26 +24,25 @@ export async function getStaticPaths() {
 
     return {
       params: { lang, slug },
-      props: { post },
+      props: { post, translationMap },
     };
   });
 }
 
-type Props = { post: CollectionEntry<'blog'> };
-const { post } = Astro.props;
+type Props = {
+  post: CollectionEntry<'blog'>;
+  translationMap: Record<string, { en?: CollectionEntry<'blog'>; zh?: CollectionEntry<'blog'> }>;
+};
+const { post, translationMap } = Astro.props;
 const { lang: urlLang } = Astro.params;
 
 // Use frontmatter language as single source of truth
 const { lang: postLang, translationKey } = post.data;
 
-// Find translation using translationKey
+// Find translation using pre-built translation map
 let translationUrl: string | undefined = undefined;
 if (translationKey) {
-  const targetLang = postLang === 'en' ? 'zh' : 'en';
-  const allPosts = await getCollection('blog');
-  const translatedPost = allPosts.find(
-    (p) => p.data.translationKey === translationKey && p.data.lang === targetLang
-  );
+  const translatedPost = findTranslation(translationMap, translationKey, postLang);
 
   if (translatedPost) {
     translationUrl = `/${translatedPost.id.replace('/', '/article/')}/`;

@@ -1,5 +1,5 @@
 ---
-import { getCurrentLanguage, generateLanguageToggleUrl, translations } from "$utils/i18n";
+import { getCurrentLanguage, generateLanguageToggleUrl } from "$utils/i18n";
 
 interface Props {
   articleId?: string;
@@ -10,21 +10,21 @@ const { articleId } = Astro.props;
 // Get current locale from URL
 const currentLocale = getCurrentLanguage(Astro.url.pathname);
 
-// Generate language toggle URL - switch to the opposite language
-const targetLocale = currentLocale === 'en' ? 'zh' : 'en';
-const toggleUrl = generateLanguageToggleUrl(Astro.url.pathname, targetLocale);
+// Generate URLs for both languages
+const enUrl = generateLanguageToggleUrl(Astro.url.pathname, 'en');
+const zhUrl = generateLanguageToggleUrl(Astro.url.pathname, 'zh');
 ---
 
 <div class="language-toggle">
-  <a
-    href={toggleUrl}
-    class="lang-link"
-    title={currentLocale === 'en' ? translations.switchToChinese : translations.switchToEnglish}
-    aria-label={currentLocale === 'en' ? "Switch to Chinese" : "Switch to English"}
-    data-lang={currentLocale === 'en' ? "zh" : "en"}
-  >
-    {currentLocale === 'en' ? "中文" : "EN"}
-  </a>
+  {currentLocale === 'zh' ? (
+    <>
+      <a href={enUrl} class="lang-link" data-lang="en">EN</a>
+    </>
+  ) : (
+    <>
+      <a href={zhUrl} class="lang-link" data-lang="zh">中文</a>
+    </>
+  )}
 </div>
 
 <style>
@@ -37,7 +37,7 @@ const toggleUrl = generateLanguageToggleUrl(Astro.url.pathname, targetLocale);
     z-index: 10;
     right: 9px;
   }
-  
+
   .lang-link {
     color: var(--gray-color);
     text-decoration: none;
@@ -52,20 +52,18 @@ const toggleUrl = generateLanguageToggleUrl(Astro.url.pathname, targetLocale);
     font-family: inherit;
     font-size: inherit;
   }
-  
+
   .lang-link:hover {
     color: var(--main-hover-color);
   }
-  
-  html[lang="zh"] .language-toggle .lang-link[data-lang="zh"],
-  /* When the html tag has lang="en", highlight the English link. */
-  html[lang="en"] .language-toggle .lang-link[data-lang="en"] {
+
+  .current-lang {
     color: var(--accent);
     font-weight: 400;
-    border-bottom-color: var(--accent);
-    text-decoration: underline;
+    padding: 0.25em .5em;
+    border-bottom: 2px solid var(--accent);
   }
-  
+
   .separator {
     color: var(--gray-color);
     opacity: 0.5;

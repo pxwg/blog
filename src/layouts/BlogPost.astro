@@ -176,25 +176,11 @@ const pdfArchives = await getCollection("archive");
               }
             </div>
             <h1>{title}</h1>
-            {
-              translationUrl && (
-                <div class="translation-notice">
-                  {currentLang === 'zh' ? 'Also available in ' : '亦有'}
-                  <a href={translationUrl}>
-                    {currentLang === 'zh' ? 'English' : '中文版本'}
-                  </a>
-                </div>
-              )
-            }
-            {
-              llmTranslated && (
-                <TranslationLink
-                  entry={Astro.props}
-                  locale={currentLang}
-                  llmTranslated={llmTranslated}
-                />
-              )
-            }
+            <TranslationLink
+              entry={Astro.props}
+              locale={currentLang}
+              llmTranslated={llmTranslated}
+            />
             <hr />
           </section>
           <slot />

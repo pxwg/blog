@@ -1,5 +1,5 @@
 ---
-import { getTargetLanguage, getTranslationDisclaimer } from "$utils/i18n";
+import { getTargetLanguage, getTranslationDisclaimer, getTranslationLinks} from "$utils/i18n";
 
 const { entry, locale, llmTranslated } = Astro.props;
 
@@ -21,15 +21,21 @@ const targetLocale = getTargetLanguage(locale as any);
 
 // Generate target path using Astro's i18n routing
 let targetPath = null;
-if (isLLMTranslated) {
-  targetPath = `/${targetLocale}/article/${finalSlug}/`;
-}
+targetPath = `/${targetLocale}/article/${finalSlug}/`;
+
 ---
 {isLLMTranslated && targetPath && (
   <div class="translation-disclaimer">
     <span set:html={getTranslationDisclaimer(locale as any, targetPath)} />
   </div>
 )}
+
+{!isLLMTranslated && targetPath && (
+  <div class="translation-disclaimer">
+    <span set:html={getTranslationLinks(locale as any, targetPath)} />
+  </div>
+)}
+  
 
 <style>
 .translation-disclaimer {
