@@ -25,20 +25,18 @@ if (isLLMTranslated) {
 ---
 {isLLMTranslated && targetPath && (
   <div class="translation-disclaimer">
-    <span class="translation-note-title">
-      📝 {locale === 'zh' ? '翻译声明' : 'Translation Notice'}:
-    </span>
     {locale === 'zh' ? (
       <span>
-        本文由 LLM 从原文翻译而来，可能存在翻译不准确之处。建议阅读 <a href={targetPath}>原文</a> 以获得最准确的内容。
+        📝 翻译声明：本文由 LLM 从原文翻译而来，可能存在翻译不准确之处。建议阅读 <a href={targetPath}>原文</a> 以获得最准确的内容。
       </span>
     ) : (
       <span>
-        This article was translated from the original by LLM and may contain inaccuracies. Please refer to the <a href={targetPath}>original article</a> for the most accurate content.
+        📝 Translation Notice: This article was translated from the original by LLM and may contain inaccuracies. Please refer to the <a href={targetPath}>original article</a> for the most accurate content.
       </span>
     )}
   </div>
 )}
+
 <style>
 .translation-disclaimer {
   margin: 0.75em 0;
