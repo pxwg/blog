@@ -8,6 +8,8 @@
     blog-tags.physics,
     blog-tags.quantum-field,
   ),
+  lang: "en",
+  translationKey: "ghost_number",
 )
 
 = Introduction: Monopole Inside a Sphere

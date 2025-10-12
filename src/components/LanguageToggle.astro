@@ -1,5 +1,5 @@
 ---
-import { getCurrentLanguage, generateLanguageLinks, translations } from "$utils/i18n";
+import { getCurrentLanguage, generateLanguageToggleUrl, translations } from "$utils/i18n";
 
 interface Props {
   articleId?: string;
@@ -10,29 +10,20 @@ const { articleId } = Astro.props;
 // Get current locale from URL
 const currentLocale = getCurrentLanguage(Astro.url.pathname);
 
-// Generate language toggle links
-const links = generateLanguageLinks(Astro.url.pathname, currentLocale);
+// Generate language toggle URL - switch to the opposite language
+const targetLocale = currentLocale === 'en' ? 'zh' : 'en';
+const toggleUrl = generateLanguageToggleUrl(Astro.url.pathname, targetLocale);
 ---
 
 <div class="language-toggle">
   <a
-    href={links.zh}
+    href={toggleUrl}
     class="lang-link"
-    title={translations.switchToChinese}
-    aria-label="Switch to Chinese"
-    data-lang="zh"
+    title={currentLocale === 'en' ? translations.switchToChinese : translations.switchToEnglish}
+    aria-label={currentLocale === 'en' ? "Switch to Chinese" : "Switch to English"}
+    data-lang={currentLocale === 'en' ? "zh" : "en"}
   >
-    中文
-  </a>
-  <span class="separator" aria-hidden="true">|</span>
-  <a
-    href={links.en}
-    class="lang-link"
-    title={translations.switchToEnglish}
-    aria-label="Switch to English"
-    data-lang="en"
-  >
-    EN
+    {currentLocale === 'en' ? "中文" : "EN"}
   </a>
 </div>
 

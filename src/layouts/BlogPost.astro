@@ -1,5 +1,5 @@
 ---
-import type { CollectionEntry } from "astro:content";
+import type { CollectionEntry, Heading } from "astro:content";
 import { getCollection } from "astro:content";
 
 import { PostClick } from "@myriaddreamin/tylant";
@@ -12,17 +12,29 @@ import FormattedDate from "$components/FormattedDate.astro";
 import TranslationLink from "$components/TranslationLink.astro";
 import { kEnableClick, kArticleStats, kEnableReaction } from "$consts";
 
-interface IdExt {
-  id: string;
+interface Props extends CollectionEntry<'blog'>['data'] {
+  id: CollectionEntry<'blog'>['id'];
+  slug: CollectionEntry<'blog'>['slug'];
+  headings: Heading[];
+  translationUrl?: string;
 }
 
-type Props = CollectionEntry<"blog">["data"] & (IdExt | { id: false }) & {
-  entry: CollectionEntry<"blog">;
-};
+const {
+  id,
+  title,
+  description,
+  date,
+  updatedDate,
+  tags,
+  author,
+  lang,
+  translationUrl,
+  'llm-translated': llmTranslated,
+  headings
+} = Astro.props;
 
-const { id, title, description, date, updatedDate, tags, author, entry, ...rest } =
-  Astro.props;
-console.log('BlogPost entry:', entry);
+// Use frontmatter language as primary source, fallback to URL detection
+const currentLang = lang || (Astro.url.pathname.startsWith('/zh/') ? 'zh' : 'en');
 
 const stat: { like?: number; click?: number } =
   ((kEnableClick || kEnableReaction) &&
@@ -31,13 +43,9 @@ const stat: { like?: number; click?: number } =
 const click = stat.click || 0;
 const like = stat.like || 0;
 const pdfArchives = await getCollection("archive");
-
-// Determine current language from URL
-const currentLocale = Astro.url.pathname.startsWith('/zh/') ? 'zh' : 'en';
-const llmTranslated = rest?.['llm-translated'] === true;
 ---
 
-<html lang={currentLocale}>
+<html lang={currentLang}>
   <head>
     <BaseHead title={title} description={description} />
     <style is:global>
@@ -168,13 +176,31 @@ const llmTranslated = rest?.['llm-translated'] === true;
               }
             </div>
             <h1>{title}</h1>
-            <TranslationLink entry={entry} locale={currentLocale} llmTranslated={llmTranslated} />
+            {
+              translationUrl && (
+                <div class="translation-notice">
+                  {currentLang === 'zh' ? 'Also available in ' : '亦有'}
+                  <a href={translationUrl}>
+                    {currentLang === 'zh' ? 'English' : '中文版本'}
+                  </a>
+                </div>
+              )
+            }
+            {
+              llmTranslated && (
+                <TranslationLink
+                  entry={Astro.props}
+                  locale={currentLang}
+                  llmTranslated={llmTranslated}
+                />
+              )
+            }
             <hr />
           </section>
           <slot />
         </div>
       </article>
-      {tags && <TagList tags={tags} lang={currentLocale}/>}
+      {tags && <TagList tags={tags} lang={lang || currentLang}/>}
     </main>
     <Footer />
   </body>

@@ -7,6 +7,8 @@
     blog-tags.programming,
     blog-tags.typst,
   ),
+  lang: "zh",
+  translationKey: "syntax",
   llm-translated: true,
 )
 

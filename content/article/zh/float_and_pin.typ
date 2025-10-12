@@ -8,6 +8,8 @@
     blog-tags.macos,
     blog-tags.programming,
   ),
+  lang: "zh",
+  translationKey: "float_and_pin",
 )
 
 = 缘起

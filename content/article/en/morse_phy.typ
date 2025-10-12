@@ -11,6 +11,8 @@
     blog-tags.math,
     blog-tags.topology,
   ),
+  lang: "en",
+  translationKey: "morse_phy",
 )
 
 #let theorem(name: none, body) = {

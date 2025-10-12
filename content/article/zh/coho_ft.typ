@@ -8,6 +8,8 @@
     blog-tags.physics,
     blog-tags.quantum-field,
   ),
+  lang: "zh",
+  translationKey: "coho_ft",
 )
 
 *警告*: Typst 的 html 输出为实验性功能，可能无法如预期工作。例如，非文件/非 URL 链接可能无法正常工作。

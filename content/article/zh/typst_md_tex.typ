@@ -9,6 +9,8 @@
     blog-tags.programming,
     blog-tags.typst,
   ),
+  lang: "zh",
+  translationKey: "typst_md_tex",
   llm-translated: true,
 )
 

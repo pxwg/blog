@@ -9,6 +9,8 @@
     blog-tags.programming,
     blog-tags.typst,
   ),
+  lang: "en",
+  translationKey: "typst_md_tex",
 )
 
 #let blank(body) = {

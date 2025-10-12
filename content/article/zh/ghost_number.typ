@@ -8,6 +8,8 @@
     blog-tags.physics,
     blog-tags.quantum-field,
   ),
+  lang: "zh",
+  translationKey: "ghost_number",
   llm-translated: true,
 )
 

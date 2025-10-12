@@ -129,51 +129,25 @@ export function getLanguageConfig(
 }
 
 /**
- * Generate language toggle links for any page
+ * Generate language toggle URL for any page
  */
-export function generateLanguageLinks(
-  currentPath: string,
-  currentLang: Language
-): { zh: string; en: string; current: Language } {
-  const targetLang = getTargetLanguage(currentLang);
+export function generateLanguageToggleUrl(
+  pathname: string,
+  targetLang: 'en' | 'zh'
+): string {
+  const pathParts = pathname.split('/').filter(Boolean);
 
-  // Handle article pages
-  const articleMatch = currentPath.match(/\/(en|zh)\/article\/([^/]+)/);
-  if (articleMatch) {
-    const articleSlug = articleMatch[2];
-    return {
-      zh: `${kUrlBase}/zh/article/${articleSlug}/`,
-      en: `${kUrlBase}/en/article/${articleSlug}/`,
-      current: currentLang
-    };
+  if (pathParts.length > 0) {
+    if (pathParts[0] === 'en' || pathParts[0] === 'zh') {
+      pathParts[0] = targetLang;
+    } else {
+      pathParts.unshift(targetLang);
+    }
+  } else {
+    return `/${targetLang}/`;
   }
 
-  // Handle other pages
-  const pageMatch = currentPath.match(/\/(en|zh)\/([^/]*)/);
-  if (pageMatch) {
-    const pagePath = pageMatch[2] || '';
-    return {
-      zh: `${kUrlBase}/zh/${pagePath}`,
-      en: `${kUrlBase}/en/${pagePath}`,
-      current: currentLang
-    };
-  }
-
-  // Handle about page
-  if (currentPath.includes('/about')) {
-    return {
-      zh: `${kUrlBase}/zh/about/`,
-      en: `${kUrlBase}/en/about/`,
-      current: currentLang
-    };
-  }
-
-  // Default case (home page)
-  return {
-    zh: `${kUrlBase}/zh/`,
-    en: `${kUrlBase}/en/`,
-    current: 'en'
-  };
+  return `/${pathParts.join('/')}/`;
 }
 
 /**

@@ -8,6 +8,8 @@
     blog-tags.physics,
     blog-tags.quantum-field,
   ),
+  lang: "en",
+  translationKey: "coho_ft",
 )
 
 *Warning*: Typst html output is experimental and may not work as expected. For example, the non-file/non-URL links would not work properly.

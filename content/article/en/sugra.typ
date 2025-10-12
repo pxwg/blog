@@ -7,4 +7,6 @@
   tags: (
     blog-tags.physics,
   ),
+  lang: "en",
+  translationKey: "sugra",
 )

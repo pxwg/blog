@@ -9,6 +9,8 @@
     blog-tags.macos,
     blog-tags.programming,
   ),
+  lang: "en",
+  translationKey: "float_and_pin",
   llm-translated: true,
 )
 
