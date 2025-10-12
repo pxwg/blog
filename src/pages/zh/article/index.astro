@@ -40,7 +40,16 @@ const zhPosts = allPosts.filter(post => post.id.startsWith('zh/'));
             zhPosts.map((post) => {
               const postUrl = `${kUrlBase}/zh/article/${post.id.replace('zh/', '')}/`;
               return (
-                <li>
+                <li
+                  data-article-id={post.id}
+                  data-article-meta={JSON.stringify({
+                    title: post.data.title,
+                    description: post.data.description,
+                    tags: post.data.tags,
+                    date: post.data.date,
+                    modifiedDate: post.data.modifiedDate
+                  })}
+                >
                   <a class="heading" href={postUrl}>
                     <h2><span class="title">{post.data.title}</span></h2>
                     <span class="date"><FormattedDate date={post.data.date} /></span>
@@ -48,7 +57,7 @@ const zhPosts = allPosts.filter(post => post.id.startsWith('zh/'));
                   {post.data.tags && <TagList tags={post.data.tags} />}
                   {post.data.description || ""}
                 </li>
-              );
+              )
             })
           }
         </ul>
