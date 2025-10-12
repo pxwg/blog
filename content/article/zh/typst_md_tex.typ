@@ -9,11 +9,7 @@
     blog-tags.programming,
     blog-tags.typst,
   ),
-)
-
-#translation-disclaimer(
-  original-path: "typst_md_tex",
-  lang: "zh",
+  llm-translated: true,
 )
 
 #let blank(body) = {

@@ -7,11 +7,7 @@
     blog-tags.programming,
     blog-tags.typst,
   ),
-)
-
-#translation-disclaimer(
-  original-path: "syntax",
-  lang: "zh",
+  llm-translated: true,
 )
 
 = 原始代码块
