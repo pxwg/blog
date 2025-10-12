@@ -1,0 +1,31 @@
+---
+interface Props {
+  baseUrl?: string;
+  tags: string[];
+  lang?: string;
+}
+
+const {
+  tags,
+  lang = "en",
+  baseUrl = import.meta.env.BASE_URL.endsWith("/")
+    ? `${import.meta.env.BASE_URL}${lang}/article`
+    : `${import.meta.env.BASE_URL}/${lang}/article`,
+} = Astro.props;
+
+const postByTag = (tag: string) => {
+  const params = new URLSearchParams();
+  params.set("search", tag);
+  return `${baseUrl}?${params}`;
+};
+---
+
+<ul class="tags" aria-label="Tags">
+  {
+    tags.map((tag) => (
+      <li>
+        <a href={postByTag(tag)}>#{tag}</a>
+      </li>
+    ))
+  }
+</ul>

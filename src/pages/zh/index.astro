@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import { TagList } from "@myriaddreamin/tylant";
+import  TagList  from "$components/TagList.astro";
 import BaseHead from "$components/BaseHead.astro";
 import Header from "$components/Header.astro";
 import Footer from "$components/Footer.astro";
@@ -62,7 +62,7 @@ const recentPosts = zhPosts.slice(0, 5);
                     <h2><span class="title">{post.data.title}</span></h2>
                     <span class="date"><FormattedDate date={post.data.date} /></span>
                   </a>
-                  {post.data.tags && <TagList tags={post.data.tags} />}
+                  {post.data.tags && <TagList tags={post.data.tags} lang="zh"/>}
                   {post.data.description || ""}
                 </li>
               );

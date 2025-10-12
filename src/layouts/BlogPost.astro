@@ -3,7 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 
 import { PostClick } from "@myriaddreamin/tylant";
-import { TagList } from "@myriaddreamin/tylant";
+import TagList from "$components/TagList.astro";
 
 import BaseHead from "$components/BaseHead.astro";
 import Header from "$components/Header.astro";
@@ -174,7 +174,7 @@ const llmTranslated = rest?.['llm-translated'] === true;
           <slot />
         </div>
       </article>
-      {tags && <TagList tags={tags} />}
+      {tags && <TagList tags={tags} lang={currentLocale}/>}
     </main>
     <Footer />
   </body>
