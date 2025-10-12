@@ -25,36 +25,42 @@ if (isLLMTranslated) {
 ---
 {isLLMTranslated && targetPath && (
   <div class="translation-disclaimer">
+    <span class="translation-note-title">
+      📝 {locale === 'zh' ? '翻译声明' : 'Translation Notice'}:
+    </span>
     {locale === 'zh' ? (
       <span>
-        📝 翻译声明：本文由 LLM 从原文翻译而来，可能存在翻译不准确之处。建议阅读 <a href={targetPath}>原文</a> 以获得最准确的内容。
+        本文由 LLM 从原文翻译而来，可能存在翻译不准确之处。建议阅读 <a href={targetPath}>原文</a> 以获得最准确的内容。
       </span>
     ) : (
       <span>
-        📝 Translation Notice: This article was translated from the original by LLM and may contain inaccuracies. Please refer to the <a href={targetPath}>original article</a> for the most accurate content.
+        This article was translated from the original by LLM and may contain inaccuracies. Please refer to the <a href={targetPath}>original article</a> for the most accurate content.
       </span>
     )}
   </div>
 )}
-
 <style>
 .translation-disclaimer {
   margin: 0.75em 0;
   padding: 0.75em 0.9em;
-  border-left: 3px solid var(--dash-color, #007acc);
-  background: var(--code-bg-color, #f8f9fa);
+  border-left: 3px solid var(--accent);
+  background: var(--raw-bg-color);
   border-radius: 6px;
-  color: var(--text-secondary, #666);
+  color: var(--gray-color);
   font-size: 0.9em;
   line-height: 1.35;
 }
-
+.translation-note-title {
+  color: var(--accent);
+  font-weight: 600;
+  margin-right: 0.3em;
+}
 .translation-disclaimer a {
-  color: var(--dash-color, #007acc);
+  color: var(--accent);
   text-decoration: underline;
 }
-
 .translation-disclaimer a:hover {
-  opacity: 0.8;
+  color: var(--accent-dark);
+  opacity: 0.9;
 }
 </style>
