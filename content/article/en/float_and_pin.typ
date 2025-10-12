@@ -9,11 +9,7 @@
     blog-tags.macos,
     blog-tags.programming,
   ),
-)
-
-#translation-disclaimer(
-  original-path: "float_and_pin",
-  lang: "en",
+  llm-translated: true,
 )
 
 = Origin

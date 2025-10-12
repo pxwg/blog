@@ -14,6 +14,9 @@ const blog = defineCollection({
     // Transform string to Date object
     updatedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).optional(),
+    lang: z.string().nullable().optional(),
+    region: z.string().nullable().optional(),
+    "llm-translated": z.boolean().optional(),
   }),
 });
 
@@ -32,6 +35,9 @@ const archive = kEnableArchive
           // Transform string to Date object
           updatedDate: z.coerce.date().optional(),
           tags: z.array(z.string()).optional(),
+          lang: z.string().optional(),
+          region: z.string().optional(),
+          "llm-translated": z.boolean().optional(),
         }),
       }),
     }
