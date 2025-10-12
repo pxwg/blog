@@ -9,16 +9,45 @@ import Header from "$components/Header.astro";
 import { kUrlBase, kSiteTitle, kSiteDescription, kEnableSearch } from "$consts";
 import "$styles/IndexPostList.css";
 
+interface Props {
+  lang: string;
+}
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "en" } },
+    { params: { lang: "zh" } }
+  ];
+}
+
+const { lang } = Astro.params;
+
 const allPosts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 
-// Filter posts for Chinese language
-const zhPosts = allPosts.filter(post => post.id.startsWith('zh/'));
+// Filter posts for the current language
+const posts = allPosts.filter(post => post.id.startsWith(`${lang}/`));
+
+// Language-specific configurations
+const languageConfig = {
+  en: {
+    htmlLang: "en",
+    title: "All Posts",
+    tagListLang: undefined
+  },
+  zh: {
+    htmlLang: "zh",
+    title: "全部文章",
+    tagListLang: "zh"
+  }
+};
+
+const config = languageConfig[lang as keyof typeof languageConfig] || languageConfig.en;
 ---
 
 <!doctype html>
-<html lang="zh">
+<html lang={config.htmlLang}>
   <head>
     <BaseHead title={kSiteTitle} description={kSiteDescription} />
     <style>
@@ -33,12 +62,12 @@ const zhPosts = allPosts.filter(post => post.id.startsWith('zh/'));
     <main class={kEnableSearch ? "search-enabled" : ""}>
       <section>
         <h2 style="margin-bottom: 1rem; font-size: 2rem;">
-          全部文章
+          {config.title}
         </h2>
         <ul class={`accent block-list posts${kEnableSearch ? " loading" : ""}`}>
           {
-            zhPosts.map((post) => {
-              const postUrl = `${kUrlBase}/zh/article/${post.id.replace('zh/', '')}/`;
+            posts.map((post) => {
+              const postUrl = `${kUrlBase}/${lang}/article/${post.id.replace(`${lang}/`, '')}/`;
               return (
                 <li
                   data-article-id={post.id}
@@ -54,7 +83,7 @@ const zhPosts = allPosts.filter(post => post.id.startsWith('zh/'));
                     <h2><span class="title">{post.data.title}</span></h2>
                     <span class="date"><FormattedDate date={post.data.date} /></span>
                   </a>
-                  {post.data.tags && <TagList tags={post.data.tags} lang="zh" />}
+                  {post.data.tags && <TagList tags={post.data.tags} lang={config.tagListLang} />}
                   {post.data.description || ""}
                 </li>
               )
