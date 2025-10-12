@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import { execSync } from 'node:child_process'; 
+import { execSync } from 'node:child_process';
 import TagList from "$components/TagList.astro";
 import { Search } from "@myriaddreamin/tylant";
 import BaseHead from "$components/BaseHead.astro";
@@ -10,6 +10,7 @@ import Header from "$components/Header.astro";
 import { kUrlBase, kSiteTitle, kSiteDescription, kEnableSearch } from "$consts";
 import "$styles/IndexPostList.css";
 import { getGitModifiedDate } from "../../../utils/git";
+import { getSafeLanguageConfig } from "$utils/i18n";
 
 interface Props {
   lang: string;
@@ -49,21 +50,7 @@ const sortedPosts = postsWithModifiedDate.sort(
 
 const posts = sortedPosts.filter(post => post.id.startsWith(`${lang}/`));
 
-// Language-specific configurations
-const languageConfig = {
-  en: {
-    htmlLang: "en",
-    title: "All Posts",
-    tagListLang: undefined
-  },
-  zh: {
-    htmlLang: "zh",
-    title: "全部文章",
-    tagListLang: "zh"
-  }
-};
-
-const config = languageConfig[lang as keyof typeof languageConfig] || languageConfig.en;
+const config = getSafeLanguageConfig('articleIndex', lang as any);
 ---
 
 <!doctype html>

@@ -4,6 +4,7 @@ import Layout from "$layouts/BlogPost.astro";
 // @ts-ignore
 import AboutContent from "../../../content/other/about.typ?html&body";
 import { getGitModifiedDateByPath } from "../../utils/git";
+import { getSafeLanguageConfig } from "$utils/i18n";
 
 export async function getStaticPaths() {
   return [
@@ -22,24 +23,7 @@ const modifiedDate = getGitModifiedDateByPath(about_path, {
 });
 
 
-const languageConfig = {
-  en: {
-    htmlLang: "en",
-    title: "About me",
-    description: "Things about pxwg",
-    tagListLang: undefined,
-    modifiedDate: modifiedDate
-  },
-  zh: {
-    htmlLang: "zh",
-    title: "关于我",
-    description: "关于pxwg",
-    tagListLang: "zh",
-    modifiedDate: modifiedDate
-  }
-};
-
-const config = languageConfig[lang as keyof typeof languageConfig] || languageConfig.en;
+const config = getSafeLanguageConfig('about', lang as any, { modifiedDate });
 
 ---
 

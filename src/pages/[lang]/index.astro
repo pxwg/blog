@@ -16,6 +16,7 @@ import {
 import AboutContent from "../../../content/other/intro.typ?html&body";
 import "$styles/IndexPostList.css";
 import { getGitModifiedDate } from "../../utils/git";
+import { getSafeLanguageConfig } from "$utils/i18n";
 
 export async function getStaticPaths() {
   return [
@@ -52,20 +53,7 @@ const recentPosts = postsWithModifiedDate.sort(
 
 const posts = recentPosts.filter(post => post.id.startsWith(`${lang}/`)).slice(0, 5);
 
-const languageConfig = {
-  en: {
-    htmlLang: "en",
-    title: "Recent Posts",
-    tagListLang: undefined
-  },
-  zh: {
-    htmlLang: "zh",
-    title: "最近文章",
-    tagListLang: "zh"
-  }
-};
-
-const config = languageConfig[lang as keyof typeof languageConfig] || languageConfig.en;
+const config = getSafeLanguageConfig('index', lang as any);
 
 ---
 

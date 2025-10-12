@@ -1,5 +1,5 @@
 ---
-import { kUrlBase } from "$consts";
+import { getCurrentLanguage, generateLanguageLinks, translations } from "$utils/i18n";
 
 interface Props {
   articleId?: string;
@@ -8,65 +8,17 @@ interface Props {
 const { articleId } = Astro.props;
 
 // Get current locale from URL
-const currentLocale = Astro.url.pathname.startsWith('/zh/') ? 'zh' : 'en';
+const currentLocale = getCurrentLanguage(Astro.url.pathname);
 
 // Generate language toggle links
-function getLanguageLinks() {
-  const currentPath = Astro.url.pathname;
-
-  // Handle article pages
-  const articleMatch = currentPath.match(/\/(en|zh)\/article\/([^/]+)/);
-  if (articleMatch) {
-    const currentLang = articleMatch[1];
-    const articleSlug = articleMatch[2];
-    const targetLang = currentLang === 'en' ? 'zh' : 'en';
-
-    return {
-      zh: `${kUrlBase}/zh/article/${articleSlug}/`,
-      en: `${kUrlBase}/en/article/${articleSlug}/`,
-      current: currentLang,
-    };
-  }
-
-  // Handle other pages
-  const pageMatch = currentPath.match(/\/(en|zh)\/([^/]*)/);
-  if (pageMatch) {
-    const currentLang = pageMatch[1];
-    const pagePath = pageMatch[2] || '';
-    const targetLang = currentLang === 'en' ? 'zh' : 'en';
-
-    return {
-      zh: `${kUrlBase}/zh/${pagePath}`,
-      en: `${kUrlBase}/en/${pagePath}`,
-      current: currentLang,
-    };
-  }
-
-  // Handle about page
-  if (currentPath.includes('/about')) {
-    return {
-      zh: `${kUrlBase}/zh/about/`,
-      en: `${kUrlBase}/en/about/`,
-      current: currentPath.includes('/zh/') ? 'zh' : 'en',
-    };
-  }
-
-  // Default case (English home page)
-  return {
-    zh: `${kUrlBase}/zh/`,
-    en: `${kUrlBase}/en/`,
-    current: 'en',
-  };
-}
-
-const links = getLanguageLinks();
+const links = generateLanguageLinks(Astro.url.pathname, currentLocale);
 ---
 
 <div class="language-toggle">
   <a
     href={links.zh}
     class="lang-link"
-    title="切换到中文"
+    title={translations.switchToChinese}
     aria-label="Switch to Chinese"
     data-lang="zh"
   >
@@ -76,7 +28,7 @@ const links = getLanguageLinks();
   <a
     href={links.en}
     class="lang-link"
-    title="Switch to English"
+    title={translations.switchToEnglish}
     aria-label="Switch to English"
     data-lang="en"
   >

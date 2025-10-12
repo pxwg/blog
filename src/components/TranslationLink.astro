@@ -1,4 +1,6 @@
 ---
+import { getTargetLanguage, getTranslationDisclaimer } from "$utils/i18n";
+
 const { entry, locale, llmTranslated } = Astro.props;
 
 // Extract current slug from URL path
@@ -15,7 +17,7 @@ const finalSlug = currentSlug.includes('/article/')
 // Check if this is an LLM-translated article using front matter or direct prop
 const isLLMTranslated = entry?.data?.['llm-translated'] === true || llmTranslated === true;
 
-const targetLocale = locale === 'zh' ? 'en' : 'zh';
+const targetLocale = getTargetLanguage(locale as any);
 
 // Generate target path using Astro's i18n routing
 let targetPath = null;
@@ -25,15 +27,7 @@ if (isLLMTranslated) {
 ---
 {isLLMTranslated && targetPath && (
   <div class="translation-disclaimer">
-    {locale === 'zh' ? (
-      <span>
-        📝 翻译声明：本文由 LLM 从原文翻译而来，可能存在翻译不准确之处。建议阅读 <a href={targetPath}>原文</a> 以获得最准确的内容。
-      </span>
-    ) : (
-      <span>
-        📝 Translation Notice: This article was translated from the original by LLM and may contain inaccuracies. Please refer to the <a href={targetPath}>original article</a> for the most accurate content.
-      </span>
-    )}
+    <span set:html={getTranslationDisclaimer(locale as any, targetPath)} />
   </div>
 )}
 

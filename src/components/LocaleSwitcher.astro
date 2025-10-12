@@ -1,11 +1,10 @@
 ---
+import { getTargetLanguage, generateTargetPath, translations } from "$utils/i18n";
+
 const { postId, locale } = Astro.props;
-let targetLocale = locale === 'zh' ? 'en' : 'zh';
-let targetPath = Astro.url.pathname.replace(`/${locale}/`, `/${targetLocale}/`);
-if (!Astro.url.pathname.startsWith('/zh/') && !Astro.url.pathname.startsWith('/en/')) {
-  targetPath = '/zh' + Astro.url.pathname;
-}
+const targetLocale = getTargetLanguage(locale as any);
+const targetPath = generateTargetPath(Astro.url.pathname, targetLocale);
 ---
 <a href={targetPath}>
-  {locale === 'zh' ? '切换到英文' : 'Switch to Chinese'}
+  {locale === 'zh' ? translations.switchToEnglish : translations.switchToChinese}
 </a>
