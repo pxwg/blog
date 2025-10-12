@@ -20,9 +20,10 @@ import { kSiteTitle, kSiteDescription, kFriendLinks } from "$consts";
             kFriendLinks.map((friend) => (
               <li>
                 <a href={friend.url} target="_blank" rel="noopener noreferrer">
-                  <h2>{friend.name}</h2>
-                  <p>{friend.desc}</p>
+                  {friend.name}
                 </a>
+                <br />
+                {friend.desc}
               </li>
             ))
           }
