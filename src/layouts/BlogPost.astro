@@ -26,9 +26,12 @@ const stat: { like?: number; click?: number } =
 const click = stat.click || 0;
 const like = stat.like || 0;
 const pdfArchives = await getCollection("archive");
+
+// Determine current language from URL
+const currentLocale = Astro.url.pathname.startsWith('/zh/') ? 'zh' : 'en';
 ---
 
-<html lang="en">
+<html lang={currentLocale}>
   <head>
     <BaseHead title={title} description={description} />
     <style is:global>

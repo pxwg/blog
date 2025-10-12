@@ -1,14 +1,13 @@
 ---
-import Layout from "$layouts/BlogPost.astro";
-// @ts-ignore
-import AboutContent from "../../content/other/about.typ?html&body";
+// Redirect to English about page
+import { redirect } from 'astro:actions';
 ---
 
-<Layout
-  id={false}
-  title="About me"
-  description="Things about pxwg"
-  date={new Date("April 25 2025")}
->
-  <AboutContent />
-</Layout>
+<script>
+  // Client-side redirect to English about page
+  window.location.replace('/en/about/');
+</script>
+
+<!-- Server-side redirect for better SEO -->
+<meta http-equiv="refresh" content="0; url=/en/about/" />
+<p>Redirecting to <a href="/en/about/">English about page</a>...</p>
