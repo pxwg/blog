@@ -101,7 +101,7 @@ const config = languageConfig[lang as keyof typeof languageConfig] || languageCo
                 >
                   <a class="heading" href={postUrl}>
                     <h2><span class="title">{post.data.title}</span></h2>
-                    <span class="date"><FormattedDate date={post.data.date} /></span>
+                      <span class="date"><FormattedDate date={post.data.date} /> ✎ <FormattedDate date={post.data.modifiedDate}/></span>
                   </a>
                   {post.data.tags && <TagList tags={post.data.tags} lang={config.tagListLang} />}
                   {post.data.description || ""}
