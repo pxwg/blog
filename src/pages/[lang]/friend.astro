@@ -1,20 +1,47 @@
 ---
+import { getCollection } from "astro:content";
 import BaseHead from "$components/BaseHead.astro";
 import Header from "$components/Header.astro";
 import Footer from "$components/Footer.astro";
 import { kSiteTitle, kSiteDescription, kFriendLinks } from "$consts";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "en" } },
+    { params: { lang: "zh" } }
+  ];
+}
+
+const allPosts = (await getCollection("blog"))
+
+const { lang } = Astro.params;
+
+const languageConfig = {
+  en: {
+    htmlLang: "en",
+    title: "Friend Links",
+    tagListLang: undefined
+  },
+  zh: {
+    htmlLang: "zh",
+    title: "友链",
+    tagListLang: "zh"
+  }
+};
+
+const config = languageConfig[lang as keyof typeof languageConfig] || languageConfig.en;
 ---
 
 <!doctype html>
-<html lang="zh">
+<html lang={config.htmlLang}>
   <head>
-    <BaseHead title="友链 - " + kSiteTitle} description={kSiteDescription} />
+    <BaseHead title={config.title} -  + kSiteTitle} description={kSiteDescription} />
   </head>
   <body>
     <Header />
     <main>
       <section>
-        <h1>友链</h1>
+        <h1>{config.title}</h1>
         <ul class="accent block-list">
           {
             kFriendLinks.map((friend) => (

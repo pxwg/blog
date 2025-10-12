@@ -15,18 +15,62 @@ import {
 // @ts-ignore
 import AboutContent from "../../../content/other/intro.typ?html&body";
 import "$styles/IndexPostList.css";
+import { getGitModifiedDate } from "../../utils/git";
 
-const allPosts = (await getCollection("blog")).sort(
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "en" } },
+    { params: { lang: "zh" } }
+  ];
+}
+
+const allPosts = (await getCollection("blog"))
+
+const { lang } = Astro.params;
+
+const postsWithModifiedDate = allPosts.map(post => {
+  const modifiedDate = getGitModifiedDate(post.id, {
+    contentDir: 'content/article',
+    fileExtension: '.typ',
+    fallbackDate: post.data.date,
+    debug: true
+  });
+
+  return {
+    ...post,
+    data: {
+      ...post.data,
+      modifiedDate
+    }
+  };
+});
+
+
+const recentPosts = postsWithModifiedDate.sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 
-// Filter posts for Chinese language
-const zhPosts = allPosts.filter(post => post.id.startsWith('zh/'));
-const recentPosts = zhPosts.slice(0, 5);
+const posts = recentPosts.filter(post => post.id.startsWith(`${lang}/`)).slice(0, 5);
+
+const languageConfig = {
+  en: {
+    htmlLang: "en",
+    title: "Recent Posts",
+    tagListLang: undefined
+  },
+  zh: {
+    htmlLang: "zh",
+    title: "最近文章",
+    tagListLang: "zh"
+  }
+};
+
+const config = languageConfig[lang as keyof typeof languageConfig] || languageConfig.en;
+
 ---
 
 <!doctype html>
-<html lang="zh">
+<html lang={config.htmlLang}>
   <head>
     <BaseHead title={kSiteTitle} description={kSiteDescription} />
     {
@@ -50,17 +94,27 @@ const recentPosts = zhPosts.slice(0, 5);
       </section>
       <section aria-label="Recent Posts">
         <h2 id="recent-posts-title">
-          最近文章
+          {config.title}
         </h2>
         <ul class="accent block-list posts">
           {
-            recentPosts.map((post) => {
-              const postUrl = `${kUrlBase}/zh/article/${post.id.replace('zh/', '')}/`;
+            posts.map((post) => {
+              const postUrl = `${kUrlBase}/${lang}/article/${post.id.replace(`${lang}/`, '')}/`;
               return (
+                <li
+                  data-article-id={post.id}
+                  data-article-meta={JSON.stringify({
+                    title: post.data.title,
+                    description: post.data.description,
+                    tags: post.data.tags,
+                    date: post.data.date.toISOString(),
+                    modifiedDate: post.data.modifiedDate ? post.data.modifiedDate.toISOString() : null
+                  })}
+                >
                 <li>
                   <a class="heading" href={postUrl}>
                     <h2><span class="title">{post.data.title}</span></h2>
-                    <span class="date"><FormattedDate date={post.data.date} /></span>
+                      <span class="date"><FormattedDate date={post.data.date} /> ✎ <FormattedDate date={post.data.modifiedDate}/></span>
                   </a>
                   {post.data.tags && <TagList tags={post.data.tags} lang="zh"/>}
                   {post.data.description || ""}
