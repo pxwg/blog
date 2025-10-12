@@ -2,13 +2,13 @@
 import { render } from "astro:content";
 import { type CollectionEntry, getCollection } from "astro:content";
 import { execSync } from "node:child_process";
-import { getGitModifiedDate } from "../../../utils/git";
 
 import BlogPost from "$layouts/BlogPost.astro";
 interface Props {
   lang: string;
   slug: string[];
 }
+import { getGitModifiedDate } from "../../../utils/git";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -16,14 +16,15 @@ export async function getStaticPaths() {
     const [lang, ...slugParts] = post.id.split('/');
     const slug = slugParts.join('/');
 
-    const modifiedDate = getGitModifiedDate(post.id, {
+    // Construct the correct path to the source file
+    const filePath = `content/article/${post.id}.typ`;
+    post.data.modifiedDate = getGitModifiedDate(post.id, {
       contentDir: 'content/article',
       fileExtension: '.typ',
       fallbackDate: post.data.date,
-      debug: false
+      debug: true
     });
-
-    post.data.modifiedDate = modifiedDate;
+    post.data.updatedDate = post.data.modifiedDate;
 
     return {
       params: {
@@ -44,4 +45,6 @@ const { Content } = await render(post);
 
 <BlogPost {...{ id: post.id }} {...post.data} entry={post}>
   <Content />
+  <!-- Back to all article. -->
+  <p><a href="../">🛫 Back to all articles</a></p>
 </BlogPost>
