@@ -1,5 +1,6 @@
 #import "../../../typ/templates/blog.typ": *
 #import "../../../typ/packages/typst-fletcher.typ": *
+#import "../../../typ/packages/physica.typ": *
 #let title = "Mixed Anomaly and Riemann-Roch Theorem"
 #show: main.with(
   title: title,
@@ -12,6 +13,9 @@
   lang: "en",
   translationKey: "u1_grav",
 )
+
+This blog is aim to explain how the _mixed anomaly_ between $U(1)$ symmetry and gravity in $b c$ CFT leads to the _Riemann-Roch theorem_ in complex geometry.
+In this blog, we will just focus on the main _physical_ idea, and leave the rigorous mathematical treatment to future posts.
 
 = Introduction: Monopole Inside a Sphere
 <intro>
@@ -140,7 +144,7 @@ we have:
             cell-size: (1mm, 1mm),
             $J_(i) edge(delta, ->) & delta J_(i j) \
             & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j) edge(delta, ->) & (1-2 lambda) i pi n_(i j k) \
-            & & edge("u", dif, ->) (1-2 lambda) i pi n_(i j k) edge(delta, ->) & 0,$,
+            & & edge("u", dif, ->) (1-2 lambda) i pi n edge(delta, ->) & 0,$,
           ))\
           quad
         $]
@@ -149,7 +153,7 @@ we have:
     },
   )
 }
-where $dif$ would act as an embedding $ZZ arrow.hook Omega^(0)(U_(i j k))$ for $n_(i j k)$.
+where $dif$ would act as an embedding $H^(2)(X, ZZ) arrow.hook Omega^(0)(U_(i j k))$ i.e., $dif: n |-> n_(i j k)$ for $[n] in H^(2)(X, ZZ)$.
 Note that our integration is over $X$ for $overline(diff) J$, then we need to include $overline(diff) J = dif J$ into the consideration, thus we have:
 
 #if get-target() == "web" {
@@ -164,7 +168,7 @@ Note that our integration is over $X$ for $overline(diff) J$, then we need to in
             edge("u", dif, ->) omega edge(delta, ->) & dif J_(i) \
             & edge("u", dif, ->) J_(i) edge(delta, ->) & delta J_(i j) \
             & & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j) edge(delta, ->) & (1-2 lambda) i pi n_(i j k) \
-            & & & edge("u", dif, ->) (1-2 lambda) i pi n_(i j k) edge(delta, ->) & 0,$,
+            & & & edge("u", dif, ->) (1-2 lambda) i pi n edge(delta, ->) & 0,$,
           ))\
           quad
         $]
@@ -180,6 +184,7 @@ Using the diagram above, we could replace the ill-defined integration of $overli
 Moreover, the diagram above hints that, the integration of $omega$ over $X$ would descend to the sum of $(1- 2 lambda) i pi n_(i j k)$ over all $U_(i j k)$.
 To see this, we consider the nerve of cover $cal(U)$, which is a simplicial complex constructed from $cal(U)$.
 See the figure below for an example of nerve of cover (and its dual).
+
 #image_viewer(
   path: "../assets/u1_grav_nerve.png",
   desc: [Nerve of cover and its dual],
@@ -187,21 +192,36 @@ See the figure below for an example of nerve of cover (and its dual).
   adapt-mode: "invert-no-hue",
 )
 
+Thus, the integration of $omega$ over $X$ could:
+- First, be rephrased as the integration over the boundary $e_(i j)$:
+$
+  integral_X omega = sum_({e_(i j)}) integral_(e_(i j)) (delta J)_(i j) = sum_({e_(i j)}) integral_(e_(i j)) frac(1 - 2 lambda, 2) dif (ln diff_(z_(j)) f_(i j)),
+$
+where $e_(i j)$ denotes the edge correspond to the intersection $U_(i) inter U_(j)$,
+- Then, be rephrased as the integration over the face $f_(i j k)$, which is simply the sum of $n_(i j k)$:
+$
+  integral_(X) omega = sum_({f_(i j k)}) (1 - 2 lambda) i pi n_(i j k),
+$
+where $f_(i j k)$ denotes the face correspond to the intersection $U_(i) inter U_(j) inter U_(k)$.
+- Finally, be rephrased as the 'integration' of $n$ over $X$, i.e., the pairing of $[n] in H^(2)(X, ZZ)$ with the fundamental class $[X] in H_(2)(X, ZZ)$:
+$
+  integral_(X) omega = (1 - 2 lambda) i pi angle.l [n], [X] angle.r,
+$
+which is precisely the first Chern class $c_(1)(L) in H^(2)(X, ZZ)$ of line bundle $L$ by #link("https://en.wikipedia.org/wiki/Chern_class")[definition], multiplied by $(1 - 2 lambda) i pi$.
 
+_Remark_: Such an reduction is called _zig-zag_ technique, which descends a integration of a differential form to a sum over simplices in the nerve of cover (End of the remark).
 
-Therefore, the integral of $overline(diff) J$ over Riemann surface $X$ gives
+Therefore, the integral of $overline(diff) J$ (in fact, $omega$) over Riemann surface $X$ gives
 $
-  integral_(X) overline(diff) J = (1 - 2 lambda) pi i c_(1)(L),
+  integral_(X) overline(diff) J := integral_(X) omega = (1 - 2 lambda) pi i c_(1)(L),
 $
-where $c_(1)(L) in H^(2)(X, ZZ)$ is the first Chern class of line bundle $K$.
-Substituting $c_(1)(L) = chi(L) = 2 - 2g$, we obtain
-$
-  integral_(X) dif^(2) sigma thin overline(partial)_(z) j(z) = pi frac(1 - 2 lambda, 2) chi(L).
-$
+where $c_(1)(L) in H^(2)(X, ZZ)$ is the first Chern class of line bundle $L$.
 
 = Zero Modes, Riemann-Roch and Index
 
-The zero mode equation for $b c$ ghost equation could be written as
+== Zero Modes and Index
+
+The zero mode equation for $b c$ CFT could be written as:
 $
   overline(diff) c = 0, quad overline(diff) b = 0.
 $
@@ -210,26 +230,73 @@ It is easy to identify that $C = ker(overline(diff)_(K times.circle L^(-lambda))
 $
   C - B = dim(H^(0)(X, cal(O)(K times.circle L^(-lambda)))) - dim(H^(0)(X, cal(O)(L^(lambda)))),
 $
-using Serre duality $H^(i)(X, cal(O)(K times.circle L^(-lambda))) approx H^(n-i)(X, cal(O)(L^(lambda)))^(or)$, one have (in our case, $n=1$)
+using Serre duality $H^(i)(X, cal(O)(K times.circle L^(-lambda))) approx H^(n-i)(X, cal(O)(L^(lambda)))^(or)$, one have (in our case, $n=1$):
 $
   C - B = dim(H^(1)(X, cal(O)(L^(lambda)))) - dim(H^(0)(X, cal(O)(L^(lambda)))) := h^(1)(X, cal(O)(L^(lambda))) - h^(0)(X, cal(O)(L^(lambda))),
 $
-thus the index of elliptic operator $overline(diff)$ could be rephrased as
+thus the index of elliptic operator $overline(diff)$ could be rephrased as:
 $
-  "ind"(overline(diff)) = B - C.
+  "ind"(overline(diff)) = h^(0)(X, cal(O)(L^(lambda))) - h^(1)(X, cal(O)(L^(lambda))),
 $
-i.e., the difference of zero modes is the index of $overline(diff)$ operator acting on sections of bundle $L^(lambda)$.
-Moreover, it is well-known that the difference of zero modes could be rephrased as the charge of ghost number current, which is given by the $U(1)$ generator
+
+Moreover, it is well-known that the difference of zero modes could be rephrased as the charge of $U(1)$ Noether current, which is given by the $U(1)$ generator (at quantum level):
 $
-  Q := integral_(X) (c frac(delta, delta c) + b frac(delta, delta b)) = frac(1, pi)integral_(X) overline(diff) J(z) = frac(2 i, pi) integral_(X) dif^(2) z thin overline(diff)_(z) j(z),
+  Q := frac(1, 2 pi i)integral_(X) overline(diff) J(z) = frac(1, 2 pi i) integral.cont :b(z) c(z):,
 $
-the minus sign comes from the fermionic nature of $b$ field.
+We can use the path integral to evaluate this charge, which we have:
+$
+  angle.l Q angle.r = frac(1, Z) integral d mu thin Q e^(-S[b,c]),
+$
+where $d mu$ is a formal Berezin measure over the space of fields, and $Z$ is the partition function.
+
+Note that the possible zero modes of $b c$ fields would never shown in the action $S[b,c]$, thus the integration above would always vanish unless there is no zero modes.
+To overcome this problem, one need to insert an observable with $B$ $b$ fields and $C$ $c$ fields into the integration, i.e.:
+$
+  angle.l Q angle.r := frac(integral d mu thin Q cal(O)[b,c] e^(-S), integral d mu thin cal(O)[b,c] e^(-S)),
+$
+we will finally show shat this integration is independent of the choice of $cal(O)$, but now let me choose a simple form of this operator:
+$
+  cal(O)[b,c] := b(z_1) ... b(z_(B)) c(w_1) ... c(w_(C)),
+$
+thus, the $U(1)$ charge operator would acts on this observable as:
+$
+  [Q, cal(O)] = (B - C) cal(O),
+$
+which could be derived from
+$
+  [Q, b(z)] = b(z), quad [Q, c(z)] = -c(z),
+$
+and Leibniz rule of commutator.
+
+Now we consider the path integral version of the commutator above.
+In order to realize such commutator above, we need two facts above:
+- First, the path integral would lead to a (time, radial) ordered product.
+- Second, the quantity of $Q$ is robust under a small deformation of integral path (using Cauchy's integral formula).
+The first fact shows that we could realize the quantum expectation value as:
+$
+  bra(0)T{[Q, O(z)] ...}ket(0) = angle.l (Q(C_1) - Q(C_2) O(z) ...) angle.r.
+$
+Using the second fact, these two loops could be deformed as a closed loop around $O(z)$.
+Thus, the commutator could be realized simply as the path integral expectation value of $Q O$.
+
+Using the result above for each $b(z_i)$ and $c(w_j)$, we finally obtain:
+$
+  angle.l Q angle.r = B - C,
+$
+which is independent of the choice of $cal(O)$.
+Thus, we have identified the index of elliptic operator $overline(diff)$ with the $U(1)$ charge:
+$
+  angle.l Q angle.r = "ind"(overline(diff)).
+$
+
+== Mixed Anomaly and Riemann-Roch Theorem
 
 Recalling our previous result, this actually gives the relationship between ghost number and manifold Euler characteristic:
 $
-  Q = (1 - 2 lambda) chi(L) = "deg"(L^(lambda))+ 1- g,
+  angle.l Q angle.r = frac(1 - 2 lambda, 2) chi(L) = (1 - 2 lambda)(1-g) := "deg"(L^(lambda))+ 1- g,
 $
-Noting the equivalence between ghost number and index, we finally obtain the index theorem for elliptic operator $overline(partial)$
+here we used the fact that $chi(L^(lambda)) = deg(L^(lambda)) = lambda deg(L)$ and $deg(L) = 2 - 2g$, where $L$ is the canonical line bundle over $X$.
+Noting the equivalence between ghost number and index, we finally obtain the index theorem for elliptic operator $overline(partial)$:
 $
   "ind"(overline(partial)_(L^(lambda))) = (1 - 2 lambda) chi(L) = "deg"(L^(lambda)) + 1 - g,
 $
