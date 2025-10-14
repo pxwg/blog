@@ -10,7 +10,7 @@
     blog-tags.quantum-field,
   ),
   lang: "en",
-  translationKey: "ghost_number",
+  translationKey: "u1_grav",
 )
 
 = Introduction: Monopole Inside a Sphere
@@ -93,7 +93,7 @@ A way to formulate the consideration in the intro, where we first integrate $dif
 
 One can embed the consideration above into _Čech complex_, where $J(z_(i))$ is an element in $C^(0)(cal(U), Omega^(1))$, and $frac(1 - 2 lambda, 2) dif (ln diff_(z_(i)) f_(i j))$ is an element in $C^(1)(cal(U), Omega^(1))$, where:
 - The first cohomology degree in $C^(bullet)$ is the intersection number of patches, e.g., $U_(i)$ is an element in $C^(0)$, $U_(i) inter U_(j)$ is an element in $C^(1)$ and so on.
-- The second cohomology degree in $Omega^(bullet)$ denotes the degree of differential forms, e.g., $Omega^(0)$ is degree $0$ form (function), $Omega^(1)$ is degree $1$ form and so on #footnote([$(1,0)$ form could be naturally embedded into $C^(0)(cal(U), Omega^(1))$, so that we write $J in C^(0)(cal(U), Omega^(1))$.]).
+- The second cohomology degree in $Omega^(bullet)$ denotes the degree of differential forms, e.g., $Omega^(0)$ is degree $0$ form (function), $Omega^(1)$ is degree $1$ form and so on #footnote([$(1,0)$ form over $U_(i)$ could be naturally embedded into $C^(0)(cal(U), Omega^(1))$, so that we write $J in C^(0)(cal(U), Omega^(1))$.]).
 And the associated Čech differential is induced by:
 - $delta: C^(p)(cal(U), Omega^(q)) |-> C^(p+1)(cal(U), Omega^(q))$, where $delta: f_(i_1,...,i_(n)) |-> (delta f)_(i_1, ..., i_(n), i_(n+1))$.
 - $dif: C^(p)(cal(U), Omega^(q)) -> C^(p)(cal(U), Omega^(q+1))$ is the standard _de Rham differential_ over a patch $U_(i_1, ..., i_(n))$.
@@ -103,39 +103,76 @@ $
   delta J_(i j) = frac(1 - 2 lambda, 2) dif (ln diff_(z_(j)) f_(i j)),
 $
 which could be rewritten as:
-$
-  #align(center, diagram(
-    cell-size: (1mm, 1mm),
-    $J_(i) edge(delta, ->) & delta J_(i j)\
-    & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j),$,
-  ))\
-  quad
-$
+
+// TODO: better function to draw commutative diagram for html output
+#if get-target() == "web" {
+  theme-frame(
+    tag: "span",
+    theme => {
+      let edge = edge.with(stroke: theme.main-color)
+      let it = [$
+          #align(center, diagram(
+            cell-size: (1mm, 1mm),
+            $J_(i) edge(delta, ->) & delta J_(i j)\
+            & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j),$,
+          ))\
+          quad
+        $]
+      set text(fill: theme.main-color, size: math-size, font: math-font)
+      span-frame(attrs: (class: "block-equation"), it)
+    },
+  )
+}
 where the arrow $a ->^(delta) b$ denotes $b = delta a$.
-Moreover, since transition functions satisfying the condition $diff_(z_(j)) f_(i j) diff_(z_(k)) f_(j k) diff_(z_(i)) f_(k i) = 1 = e^(2 i pi n_(i j k))$, we have:
+Moreover, since transition functions satisfying the condition
 $
-  #align(center, diagram(
-    cell-size: (1mm, 1mm),
-    $J_(i) edge(delta, ->) & delta J_(i j) \
-    & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j) edge(delta, ->) & (1-2 lambda) i pi n_(i j k) \
-    & & edge("u", dif, ->) (1-2 lambda) i pi n_(i j k) edge(delta, ->) & 0,$,
-  ))\
-  quad
+  diff_(z_(j)) f_(i j) diff_(z_(k)) f_(j k) diff_(z_(i)) f_(k i) = 1 := e^(2 i pi n_(i j k)),
 $
+we have:
+
+#if get-target() == "web" {
+  theme-frame(
+    tag: "span",
+    theme => {
+      let edge = edge.with(stroke: theme.main-color)
+      let it = [$
+          #align(center, diagram(
+            cell-size: (1mm, 1mm),
+            $J_(i) edge(delta, ->) & delta J_(i j) \
+            & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j) edge(delta, ->) & (1-2 lambda) i pi n_(i j k) \
+            & & edge("u", dif, ->) (1-2 lambda) i pi n_(i j k) edge(delta, ->) & 0,$,
+          ))\
+          quad
+        $]
+      set text(fill: theme.main-color, size: math-size, font: math-font)
+      span-frame(attrs: (class: "block-equation"), it)
+    },
+  )
+}
 where $dif$ would act as an embedding $ZZ arrow.hook Omega^(0)(U_(i j k))$ for $n_(i j k)$.
 Note that our integration is over $X$ for $overline(diff) J$, then we need to include $overline(diff) J = dif J$ into the consideration, thus we have:
-$
-  #align(center, diagram(
-    cell-size: (1mm, 1mm),
 
-    $0 \
-    edge("u", dif, ->) omega edge(delta, ->) & dif J_(i) \
-    & edge("u", dif, ->) J_(i) edge(delta, ->) & delta J_(i j) \
-    & & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j) edge(delta, ->) & (1-2 lambda) i pi n_(i j k) \
-    & & & edge("u", dif, ->) (1-2 lambda) i pi n_(i j k) edge(delta, ->) & 0,$,
-  ))\
-  quad
-$
+#if get-target() == "web" {
+  theme-frame(
+    tag: "span",
+    theme => {
+      let edge = edge.with(stroke: theme.main-color)
+      let it = [$
+          #align(center, diagram(
+            cell-size: (1mm, 1mm),
+            $0 \
+            edge("u", dif, ->) omega edge(delta, ->) & dif J_(i) \
+            & edge("u", dif, ->) J_(i) edge(delta, ->) & delta J_(i j) \
+            & & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j) edge(delta, ->) & (1-2 lambda) i pi n_(i j k) \
+            & & & edge("u", dif, ->) (1-2 lambda) i pi n_(i j k) edge(delta, ->) & 0,$,
+          ))\
+          quad
+        $]
+      set text(fill: theme.main-color, size: math-size, font: math-font)
+      span-frame(attrs: (class: "block-equation"), it)
+    },
+  )
+}
 where $delta$ is the restriction of a smooth form to the intersection of patches, i.e. $delta: omega |-> omega|_(U_(i))$, for $omega in Omega^(2)(X)$.
 
 Using the diagram above, we could replace the ill-defined integration of $overline(diff) J$ over $X$ by the well-defined integration of $dif J_(i)$ over each patch $U_(i)$, then by the globally well-defined $2$-form $omega in Omega^(2)(X)$.
@@ -143,6 +180,12 @@ Using the diagram above, we could replace the ill-defined integration of $overli
 Moreover, the diagram above hints that, the integration of $omega$ over $X$ would descend to the sum of $(1- 2 lambda) i pi n_(i j k)$ over all $U_(i j k)$.
 To see this, we consider the nerve of cover $cal(U)$, which is a simplicial complex constructed from $cal(U)$.
 See the figure below for an example of nerve of cover (and its dual).
+#image_viewer(
+  path: "../assets/u1_grav_nerve.png",
+  desc: [Nerve of cover and its dual],
+  dark-adapt: true,
+  adapt-mode: "invert-no-hue",
+)
 
 
 

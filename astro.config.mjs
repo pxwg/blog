@@ -4,6 +4,7 @@ import sitemap from "@astrojs/sitemap";
 import { typst } from "astro-typst";
 import { loadEnv } from "vite";
 import { resolve } from "path";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 // Please check `defineConfig/env` in astro.config.mjs for schema
 const e = loadEnv(process.env.NODE_ENV || "", process.cwd(), "");
@@ -50,7 +51,7 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
-        "$utils": resolve("src/utils"),
+        $utils: resolve("src/utils"),
       },
     },
     build: {
@@ -63,5 +64,20 @@ export default defineConfig({
       external: ["@myriaddreamin/typst-ts-node-compiler"],
       noExternal: ["@fontsource-variable/inter"],
     },
+    // Copy static assets to the dist folder
+    plugins: [
+      viteStaticCopy({
+        targets: [
+          {
+            src: "./content/article/assets/*",
+            dest: "en/assets",
+          },
+          {
+            src: "./content/article/assets/*",
+            dest: "zh/assets",
+          },
+        ],
+      }),
+    ],
   },
 });

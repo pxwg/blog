@@ -9,7 +9,7 @@
     blog-tags.quantum-field,
   ),
   lang: "zh",
-  translationKey: "ghost_number",
+  translationKey: "u1_grav",
   llm-translated: true,
 )
 
