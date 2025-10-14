@@ -70,11 +70,11 @@ export default defineConfig({
         targets: [
           {
             src: "./content/article/assets/*",
-            dest: "en/assets",
+            dest: "en/article/assets",
           },
           {
             src: "./content/article/assets/*",
-            dest: "zh/assets",
+            dest: "zh/article/assets",
           },
         ],
       }),
