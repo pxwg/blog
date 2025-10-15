@@ -210,7 +210,11 @@ $
 $
 which is precisely the first Chern class $c_(1)(L) in H^(2)(X, ZZ)$ of line bundle $L$ by #link("https://en.wikipedia.org/wiki/Chern_class")[definition], multiplied by $(1 - 2 lambda) i pi$.
 
-_Remark_: Such an reduction is called _zig-zag_ technique, which descends a integration of a differential form to a sum over simplices in the nerve of cover (End of the remark).
+#remark(
+  [
+    Such an reduction is called _zig-zag_ technique, which descends a integration of a differential form to a sum over simplices in the nerve of cover.
+  ],
+)
 
 Therefore, the integral of $overline(diff) J$ (in fact, $omega$) over Riemann surface $X$ gives
 $

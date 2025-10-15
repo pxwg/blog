@@ -31,7 +31,7 @@ $
 $
 其中，相关的规范曲率可以写为 $F = frac(1, 2) dif S$，转移函数可以写为 $upright(e)^(i phi): A |-> A + dif phi$。使用上述公式，磁通量可以计算为：
 $
-  "磁通量" = integral_(bb(S)^(2)) F = integral_(U_(1)) dif A + integral_(U_(2)) dif A = integral_(partial U_(1)) A + integral_(partial U_(2)) A = integral_(bb(S)^(1)) dif phi in ZZ.
+  "Flux" = integral_(bb(S)^(2)) F = integral_(U_(1)) dif A + integral_(U_(2)) dif A = integral_(partial U_(1)) A + integral_(partial U_(2)) A = integral_(bb(S)^(1)) dif phi in ZZ.
 $
 
 = bc 共形场论与 U(1) 流
@@ -196,7 +196,10 @@ $
 $
 根据 #link("https://en.wikipedia.org/wiki/Chern_class")[定义]，这恰好是线丛 $L$ 的第一陈类 $c_(1)(L) in H^(2)(X, ZZ)$ 乘以 $(1 - 2 lambda) i pi$。
 
-_Remark_：这种降维方法被称为 _zig-zag_ 技巧，它将一个微分形式的积分降维为对覆盖的神经中的单纯形求和 (End of the Remark)
+#remark(
+  [这种降维方法被称为 _zig-zag_ 技巧，它将一个微分形式的积分降维为对覆盖的神经中的单纯形求和。
+  ],
+)
 
 因此，$overline(diff) J$（实际上是 $omega$）在黎曼面 $X$ 上的积分给出：
 $
