@@ -26,7 +26,7 @@ The same idea also applies to the Čech-de Rham complex we introduced in the #li
 
 So, it is natural to ask the following questions:
 - First, could we using the derived functor to understand the Čech-de Rham complex we introduced in the previous blog?
-- Second, could we use BV formalism of $b c$ CFT to capture the non-trivial topological information we discussed in the previous?
+- Second, could we use BV formalism of $b c$ CFT to capture the non-trivial topological information we discussed in the previous blog?
 In this blog, we will consider the first question.
 
 = Čech Complex of Sheaves of Complex
