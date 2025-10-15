@@ -15,6 +15,7 @@
   lang: "en",
   translationKey: "cech_hyper",
 )
+#let target = get-target()
 
 #let u1_grav = "../u1_grav/"
 #let check(it) = math.attach(it, t: math.arrowhead.b)
@@ -28,6 +29,12 @@ So, it is natural to ask the following questions:
 - First, could we using the derived functor to understand the Čech-de Rham complex we introduced in the previous blog?
 - Second, could we use BV formalism of $b c$ CFT to capture the non-trivial topological information we discussed in the previous blog?
 In this blog, we will consider the first question.
+
+= Derived Functor and Hypercohomology
+
+== A Crash Course of Derived Functor
+
+== Hypercohomology
 
 = Čech Complex of Sheaves of Complex
 
@@ -48,6 +55,7 @@ Consider a ringed space $(X, cal(O)_(X))$ with a bounded blow complex of preshea
       0 -> ZZ arrow.hook RR arrow.long^(exp(2pi i-)) U(1) -> 0,
     $
     which is weak equivalent to the complex defined above.
+    In the derived category, they are isomorphic.
   ],
 )
 
@@ -81,6 +89,127 @@ where $d$ and $"Tot"^(n)$ is defined as above.
 )
 
 = Čech Complex as a Model of Derived Global Section
+
+Now it's time to reveal the structure behind the construction of Čech-de Rham complex.
+The claim is, the Čech-de Rham complex is a _model_ of the derived global section $R^(bullet) Gamma(X, cal(K)^(bullet))$ of the complex of sheaves $cal(K)^(bullet)$.
+Here, "model" means the cohomology of the Čech-de Rham complex is isomorphic to $R^(bullet) Gamma(X, cal(K)^(bullet))$.
+
+Before rushing to this claim, we firstly consider a more general situation, which would be true for any bounded below complex of sheaves of Abelian groups $cal(K)^(bullet)$ on a topological space $X$ (not necessarily Čech-de Rham).
+
+#theorem(
+  [(See #link("https://stacks.math.columbia.edu/tag/08BN")[Stack Project]) Let $(X, cal(O)_(X))$ be a ringed space.
+    Let $cal(U): X = union.big_(i in I) U_(i)$ be an open cover of $X$.
+    For a bounded below complex $cal(K)^(bullet)$ of $cal(O)_(X)$-modules, there is a canonical map:
+    $
+      "Tot"(cal(C)^(bullet)_(upright("Čech"))(cal(U), cal(K)^(bullet))) -> R Gamma(X, cal(K)^(bullet)),
+    $
+    which is:
+    - Functorial on $cal(K)^(bullet)$.
+    - Compatible with functorial map $Gamma(X, cal(K)^(bullet)) -> "Tot"(cal(C)^(bullet)_(upright("Čech"))(cal(U), cal(K)^(bullet)))$ defined previously,
+    - Compatible with refinement of open cover.
+  ],
+)
+
+The idea of the proof is to find a _injective sheaves_ $cal(I)^(bullet)$ which is quasi-isomorphic to $cal(K)^(bullet)$,
+then the derived section would be descended to the global section of $cal(I)^(bullet)$.
+Thus, the map could be simply constructed by "descending" the lowest Čech degree part of the Čech complex to the global section, which is simply the augmentation map of the Čech complex.
+
+#proof(
+  [
+    (We follow the proof in #link("https://stacks.math.columbia.edu/tag/08BN")[Stack Project].)
+
+
+    *Step 1*:
+    Let $cal(I)^(bullet)$ be a bounded below complex of injective sheaves with a quasi-isomorphism $cal(K)^(bullet) -> cal(I)^(bullet)$.
+    By definition of derived functor, we have:
+    $
+      R Gamma(X, cal(K)^(bullet)) = Gamma(X, cal(I)^(bullet)).
+    $
+    *Step 2*:
+    We apply the Čech complex construction to $cal(I)^(bullet)$ and $cal(K)^(bullet)$ respectively, and get a map of double complexes:
+    $
+      cal(C)^(bullet)_(upright("Čech"))(cal(U), cal(K)^(bullet)) -> cal(C)^(bullet)_(upright("Čech"))(cal(U), cal(I)^(bullet)).
+    $
+    Since the construction of Čech complex is term-wise and exact on each open set, i.e., the map above induced a map of complexes:
+    $
+      "Tot"(cal(C)^(bullet)_(upright("Čech"))(cal(U), cal(K)^(bullet))) -> "Tot"(cal(C)^(bullet)_(upright("Čech"))(cal(U), cal(I)^(bullet))),
+    $
+    which is quasi-isomorphism.
+
+    *Step 3*:
+    Now we only need to construct a map:
+    $
+      "Tot"(cal(C)^(bullet)_(upright("Čech"))(cal(U), cal(I)^(bullet))) -> Gamma(X, cal(I)^(bullet)).
+    $
+    // TODO: define augmentation map in previous blog
+    Such a map could be constructed by an augmentation of the double complex $cal(C)^(bullet)_(upright("Čech"))(cal(U), cal(I)^(bullet))$, which sends an element $alpha in cal(I)^(q)(U_(i_0,...,i_(p)))$ to:
+    - $0$ if $p >= 1$.
+    - $alpha in Gamma(X, cal(I)^(bullet))$ if $p = 0$.
+    Such a map is a chain map, thus we get the desired map.
+  ],
+)
+
+The remain part is to show the functoriality and compatibility of the map constructed above.
+
+#proof(
+  [
+    Consider a Abelian category $cal(A)$, the derived category is $D(bold(cal(A)))$.
+    Given a topological space $X$, we consider a sheaf of chain morphism $f: cal(F)^(bullet) -> cal(K)^(bullet)$.
+    The functoriality of such map is equavalent to the commutativity of the following diagram:
+    #diagram-frame(
+      edge => [$
+          #align(center, diagram(
+            cell-size: (1mm, 1mm),
+            $edge("d", "Tot"(cal(C)_("Čech")^(bullet), f), ->) "Tot"(cal(C)^(bullet)_("Čech") (cal(U), cal(F)^(bullet))) edge(->) & R Gamma(X, cal(F)^(bullet)) edge("d", R Gamma(f), ->) \
+            "Tot"(cal(C)^(bullet)_("Čech") (cal(U), cal(K)^(bullet))) edge(->) & R Gamma(X, cal(K)^(bullet)).\ $,
+          ))\
+          quad
+        $],
+    )
+    A standard method to prove this commutativity is to consider the complex of injective sheaf with quasi-isomorphism:
+    $
+      phi.alt_(F): cal(F)^(bullet) -> cal(I)^(bullet)_(F), quad phi.alt_(K): cal(K)^(bullet) -> cal(I)^(bullet)_(K),
+    $
+    thus, the diagram above could be expanded to:
+    #diagram-frame(
+      edge => [$
+          #align(center, diagram(
+            cell-size: (1mm, 1mm),
+            $edge("d", "Tot"(cal(C)_("Čech")^(bullet), f), ->) "Tot"(cal(C)^(bullet)_("Čech") (cal(U), cal(F)^(bullet))) edge(->) & "Tot"(cal(C)^(bullet)_( "Čech")(cal(U), cal(I)^(bullet)_(F))) edge(->) edge("d", "Tot"(cal(C)_("Čech")^(bullet), f'), ->) & Gamma(X, cal(I)_(F)^(bullet)) edge("d", Gamma(f'), ->) \
+            "Tot"(cal(C)^(bullet)_("Čech") (cal(U), cal(K)^(bullet))) edge(->) & "Tot"(cal(C)^(bullet)_( "Čech")(cal(U), cal(I)^(bullet)_(K))) edge(->) & Gamma(X, cal(I)_(K)^(bullet)),\ $,
+          ))\
+          quad
+        $],
+    )
+    where we used the lifting property of injective sheaves to obtain a chain map $f$, which is unique up to homotopy and defined with the following commutative diagram:
+    #diagram-frame(
+      edge => [$
+          #align(center, diagram(
+            cell-size: (1mm, 1mm),
+            $ edge("d", ->) cal(F)^(bullet) edge(f, ->) & cal(K)^(bullet) edge("d", ->) \
+                     cal(I)^(bullet)_(F) edge(f', ->) & cal(I)^(bullet)_(K). \ $,
+          ))\
+          quad
+        $],
+    )
+    Now, the proof of the commutativity could be decomposed into the commutativity of each small square in the diagram above.
+
+    *Left Square*:
+    Since the construction of Čech complex is functorial, the left square commutes (up to homotopic equivalence, which is, in derived category, equivalence).
+
+    *Right Square*:
+    Since the augmentation map is functorial, the right square commutes strictly.
+  ],
+  title: "Proof of Functoriality",
+)
+
+#proof([], title: "Proof of Compatibility")
+
+To calculate the cohomology of such complex, the spectral sequence is essential.
+
+Now we can apply the theorem above to the complex of sheaves $cal(K)^(bullet)$ we considered in the #link(u1_grav)[previous blog], which is the (modified) de Rham complex.
+Using the Poincaré lemma, we know that, for any contractible open set $U$, the complex $cal(K)^(bullet)(U)$ has cohomology only at degree $0$.
+With this additional assumption, the theorem below shows the Čech-de Rham complex is indeed a model of the derived global section of the complex of sheaves $cal(K)^(bullet)$, i.e., $R Gamma(X, cal(K)^(bullet))$.
 
 = Hypercohomology and Deligne Cohomology
 
