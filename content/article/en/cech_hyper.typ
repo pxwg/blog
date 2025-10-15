@@ -21,10 +21,13 @@
 
 In the #link("../u1_grav/")[previous blog], we introduced Čech-de Rham complex to compute the anomalous $U(1)$ charge of $b c$ CFT.
 The (wild) intuition we learned from classical BV formalism is that, the derived object could be obtained by add some additional degree (anti-fields) to the original object, which possibly could be interpreted as some kind of _resolution_ or _derived object_ of the original object.
-The same idea also applies to the Čech-de Rham complex we introduced in the previous blog, which introduced an additional degree (the Čech degree) to the original de Rham complex.
+
+The same idea also applies to the Čech-de Rham complex we introduced in the #link(u1_grav)[previous blog], which introduced an additional degree (the Čech degree) to the original de Rham complex.
+
 So, it is natural to ask the following questions:
 - First, could we using the derived functor to understand the Čech-de Rham complex we introduced in the previous blog?
-- Second,
+- Second, could we use BV formalism of $b c$ CFT to capture the non-trivial topological information we discussed in the previous?
+In this blog, we will consider the first question.
 
 = Čech Complex of Sheaves of Complex
 
@@ -34,10 +37,18 @@ Consider a ringed space $(X, cal(O)_(X))$ with a bounded blow complex of preshea
 
 #remark(
   [
-    In the case of #link("../u1_grav")[previous blog], $X$ is a Riemann surface, $cal(O)_(X)$ is the sheaf of smooth functions $cal(O)_(X)$ and $cal(K)^(bullet)$ is the complex of sheaves of differential forms $Omega^(bullet)$ which replaced the degree $-1$ part by the sheaf of circle group ($U(1)$)-valued smooth functions $underline(U(1)) := C^(oo)(-, U(1))$:
+    In the case of #link("../u1_grav")[previous blog], $X$ is a Riemann surface, $cal(O)_(X)$ is the sheaf of smooth functions and $cal(K)^(bullet)$ is the complex of sheaves of differential forms $Omega^(bullet)$ which replaced the degree $-1$ part by the sheaf of circle group ($U(1)$)-valued smooth functions $underline(U(1)) := C^(oo)(-, U(1))$:
     $
-      cal(K)^(bullet): [... -> 0 -> C^(oo)(-, U(1)) ->^(d log) Omega^(1) ->^(d) Omega^(2) -> ... ->^(d) Omega^(n) -> 0 -> ...].
-    $],
+      cal(K)^(bullet) := [... -> 0 -> C^(oo)(-, U(1)) ->^(d log) Omega^(1) ->^(d) Omega^(2) -> ... ->^(d) Omega^(n) -> 0 -> ...],
+    $
+    which is also called the #link("https://ncatlab.org/nlab/show/Deligne+cohomology#TheSmoothDeligneComplex")[_Deligne complex_].
+
+    To be more precise, what we really considered in the previous blog is the complex induced by the short exact sequence:
+    $
+      0 -> ZZ arrow.hook RR arrow.long^(exp(2pi i-)) U(1) -> 0,
+    $
+    which is weak equivalent to the complex defined above.
+  ],
 )
 
 We can compute the cohomology $H^(n)(X, cal(K)^(bullet))$ using Čech cocycles.
