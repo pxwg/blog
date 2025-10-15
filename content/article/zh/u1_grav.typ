@@ -12,6 +12,7 @@
   ),
   lang: "zh",
   translationKey: "u1_grav",
+  llm-translated: true,
 )
 
 本博客旨在解释 $b c$ 共形场论 (CFT) 中的 $U(1)$ 对称性与引力之间的 _混合反常_ (mixed anomaly) 如何导出复几何中的 _Riemann-Roch 定理_。在本博客中，我们将只关注主要的 _物理_ 思想，而将严格的数学处理留给未来的文章。
