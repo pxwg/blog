@@ -21,9 +21,10 @@
 #let check(it) = math.attach(it, t: math.arrowhead.b)
 #let tot = math.upright("Tot")
 #let cech = math.upright("Čech")
+#let Cech = "Čech"
 
 In the #link("../u1_grav/")[previous blog], we introduced Čech-de Rham complex to compute the anomalous $U(1)$ charge of $b c$ CFT.
-The (wild) intuition we learned from classical BV formalism is that, the derived object could be obtained by add some additional degree (anti-fields) to the original object, which possibly could be interpreted as some kind of _resolution_ or _derived object_ of the original object.
+A (wild) intuition we learned from classical BV formalism is that, the derived object could be obtained by add some additional degree (anti-fields) to the original object, which possibly could be interpreted as some kind of _resolution_ or _derived object_ of the original object.
 
 The same idea also applies to the Čech-de Rham complex we introduced in the #link(u1_grav)[previous blog], which introduced an additional degree (the Čech degree) to the original de Rham complex.
 
@@ -272,10 +273,37 @@ $
   tot(cal(C)^(bullet)_cech (cal(U), tot(cal(I)^(bullet, bullet)))),
 $
 could be used to compute the derived global section $R Gamma(X, cal(K)^(bullet))$, as we discussed above.
-Now we
+Now we consider an associated double complex:
+$
+  A^(n, m) := plus.big_(p+q = n) cal(C)^(p)_cech (cal(U), cal(I)^(q, m)).
+$
+The $E_1$ page of the spectral sequence associated to the double complex $A^(n, m)$ is the cohomology of complex $A^(n, bullet)$. Note that $cal(I)^(bullet)$ is an injective resolution, this cohomology is simply the Čech complex $cal(C)^(p)_cech (cal(U), underline(H)^(q)(cal(K)^(bullet)))$.
+Thus, the $E_2$ page is the Čech cohomology $H^(p)_(cech)(cal(U), underline(H)^(q)(cal(K)^(bullet)))$.
+// TODO: proof the convergence.
 
-Now we can apply the theorem above to the complex of sheaves $cal(K)^(bullet)$ we considered in the #link(u1_grav)[previous blog], which is the (modified) de Rham complex.
+Finally, if one could prove that such a spectral sequence converges to the original cohomology, the spectral sequence could be indeed used to compute such cohomology.
+The discussion above could be formulated by the theorem below:
+#theorem([There is a spectral sequence $(E_(r), d_(r))_(r >0)$ with $E_2$ page:
+  $
+    E_2^(p,q) = H^(p)(cal(U), underline(H)^(p)(cal(K)^(bullet))),
+  $
+  which converges to $H^(bullet)(X, cal(K)^(bullet))$.
+])
+#proof([], title: "Proof of Convergence")
+
+Now we can apply the theorem above to the complex of sheaves
+$
+  cal(K)^(bullet) := [... -> 0 -> C^(oo)(-, U(1)) ->^(d log) Omega^(1) ->^(d) Omega^(2) -> ... ->^(d) Omega^(n) -> 0 -> ...],
+$
 Using the Poincaré lemma, we know that, for any contractible open set $U$, the complex $cal(K)^(bullet)(U)$ has cohomology only at degree $0$.
-With this additional assumption, the theorem below shows the Čech-de Rham complex is indeed a model of the derived global section of the complex of sheaves $cal(K)^(bullet)$, i.e., $R Gamma(X, cal(K)^(bullet))$.
+Then, using the spectral sequence above, the map:
+$
+  tot(cal(C)_(cech)^(bullet)(cal(U), cal(K)^(bullet))) -> R Gamma(X, cal(K)^(bullet)),
+$
+is indeed an isomorphism!
+Thus, we finally showed that, the Čech-de Rham complex we introduced in the previous blog is indeed a model of the derived global section of the complex of sheaves $cal(K)^(bullet)$, i.e., $R Gamma(X, cal(K)^(bullet))$.
+
+
+// The spectral sequence immediately shows the Čech-de Rham complex is indeed a model of the derived global section of the complex of sheaves $cal(K)^(bullet)$, i.e., $R Gamma(X, cal(K)^(bullet))$.
 
 // Such construction formulated our intuition of using Čech complex to obtain the _global information_ of the complex of sheaves $cal(K)^(bullet)$ from its _local data_, previously discussed in #link(u1_grav)[this blog].
