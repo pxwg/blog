@@ -172,7 +172,7 @@ The key is that, the injective/flat(projective) resolution would restore the exa
     By definition, $L_i F(X) := H_i (F(cal(P)_X^(bullet)))$, so this is precisely the long exact sequence for the left derived functors of $F$.
     This is the universal mechanism by which projective/flat resolutions repair right-exact functors.
   ],
-  title: "General Argument: Projective/Flat Resolutions for Right-Exact Functors",
+  title: "Projective/Flat Resolutions for Right-Exact Functors",
   collapsed: true,
   collapsible: true,
 )
