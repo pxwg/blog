@@ -1,10 +1,10 @@
 #import "../../../typ/templates/blog.typ": *
 #import "../../../typ/packages/typst-fletcher.typ": *
 #import "../../../typ/packages/physica.typ": *
-#let title = "Čech-de Rham Complex and Hypercohomology"
+#let title = "Čech-de Rham Complex as a Model of Derived Global Section"
 #show: main.with(
   title: title,
-  desc: [We use the tools of derived functor and sheaf cohomology to understand Čech-de Rham complex we introduced in the previous blog, which is a model of the hypercohomology of a (modified) de Rham complex.],
+  desc: [We use the tools of derived functor and sheaf cohomology to understand Čech-de Rham complex we introduced in the previous blog, which is a model of the derived global section of Deligne complex.],
   date: "2025-10-15",
   tags: (
     blog-tags.math,
@@ -34,6 +34,8 @@ So, it is natural to ask the following questions:
 In this blog, we will consider the first question.
 
 = A Crash Course of Derived (Something)
+
+
 
 = Čech Complex of Sheaves of Complex
 
@@ -161,6 +163,18 @@ which is easy to expect to be functorial and compatible with the functorial map 
 )
 
 The remain part is to show the functoriality and compatibility of the map constructed above.
+Namely, we need to show:
+- Functoriality: the following diagram commutes in the derived category:
+  #diagram-frame(
+    edge => [$
+        #align(center, diagram(
+          cell-size: (1mm, 1mm),
+          $edge("d", "Tot"(cal(C)_("Čech")^(bullet), f), ->) "Tot"(cal(C)^(bullet)_("Čech") (cal(U), cal(F)^(bullet))) edge(->) & R Gamma(X, cal(F)^(bullet)) edge("d", R Gamma(f), ->) \
+          "Tot"(cal(C)^(bullet)_("Čech") (cal(U), cal(K)^(bullet))) edge(->) & R Gamma(X, cal(K)^(bullet)).\ $,
+        ))\
+        quad
+      $],
+  )
 
 #proof(
   [
@@ -213,6 +227,25 @@ The remain part is to show the functoriality and compatibility of the map constr
   ],
   title: "Proof of Functoriality",
 )
+
+- Compatibility: the following diagrams commute:
+  #diagram-frame(
+    edge => [$
+        #align(center, diagram(
+          cell-size: (1mm, 1mm),
+          $edge("dr", ->) Gamma(X, cal(K)^(bullet)) edge(->) & R Gamma(X, cal(K)^(bullet)) \
+          & "Tot"(cal(C)^(bullet)_("Čech") (cal(U), cal(K)^(bullet))) edge("u", ->), quad \ $,
+        ))
+        #align(center, diagram(
+          cell-size: (1mm, 1mm),
+          $edge("dr", ->) "Tot"(cal(C)^(bullet)_("Čech") (cal(U), cal(K)^(bullet))) edge(->) & R Gamma(X, cal(K)^(bullet)) \
+          & "Tot"(cal(C)^(bullet)_("Čech") (cal(V), cal(K)^(bullet))) edge("u", ->),\ $,
+        ))\
+        quad
+      $
+    ],
+  )
+  which are the compatibility with global section and refinement of open cover respectively.
 
 #proof(
   [
