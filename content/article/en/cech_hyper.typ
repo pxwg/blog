@@ -19,6 +19,8 @@
 
 #let u1_grav = "../u1_grav/"
 #let check(it) = math.attach(it, t: math.arrowhead.b)
+#let tot = math.upright("Tot")
+#let cech = math.upright("Čech")
 
 In the #link("../u1_grav/")[previous blog], we introduced Čech-de Rham complex to compute the anomalous $U(1)$ charge of $b c$ CFT.
 The (wild) intuition we learned from classical BV formalism is that, the derived object could be obtained by add some additional degree (anti-fields) to the original object, which possibly could be interpreted as some kind of _resolution_ or _derived object_ of the original object.
@@ -30,11 +32,7 @@ So, it is natural to ask the following questions:
 - Second, could we use BV formalism of $b c$ CFT to capture the non-trivial topological information we discussed in the previous blog?
 In this blog, we will consider the first question.
 
-= Derived Functor and Hypercohomology
-
-== A Crash Course of Derived Functor
-
-== Hypercohomology
+= A Crash Course of Derived (Something)
 
 = Čech Complex of Sheaves of Complex
 
@@ -111,8 +109,20 @@ Before rushing to this claim, we firstly consider a more general situation, whic
 )
 
 The idea of the proof is to find a _injective sheaves_ $cal(I)^(bullet)$ which is quasi-isomorphic to $cal(K)^(bullet)$,
+$
+  cal(K)^(bullet) -> cal(I)^(bullet),
+$
 then the derived section would be descended to the global section of $cal(I)^(bullet)$.
+$
+  R Gamma(X, cal(K)^(bullet)) = Gamma(X, cal(I)^(bullet)).
+$
 Thus, the map could be simply constructed by "descending" the lowest Čech degree part of the Čech complex to the global section, which is simply the augmentation map of the Čech complex.
+
+As a conclusion, the map we want to construct is the composition of two maps:
+$
+  "Tot"(cal(C)_("Čech")^(bullet)(cal(U), cal(K)^(bullet))) -> "Tot"(cal(C)^(bullet)_(upright("Čech"))(cal(U), cal(I)^(bullet))) -> Gamma(X, cal(I)^(bullet)).
+$
+which is easy to expect to be functorial and compatible with the functorial map defined previously.
 
 #proof(
   [
@@ -203,14 +213,69 @@ The remain part is to show the functoriality and compatibility of the map constr
   title: "Proof of Functoriality",
 )
 
-#proof([], title: "Proof of Compatibility")
+#proof(
+  [
+    *Compatibility with Global Section*:
+    The compatibility could be written as the commutativity of the following diagram:
+    #diagram-frame(
+      edge => [$
+          #align(center, diagram(
+            cell-size: (1mm, 1mm),
+            $edge("dr", ->) Gamma(X, cal(K)^(bullet)) edge(->) & R Gamma(X, cal(K)^(bullet)) \
+            & "Tot"(cal(C)^(bullet)_("Čech") (cal(U), cal(K)^(bullet))) edge("u", ->).\ $,
+          ))\
+          quad
+        $
+      ],
+    )
+    Given a injective sheaf $cal(I)_(K)^(bullet)$, the diagram above could be rephrased as:
+    #diagram-frame(
+      edge => [$
+          #align(center, diagram(
+            cell-size: (1mm, 1mm),
+            $edge("dr", ->) Gamma(X, cal(K)^(bullet)) edge(->) & Gamma(X, cal(I)_(K)^(bullet)) \
+            & "Tot"(cal(C)^(bullet)_("Čech") (cal(U), cal(K)^(bullet))) edge("u", ->).\ $,
+          ))\
+          quad
+        $
+      ],
+    )
+    We can chase an element $s in Gamma(X, cal(K)^(n))$ in the diagram above.
+    On the lower path, we have:
+    $
+      s |-> { alpha_(i_0) = s|_(U_(i_0)), alpha_(i_0,...,i_(p)) = 0, p >= 1 } |-> { alpha_(i_0) = phi.alt_(K)(s|_(U_(i_0))), alpha_(i_0,...,i_(p)) = 0, p >= 1 } -> {phi_(K)(s|_(U_(i_0)))}.
+    $
+    where $phi.alt_(K): cal(K)^(bullet) -> cal(I)_(K)^(bullet)$ is the quasi-isomorphism defined previously.
+    The sheave morphism should be commute with augmentation map, i.e., $phi.alt_(K)(s|_(U_(i_0))) = phi_(K)(s)|_(U_(i_0))$, which implies the upper path and lower path are the same.
 
-To calculate the cohomology of such complex, the spectral sequence is essential.
+    *Compatibility with Refinement*:
+    Consider two open covers $cal(U) = {U_i}_I$ and $cal(V) = {V_i}_J$ of $X$, where $cal(V)$ is a refinement of $cal(U)$.
+    Given a injection $cal(K)^(bullet) -> cal(I)_(K)^(bullet)$, the compatibility could be written as the commutativity of the following diagram:
+    #diagram-frame(edge => [$
+        #align(center, diagram(
+          cell-size: (1mm, 1mm),
+          $edge("dr", ->) "Tot"(cal(C)^(bullet)_("Čech") (cal(U), cal(K)^(bullet))) edge(->) & Gamma(X, cal(I)^(bullet)) \
+          & "Tot"(cal(C)^(bullet)_("Čech") (cal(V), cal(K)^(bullet))) edge("u", ->),\ $,
+        ))\
+        quad
+      $
+    ])
+    with the same augmentation above, the commutativity is obvious.
+
+  ],
+  title: "Proof of Compatibility",
+)
+
+A usual way to construct an injective resolution is to use #link("https://en.wikipedia.org/wiki/Cartan%E2%80%93Eilenberg_resolution")[Cartan-Eilenberg resolution]: $cal(K)^(bullet) -> cal(I)^(bullet, bullet)$, where $cal(K)^(bullet) -> tot(cal(I)^(bullet, bullet))$ is an injective resolution.
+Thus, the Čech complex:
+$
+  tot(cal(C)^(bullet)_cech (cal(U), tot(cal(I)^(bullet, bullet)))),
+$
+could be used to compute the derived global section $R Gamma(X, cal(K)^(bullet))$, as we discussed above.
+Now we
 
 Now we can apply the theorem above to the complex of sheaves $cal(K)^(bullet)$ we considered in the #link(u1_grav)[previous blog], which is the (modified) de Rham complex.
 Using the Poincaré lemma, we know that, for any contractible open set $U$, the complex $cal(K)^(bullet)(U)$ has cohomology only at degree $0$.
 With this additional assumption, the theorem below shows the Čech-de Rham complex is indeed a model of the derived global section of the complex of sheaves $cal(K)^(bullet)$, i.e., $R Gamma(X, cal(K)^(bullet))$.
-
-= Hypercohomology and Deligne Cohomology
 
 // Such construction formulated our intuition of using Čech complex to obtain the _global information_ of the complex of sheaves $cal(K)^(bullet)$ from its _local data_, previously discussed in #link(u1_grav)[this blog].
