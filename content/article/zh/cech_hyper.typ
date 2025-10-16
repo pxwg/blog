@@ -142,7 +142,7 @@ $
     $
       ... -> H^i (F(cal(I)_A^(bullet))) -> H^i (F(cal(I)_B^(bullet))) -> H^i (F(cal(I)_C^(bullet))) -> H^(i+1) (F(cal(I)_A^(bullet))) -> ...
     $
-    根据右导出函子的定义，我们有 $R^i F(X) := H^i(F(cal(I)_X^(bullet)))$。
+    根据右导出函子的定义，我们有 $R^i F(X) := H^i (F(cal(I)_X^(bullet)))$。
     代入后，我们就得到了 $F$ 的导出函子的标准长正合列。
     这展示了内射分解是如何系统地生成修复任何左正合函子所需的结构。
   ],
