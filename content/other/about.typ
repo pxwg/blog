@@ -11,8 +11,8 @@ I am also a fan of tennis, playing weekly matches with friends at the Zijing Ten
 == About this blog
 
 This blog focuses on:
-- Physics and mathematical physics notes, with emphasis on non-perturbative QFT.
-- Programming and tooling, including macOS internals, Neovim, and developer productivity.
+- Physics and mathematical physics notes, with emphasis on non-perturbative QFT and related topics.
+- Programming and tooling, including MacOS, Neovim, and developer productivity.
 - Typst usage, tips, and rendering experiments.
 - Some personal stuffs.
 
