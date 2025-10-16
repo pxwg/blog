@@ -141,7 +141,7 @@ The key is that, the injective/flat(projective) resolution would restore the exa
     $
       ... -> H^i (F(cal(I)_A^(bullet))) -> H^i (F(cal(I)_B^(bullet))) -> H^i (F(cal(I)_C^(bullet))) -> H^(i+1) (F(cal(I)_A^(bullet))) -> ...
     $
-    By the very definition of right derived functors, we have $R^i F(X) := H^i(F(cal(I)_X^(bullet)))$.
+    By the very definition of right derived functors, we have $R^i F(X) := H^i (F(cal(I)_X^(bullet)))$.
     Substituting this in, we obtain the canonical long exact sequence for the derived functors of $F$.
     This demonstrates how injective resolutions systematically generate the structure needed to repair any left-exact functor.
   ],
