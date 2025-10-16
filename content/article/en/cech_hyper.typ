@@ -22,6 +22,9 @@
 #let tot = math.upright("Tot")
 #let cech = math.upright("Čech")
 #let Cech = "Čech"
+#let Hom = math.upright("Hom")
+#let Ext = math.upright("Ext")
+#let Tor = math.upright("Tor")
 
 In the #link("../u1_grav/")[previous blog], we introduced Čech-de Rham complex to compute the anomalous $U(1)$ charge of $b c$ CFT.
 A (wild) intuition we learned from classical BV formalism is that, the derived object could be obtained by add some additional degree (anti-fields) to the original object, which possibly could be interpreted as some kind of _resolution_ or _derived object_ of the original object.
@@ -35,7 +38,144 @@ In this blog, we will consider the first question.
 
 = A Crash Course of Derived (Something)
 
+Instead of giving a full introduction of derived functor, we will only give a brief review of the concepts we will use in this blog.
+For a full introduction, try _Methods of Homological Algebra_ by Gelfand and Manin.
 
+
+== Derived Category
+
+Given an Abelian category $cal(A)$, we can formulate its derived category $D(cal(A))$ by:
+- Replacing "bad" objects into some "good" objects.
+- Replacing "bad" morphisms into "good" morphisms.
+So, the question is, what are "good" objects and "good" morphisms?
+
+There are some examples from Gelfand and Manin's book:
+- Naive tensor product is "bad" (only right-exact, not exact), we need to correctly define it by using _flat resolution_, i.e., given $X, Y in cal(A)$, the "good" tensor product should be defined as:
+  $
+    X times.circle^(L)Y := P^(bullet) times.circle Y,
+  $
+  where $P^(bullet)$ is a flat resolution of $X$.
+  By definition of flat resolution, the functor $- times.circle Y$ is exact on $P^(bullet)$, thus the derived tensor product (which could be identified with $Tor_(i)(-,-)$ after taking homology) is "good".
+  Namely, given a short exact sequence $0 -> A -> B -> C ->0$, the sequence:
+  $
+    ... -> Tor_(i)(X, A) -> Tor_(i)(X, B) -> Tor_(i)(X, C) -> ...
+  $
+  is exact.
+- Naive Hom functor is "bad" (only left-exact, not exact), we need to correctly define it by using _injective resolution_, i.e., given $X, Y in cal(A)$, the "good" Hom functor should be defined as:
+  $
+    R Hom(X, Y) := Hom(X, I^(bullet)),
+  $
+  where $I^(bullet)$ is an injective resolution of $Y$.
+  By definition of injective resolution, the functor $Hom(X, -)$ is exact on $I^(bullet)$, thus the derived Hom functor (which could be identified with $Ext^(i)(-,-)$ after taking cohomology) is "good".
+  Namely, given a short exact sequence $0 -> A -> B -> C ->0$, the sequence:
+  $
+    ... -> Ext^(i)(X, Y) -> Ext^(i+1)(X, Y) -> ...
+  $
+  is exact.
+
+The lesson above is, to define some good functors, we need to replace the original objects by some "good" objects (flat or injective resolution).
+Which hints to identify the object with the other objects which are quasi-isomorphic to it.
+
+However, unlike the category of chain complexes $"Ch"(cal(A))$, which identifies two objects if they are chain homotopic, it is quit hard to obtain an "inverse" map of a quasi-isomorphism.
+Using a technique called _localization of category_, we can formally invert all quasi-isomorphisms in $"Ch"^(bullet)(cal(A))$ and obtain the derived category $D(cal(A))$.
+Thus, we found a first property of derived category:
+- There exists a functor:
+  $
+    Q: "Ch"^(bullet)(cal(A)) -> D(cal(A)),
+  $
+  while $f$ is a quasi-isomorphism in $"Ch"(cal(A))$, $Q(f)$ is an isomorphism in $D(cal(A))$.
+Such a functor is universal, i.e., given any functor $F: "Ch"(cal(A)) -> cal(B)$ which sends quasi-isomorphisms to isomorphisms, there exists a unique functor $F': D(cal(A)) -> cal(B)$ such that $F = F' o Q$.
+
+Now we back to the question of finding "good" morphism.
+In the (co)homology level, the exact sequence is a "good" object.
+If one want to find such a "good" object in the chain complex level, one would find _distinguished triangle_, whose definition is:
+$
+  A -> B -> C -> A[1].
+$
+While acting some "good" functors on a distinguished triangle, the image is still a distinguished triangle.
+Moreover, if one take (co)homology of a distinguished triangle, one would obtain a (long) exact sequence, which return to the original discussion at (co)homology level (for a proof of this fact, check #link("https://mathoverflow.net/questions/257495/what-is-a-triangle")[here]).
+Thus, the morphism which preserves distinguished triangle is a "good" morphism.
+
+For example, the derived $Hom$ functor $R Hom(-, -)$ preserves distinguished triangle.
+
+== Derived Global Section
+
+Now we consider an important example of derived functor, which is the _derived global section_ $R^(bullet) Gamma(X, -)$ of the global section functor $Gamma(X, -)$, which would be used in the following discussion.
+
+The original global section functor $Gamma(X, -)$ is a typically "bad" functor, which is left-exact but not exact.
+To define its derived functor, we need to replace the original sheaf by its injective resolution.
+Note that the injective resolution is $Gamma$-acyclic, the derived global section could be simply defined as:
+$
+  R Gamma(X, cal(F)) := Gamma(X, cal(I)^(bullet)),
+$
+which is exact and return to the original global section functor when taking $0$-th cohomology.
+
+== Some Remarks on Resolution
+
+In the main text, we claim that derived functors "restore" the exactness lost by their naive counterparts.
+This property is not an axiom but a direct consequence of a powerful mechanism in homological algebra.
+
+The choice of resolution (injective vs. projective/flat) is precisely tailored to the type of functor we want to correct. Here, we present the general argument for why this machinery works.
+
+The key is that, the injective/flat(projective) resolution would restore the exactness lost by left/right-exact functors.
+
+#custom-block(
+  [
+    Let $F: cal(A) -> cal(B)$ be a _left-exact functor_. Given a short exact sequence $0 -> A -> B -> C -> 0$, we know applying $F$ yields a sequence $0 -> F(A) -> F(B) -> F(C)$ which is exact but may fail to be exact at $F(C)$. The right derived functors $R^i F$ are designed to measure and correct this failure.
+
+    The cornerstone is the #link("https://en.wikipedia.org/wiki/Horseshoe_lemma")[Horseshoe Lemma], which allows us to lift the entire short exact sequence to the level of resolutions.
+    We can find _injective resolutions_ $cal(I)_A^(bullet)$, $cal(I)_B^(bullet)$, and $cal(I)_C^(bullet)$ for $A$, $B$, and $C$ that fit together into a _short exact sequence of cochain complexes_:
+    $
+      0 -> cal(I)_A^(bullet) -> cal(I)_B^(bullet) -> cal(I)_C^(bullet) -> 0.
+    $
+    Because each $cal(I)^n$ is injective, this sequence is not just exact, but _split exact_ in every degree.
+
+    We now apply our left-exact functor $F$ to this sequence of complexes. Since any additive functor preserves split exact sequences, $F$ carries the sequence of resolutions to a new _short exact sequence of cochain complexes_:
+    $
+      0 -> F(cal(I)_A^(bullet)) -> F(cal(I)_B^(bullet)) -> F(cal(I)_C^(bullet)) -> 0.
+    $
+    i.e., the injective property of the resolutions ensures that the structure is perfectly preserved by the functor.
+
+    The fundamental lemma of homological algebra (#link("https://en.wikipedia.org/wiki/Zig-zag_lemma")[zig-zag lemma]) states that any short exact sequence of cochain complexes gives rise to a _long exact sequence in cohomology_.
+    Applying this theorem to the resulting sequence yields:
+    $
+      ... -> H^i (F(cal(I)_A^(bullet))) -> H^i (F(cal(I)_B^(bullet))) -> H^i (F(cal(I)_C^(bullet))) -> H^(i+1) (F(cal(I)_A^(bullet))) -> ...
+    $
+    By the very definition of right derived functors, we have $R^i F(X) := H^i(F(cal(I)_X^(bullet)))$.
+    Substituting this in, we obtain the canonical long exact sequence for the derived functors of $F$.
+    This demonstrates how injective resolutions systematically generate the structure needed to repair any left-exact functor.
+  ],
+  title: "Injective Resolutions for Left-Exact Functors",
+  collapsible: true,
+  collapsed: true,
+)
+
+#custom-block(
+  [
+    The argument for right-exact functors is perfectly dual. Let $F: cal(A) -> cal(B)$ be a _right-exact functor_. Given $0 -> A -> B -> C -> 0$, the sequence $F(A) -> F(B) -> F(C) -> 0$ is exact, but may fail at $F(A)$. The left derived functors $L_i F$ correct this.
+
+    We use the dual Horseshoe Lemma to find _projective resolutions_ $cal(P)_A^(bullet)$, $cal(P)_B^(bullet)$, and $cal(P)_C^(bullet)$ that fit into a _short exact sequence of chain complexes_:
+    $
+      0 -> cal(P)_A^(bullet) -> cal(P)_B^(bullet) -> cal(P)_C^(bullet) -> 0
+    $
+    Because each $cal(P)_n$ is projective, this sequence is _split exact_ in every degree. (For many right-exact functors like the tensor product, using the broader class of _flat resolutions_ is sufficient and often more convenient).
+
+    An additive functor preserves split exact sequences. Applying $F$ yields another _short exact sequence of chain complexes_:
+    $
+      0 -> F(cal(P)_A^(bullet)) -> F(cal(P)_B^(bullet)) -> F(cal(P)_C^(bullet)) -> 0
+    $
+
+    The homological version of the long exact sequence theorem gives a _long exact sequence in homology_:
+    $
+      ... -> H_i (F(cal(P)_A^(bullet))) -> H_i (F(cal(P)_B^(bullet))) -> H_i (F(cal(P)_C^(bullet))) -> H_(i-1) (F(cal(P)_A^(bullet))) -> ...
+    $
+    By definition, $L_i F(X) := H_i (F(cal(P)_X^(bullet)))$, so this is precisely the long exact sequence for the left derived functors of $F$.
+    This is the universal mechanism by which projective/flat resolutions repair right-exact functors.
+  ],
+  title: "General Argument: Projective/Flat Resolutions for Right-Exact Functors",
+  collapsed: true,
+  collapsible: true,
+)
 
 = Čech Complex of Sheaves of Complex
 
@@ -178,7 +318,7 @@ Namely, we need to show:
 
 #proof(
   [
-    Consider a Abelian category $cal(A)$, the derived category is $D(bold(cal(A)))$.
+    Consider a Abelian category $cal(A)$, the derived category is $D(cal(A))$.
     Given a topological space $X$, we consider a sheaf of chain morphism $f: cal(F)^(bullet) -> cal(K)^(bullet)$.
     The functoriality of such map is equavalent to the commutativity of the following diagram:
     #diagram-frame(
@@ -322,7 +462,10 @@ The discussion above could be formulated by the theorem below:
   $
   which converges to $H^(bullet)(X, cal(K)^(bullet))$.
 ])
-#proof([], title: "Proof of Convergence")
+#proof(
+  [Check #link("https://stacks.math.columbia.edu/tag/0132")[stacks project]],
+  title: "Proof of Convergence",
+)
 
 Now we can apply the theorem above to the complex of sheaves
 $
