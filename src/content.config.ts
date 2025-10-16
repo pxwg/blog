@@ -3,8 +3,8 @@ import { glob } from "astro/loaders";
 import { defineCollection, z } from "astro:content";
 
 const blog = defineCollection({
-  loader: glob({ base: "./content/article", pattern: ["**/*.typ", "!**/coho_ft.typ", "!**/morse_phy.typ", "!**/sugra.typ", "!**/cech_hyper.typ"] }),
-  // loader: glob({ base: "./content/article", pattern: ["**/*.typ", "!**/coho_ft.typ", "!**/morse_phy.typ", "!**/sugra.typ"] }),
+  // loader: glob({ base: "./content/article", pattern: ["**/*.typ", "!**/coho_ft.typ", "!**/morse_phy.typ", "!**/sugra.typ", "!**/cech_hyper.typ"] }),
+  loader: glob({ base: "./content/article", pattern: ["**/*.typ", "!**/coho_ft.typ", "!**/morse_phy.typ", "!**/sugra.typ"] }),
   schema: z.object({
     title: z.string(),
     author: z.string().optional(),
