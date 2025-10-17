@@ -23,10 +23,10 @@ export default defineConfig({
   site: SITE,
   base: URL_BASE,
 
-  output: 'hybrid',
-  adapter: node({
-    mode: "standalone",
-  }),
+  // output: 'hybrid',
+  // adapter: node({
+  //   mode: "standalone",
+  // }),
 
   // i18n configuration - English as default
   i18n: {

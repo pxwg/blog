@@ -190,7 +190,11 @@ const pdfArchives = await getCollection("archive");
       </article>
       {tags && <TagList tags={tags} lang={lang || currentLang}/>}
       <div class="comment-region">
-        <Comments server:load postSlug={postSlug} />
+        <Comments 
+          owner="pxwg" 
+          repo="blog" 
+          title="Welcome to blog Discussions!"
+        />
       </div>
     </main>
     <Footer />

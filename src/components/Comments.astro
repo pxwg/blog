@@ -1,259 +1,247 @@
 ---
-// src/components/Comments.astro
-
 export interface Props {
-  postSlug: string;
+  owner: string;
+  repo: string;
+  title: string;
 }
-const { postSlug } = Astro.props;
 
-// We pass all necessary public env variables to the client-side script.
-const githubConfig = {
-  repoOwner: import.meta.env.PUBLIC_REPO_OWNER,
-  repoName: import.meta.env.PUBLIC_REPO_NAME,
-  categoryId: import.meta.env.GITHUB_DISCUSSION_CATEGORY_ID,
-  repoId: import.meta.env.GITHUB_REPOSITORY_ID,
-  readonlyToken: import.meta.env.GITHUB_TOKEN,
-  clientId: import.meta.env.PUBLIC_GITHUB_CLIENT_ID,
-};
+const { owner, repo, title } = Astro.props;
 ---
 
-<div id="comments-container" class="comments-section">
-  <p class="loading-message">Loading comments...</p>
+<div id="comments-container" data-owner={owner} data-repo={repo} data-title={title}>
+  <div class="comment-loader">
+    <div class="spinner"></div>
+    <p>Loading comments...</p>
+  </div>
 </div>
 
-<script define:vars={{ postSlug, githubConfig }}>
-  // =================================================================
-  // == ALL LOGIC NOW LIVES AND RUNS IN THE USER'S BROWSER          ==
-  // =================================================================
-
-  // --- 1. UTILITIES & HELPERS ---
-  const GITHUB_GRAPHQL_API = 'https://api.github.com/graphql';
-
-  // Helper function to create HTML elements easily
-  const h = (tag, attrs, ...children) => {
+<script>
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+  // Helper function to create DOM elements safely
+  const createEl = (tag, attrs = {}, children = []) => {
     const el = document.createElement(tag);
-    if (attrs) {
-      for (const key in attrs) {
-        if (key.startsWith('on') && typeof attrs[key] === 'function') {
-          el.addEventListener(key.substring(2).toLowerCase(), attrs[key]);
-        } else {
-          el.setAttribute(key, attrs[key]);
-        }
-      }
+    for (const key in attrs) {
+      el.setAttribute(key, attrs[key]);
     }
     for (const child of children) {
       if (typeof child === 'string') {
         el.appendChild(document.createTextNode(child));
-      } else if (child) {
+      } else {
         el.appendChild(child);
       }
     }
     return el;
   };
 
-  // --- 2. GITHUB API LOGIC (adapted for client-side) ---
-  
-  // The GraphQL queries remain the same
-  const DISCUSSION_FRAGMENT = `
-    fragment DiscussionFields on Discussion {
-      id, number, title, bodyHTML, createdAt,
-      author { login, avatarUrl },
-      comments(first: 100) {
-        nodes {
-          id, bodyHTML, createdAt,
-          author { login, avatarUrl },
-          reactions(first: 1, content: HEART) { totalCount, viewerHasReacted }
-        }
-      }
+  const renderComments = async () => {
+    const commentsContainer = document.getElementById('comments-container');
+    if (!commentsContainer) return;
+
+    const { owner, repo, title } = commentsContainer.dataset;
+    const accessToken = getCookie('github_token');
+    // Debug html output
+
+    if (!accessToken) {
+      commentsContainer.innerHTML = `<p>Please <a class="login-link" href="/api/auth/login">login with GitHub</a> to view and post comments.</p>`;
+      return;
     }
-  `;
-  const GET_DISCUSSIONS_IN_CATEGORY_QUERY = `
-    query GetDiscussions($repoOwner: String!, $repoName: String!, $categoryId: ID!) {
-      repository(owner: $repoOwner, name: $repoName) {
-        discussions(first: 100, categoryId: $categoryId, orderBy: {field: CREATED_AT, direction: DESC}) {
-          nodes { ...DiscussionFields }
-        }
-      }
-    }
-    ${DISCUSSION_FRAGMENT}
-  `;
-  const CREATE_DISCUSSION_MUTATION = `mutation CreateDiscussion(...) { ... }`; // Abbreviated, copy from previous version
-  const ADD_COMMENT_MUTATION = `mutation AddComment(...) { ... }`; // Abbreviated, copy from previous version
-  const GET_USER_QUERY = `query { viewer { login, name, avatarUrl } }`;
 
-
-  // Generic query function
-  async function githubQuery(query, variables, token) {
-    if (!token) throw new Error('GitHub token is missing.');
-    const response = await fetch(GITHUB_GRAPHQL_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-      body: JSON.stringify({ query, variables }),
-    });
-    const data = await response.json();
-    if (data.errors) {
-      console.error('GitHub API Errors:', data.errors);
-      throw new Error('Failed to fetch from GitHub API');
-    }
-    return data.data;
-  }
-
-  // --- 3. UI RENDERING FUNCTIONS ---
-
-  function renderComment(comment) {
-    const commentEl = h('div', { class: 'comment' },
-      h('div', { class: 'comment-header' },
-        h('img', { src: comment.author.avatarUrl, alt: `${comment.author.login}'s avatar`, class: 'avatar' }),
-        h('strong', null, comment.author.login),
-        h('span', { class: 'timestamp' }, `on ${new Date(comment.createdAt).toLocaleDateString()}`)
-      )
-    );
-    const bodyEl = h('div', { class: 'comment-body' });
-    bodyEl.innerHTML = comment.bodyHTML; // Use innerHTML to render styled content from GitHub
-    commentEl.appendChild(bodyEl);
-    return commentEl;
-  }
-
-  function renderCommentForm(discussionId, user, onCommentPosted) {
-    let body = '';
-    let isSubmitting = false;
-    const textarea = h('textarea', { 
-      placeholder: 'Leave a comment...', 
-      required: true,
-      oninput: (e) => body = e.target.value,
-    });
-    const button = h('button', { type: 'submit' }, 'Submit');
-    
-    const form = h('form', { 
-      class: 'comment-form',
-      onsubmit: async (e) => {
-        e.preventDefault();
-        if (!body.trim() || isSubmitting) return;
-
-        isSubmitting = true;
-        button.textContent = 'Submitting...';
-        button.disabled = true;
-        textarea.disabled = true;
-
-        try {
-          const token = localStorage.getItem('github_token');
-          const data = await githubQuery(ADD_COMMENT_MUTATION, { discussionId, body }, token);
-          onCommentPosted(data.addDiscussionComment.comment);
-        } catch (err) {
-          console.error(err);
-          alert('Failed to post comment.');
-        } finally {
-          isSubmitting = false;
-          button.textContent = 'Submit';
-          button.disabled = false;
-          textarea.disabled = false;
-          textarea.value = '';
-          body = '';
-        }
-      }
-    },
-      h('div', { class: 'form-content' },
-        h('img', { src: user.avatarUrl, alt: 'Your avatar', class: 'avatar' }),
-        textarea
-      ),
-      h('div', { class: 'form-actions' }, button)
-    );
-    return form;
-  }
-  
-  // --- 4. MAIN APPLICATION LOGIC ---
-
-  async function main() {
-    const container = document.getElementById('comments-container');
-    container.innerHTML = ''; // Clear "Loading..." message
-
-    const userToken = localStorage.getItem('github_token');
-    const { readonlyToken, clientId, repoOwner, repoName, categoryId, repoId } = githubConfig;
-
-    // A. Render Authentication Section
-    const authSection = h('div', { class: 'auth-section' });
-    const user = userToken ? await githubQuery(GET_USER_QUERY, {}, userToken).then(d => d.viewer) : null;
-    
-    if (user) {
-      authSection.append(
-        h('p', null, `Logged in as `, h('strong', null, user.name || user.login), `. `, 
-          h('a', { href: '#', onclick: (e) => {
-            e.preventDefault();
-            localStorage.removeItem('github_token');
-            window.location.reload();
-          }}, 'Logout')
-        )
-      );
-    } else {
-      const loginUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=public_repo&state=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-      authSection.append(
-        h('p', null, h('a', { href: loginUrl, class: 'login-button' }, 'Login with GitHub to Comment'))
-      );
-    }
-    container.append(authSection);
-
-    // B. Fetch Discussion and Comments
-    const discussionTitle = `Comments for ${postSlug}`;
-    let discussion = null;
     try {
-      const discussionsData = await githubQuery(GET_DISCUSSIONS_IN_CATEGORY_QUERY, { repoOwner, repoName, categoryId }, readonlyToken);
-      discussion = discussionsData.repository.discussions.nodes.find((d) => d.title === discussionTitle);
+      // Use the confirmed production URL
+      const apiUrl = `https://command-proxy.vercel.app/api/find_discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`;
+      
+      console.log("Requesting API:", apiUrl);
 
-      if (!discussion && userToken) { // If discussion doesn't exist and user is logged in, create it
-        const creationData = await githubQuery(CREATE_DISCUSSION_MUTATION, {
-            repoId, categoryId, title: discussionTitle, 
-            body: `This discussion was automatically created for comments on the blog post at \`${postSlug}\`.`,
-        }, userToken);
-        discussion = creationData.createDiscussion.discussion;
-      }
-    } catch (err) {
-        console.error("Failed to get or create discussion", err);
-        container.append(h('p', null, 'Error loading comments.'));
-        return;
-    }
-
-    // C. Render Comments List
-    container.append(h('h2', null, `Comments (${discussion?.comments?.nodes?.length || 0})`));
-    const commentsList = h('div', { class: 'comments-list' });
-    
-    if (discussion && discussion.comments.nodes.length > 0) {
-        discussion.comments.nodes.forEach(comment => commentsList.append(renderComment(comment)));
-    } else {
-        commentsList.append(h('p', null, 'Be the first to leave a comment!'));
-    }
-
-    // D. Render Comment Form (if logged in and discussion exists)
-    if (user && discussion) {
-      const form = renderCommentForm(discussion.id, user, (newComment) => {
-        // This function runs after a comment is successfully posted
-        // It adds the new comment to the list without a full page reload!
-        const newCommentEl = renderComment(newComment);
-        commentsList.append(newCommentEl);
-        // If it was the first comment, remove the "Be the first" message
-        const emptyMsg = commentsList.querySelector('p');
-        if (emptyMsg) emptyMsg.remove();
+      const response = await fetch(apiUrl, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
       });
-      container.insertBefore(form, commentsList); // Insert form before the list
+
+      console.log("Received response:", response);
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          commentsContainer.innerHTML = `<p>No discussion found for this article. Be the first to <a class="create-link" href="https://github.com/${owner}/${repo}/discussions/new" target="_blank" rel="noopener noreferrer">create one</a>!</p>`;
+        } else {
+          // Try to get a more specific error message from the API
+          const errorData = await response.json().catch(() => ({ error: `API request failed with status: ${response.status}` }));
+          throw new Error(errorData.error || `API request failed`);
+        }
+        return;
+      }
+
+      const discussionData = await response.json();
+      console.log("Received discussion data:", discussionData);
+
+      // Validate the response structure
+      if (!discussionData || !discussionData.title) {
+        throw new Error("Invalid response format from API");
+      }
+
+      // Clear the loading indicator
+      commentsContainer.innerHTML = '';
+
+      // Render discussion title and body
+      const titleEl = createEl('h2');
+      titleEl.textContent = discussionData.title;
+      
+      const bodyEl = createEl('div', { class: 'discussion-body' });
+      bodyEl.innerHTML = discussionData.bodyHTML || ''; // GitHub's HTML is sanitized
+      
+      const separator = createEl('hr');
+      const commentsTitle = createEl('h3');
+      commentsTitle.textContent = 'Comments';
+
+      commentsContainer.append(titleEl, bodyEl, separator, commentsTitle);
+
+      // Render comments
+      if (!discussionData.comments || !discussionData.comments.nodes || discussionData.comments.nodes.length === 0) {
+        const noComments = createEl('p');
+        noComments.textContent = 'Be the first to comment.';
+        commentsContainer.append(noComments);
+      } else {
+        discussionData.comments.nodes.forEach(comment => {
+          const authorImg = createEl('img', {
+            src: comment.author.avatarUrl,
+            alt: comment.author.login,
+            width: '40',
+            height: '40'
+          });
+          
+          const authorName = createEl('strong');
+          authorName.textContent = comment.author.login;
+          
+          const commentDate = createEl('span', { class: 'comment-date' });
+          commentDate.textContent = `on ${new Date(comment.createdAt).toLocaleString()}`;
+          
+          const headerDiv = createEl('div', { class: 'comment-header' });
+          headerDiv.appendChild(authorImg);
+          headerDiv.appendChild(authorName);
+          headerDiv.appendChild(commentDate);
+          
+          const bodyDiv = createEl('div', { class: 'comment-body' });
+          bodyDiv.innerHTML = comment.bodyHTML || ''; // GitHub's HTML is sanitized
+
+          const commentDiv = createEl('div', { class: 'comment' });
+          commentDiv.appendChild(headerDiv);
+          commentDiv.appendChild(bodyDiv);
+          
+          commentsContainer.append(commentDiv);
+        });
+      }
+
+      // Add a link to view on GitHub
+      const viewOnGitHub = createEl('p', { class: 'view-on-github' });
+      const gitHubLink = createEl('a', {
+        href: discussionData.url || `https://github.com/${owner}/${repo}/discussions`,
+        target: '_blank',
+        rel: 'noopener noreferrer',
+        class: 'github-link'
+      });
+      gitHubLink.textContent = 'View on GitHub →';
+      viewOnGitHub.appendChild(gitHubLink);
+      commentsContainer.append(viewOnGitHub);
+
+    } catch (error) {
+      console.error("Failed to load comments:", error);
+      commentsContainer.innerHTML = `<div class="error-box"><p>Sorry, we couldn't load the comments.</p><p class="error-message">Details: ${error.message}</p></div>`;
     }
-    
-    container.append(commentsList);
-  }
+  };
 
-  // Run the main function when the page is ready
-  document.addEventListener('DOMContentLoaded', main);
-
+  // Listen for Astro's page load event for SPA-like navigation
+  document.addEventListener('astro:page-load', renderComments);
 </script>
 
 <style>
-  .comments-section { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #333; }
-  .auth-section { margin-bottom: 1.5rem; }
-  .avatar { width: 32px; height: 32px; border-radius: 50%; vertical-align: middle; margin-right: 8px;}
-  .comment-form .avatar { width: 40px; height: 40px; }
-  .comment-form textarea { width: 100%; min-height: 100px; /* add your styles */ }
-  .form-content { display: flex; gap: 1rem; }
-  .form-actions { display: flex; justify-content: flex-end; margin-top: 0.5rem; }
-  .comments-list { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; }
-  .comment-header { display: flex; align-items: center; gap: 0.5rem; }
-  .comment-body { margin-top: 0.5rem; }
-  .comment-body :global(p) { margin: 0; }
+  #comments-container {
+    margin-top: 2rem;
+    font-size: 1rem;
+  }
+  .discussion-body, .comment-body {
+    line-height: 1.7;
+  }
+  .discussion-body img, .comment-body img {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+  .comment {
+    border: 1px solid #e1e4e8;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .comment-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f0f2f5;
+  }
+  .comment-header img {
+    border-radius: 50%;
+  }
+  .comment-header strong {
+    font-size: 1.05em;
+  }
+  .comment-date {
+    color: #586069;
+    font-size: 0.9em;
+    margin-left: auto;
+  }
+  .login-link, .create-link, .github-link {
+    font-weight: bold;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .login-link:hover, .create-link:hover, .github-link:hover {
+    text-decoration: underline;
+  }
+  .view-on-github {
+    margin-top: 1.5rem;
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e1e4e8;
+  }
+  .error-box {
+    background-color: #ffebee;
+    border: 1px solid #f44336;
+    color: #b71c1c;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  .error-message {
+    font-family: monospace;
+    font-size: 0.9em;
+    word-break: break-all;
+  }
+
+  /* Loading Spinner */
+  .comment-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem;
+    color: #586069;
+  }
+  .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--accent, #3498db);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 </style>
