@@ -15,197 +15,168 @@ const { owner, repo, title } = Astro.props;
 </div>
 
 <script>
-  // Helper function to create DOM elements safely
-  const createEl = (tag, attrs = {}, children = []) => {
-    const el = document.createElement(tag);
-    for (const key in attrs) {
-      el.setAttribute(key, attrs[key]);
-    }
-    for (const child of children) {
-      if (typeof child === 'string') {
-        el.appendChild(document.createTextNode(child));
-      } else {
-        el.appendChild(child);
-      }
-    }
-    return el;
-  };
+  const API_URL = import.meta.env.PUBLIC_VERCEL_API_URL;
 
-  const API_URL = import.meta.env.PUBLIC_VERCEL_API_URL || 'https://your-vercel-project.vercel.app';
-
-  const renderComments = async () => {
+  const renderApp = async () => {
     const commentsContainer = document.getElementById('comments-container');
     if (!commentsContainer) return;
 
     const { owner, repo, title } = commentsContainer.dataset;
 
     try {
-      const apiUrl = `${API_URL}/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`;
-      
-      console.log("Requesting Vercel API:", apiUrl);
+      const [userRes, discussionRes] = await Promise.all([
+        fetch(`${API_URL}/api/user`, { credentials: 'include' }),
+        fetch(`${API_URL}/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`)
+      ]);
+      console.error("Failed to load comments app:", userRes, discussionRes);
 
-      const response = await fetch(apiUrl, {
-        credentials: 'include'
-      });
-
-      if (response.status === 401) {
-        // Unauthenticated
-        const currentPage = encodeURIComponent(window.location.pathname);
-        const loginUrl = `${API_URL}/api/login?redirect=${currentPage}`;
-        commentsContainer.innerHTML = `<p>Please <a class="login-link" href="${loginUrl}">login with GitHub</a> to view and post comments.</p>`;
-        return;
-      }
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: `API request failed with status: ${response.status}` }));
-        if (response.status === 404) {
-          commentsContainer.innerHTML = `<p>No discussion found for this article. Be the first to <a class="create-link" href="https://github.com/${owner}/${repo}/discussions/new" target="_blank" rel="noopener noreferrer">create one</a>!</p>`;
+      if (!discussionRes.ok) {
+        if (discussionRes.status === 404) {
+          commentsContainer.innerHTML = `<p>No discussion found for this article. Be the first to <a class="create-link" href="https://github.com/${owner}/${repo}/discussions/new?title=${encodeURIComponent(title)}" target="_blank" rel="noopener noreferrer">create one</a>!</p>`;
         } else {
-          throw new Error(errorData.error || `API request failed`);
+          throw new Error(`API request failed with status: ${discussionRes.status}`);
         }
         return;
       }
-
-      const discussionData = await response.json();
-      console.log("Received discussion data:", discussionData);
-
-      // Validate the response structure
-      if (!discussionData || !discussionData.title) {
-        throw new Error("Invalid response format from API");
-      }
-
-      // Clear the loading indicator and build HTML string for better performance
+      
+      const authState = await userRes.json();
+      const discussionData = await discussionRes.json();
+      
       let commentsHTML = `<h2>${discussionData.title}</h2>`;
-      commentsHTML += `<div class="discussion-body">${discussionData.bodyHTML || ''}</div>`;
-      commentsHTML += `<hr><h3>Comments</h3>`;
+      commentsHTML += `<div class="discussion-body">${discussionData.bodyHTML || ''}</div><hr><h3>Comments</h3><div id="comment-list">`;
 
-      // Render comments
-      if (!discussionData.comments || !discussionData.comments.nodes || discussionData.comments.nodes.length === 0) {
-        commentsHTML += '<p>Be the first to comment.</p>';
+      if (!discussionData.comments?.nodes?.length) {
+        commentsHTML += '<p id="no-comments-yet">Be the first to comment.</p>';
       } else {
         discussionData.comments.nodes.forEach(comment => {
-          commentsHTML += `
-            <div class="comment">
-              <div class="comment-header">
-                <img src="${comment.author.avatarUrl}" alt="${comment.author.login}" width="40" height="40">
-                <strong>${comment.author.login}</strong>
-                <span class="comment-date">on ${new Date(comment.createdAt).toLocaleString()}</span>
-              </div>
-              <div class="comment-body">${comment.bodyHTML || ''}</div>
-            </div>
-          `;
+          commentsHTML += createCommentHTML(comment);
         });
       }
+      commentsHTML += `</div>`; // Close #comment-list
 
-      // Add a link to view on GitHub
-      commentsHTML += `
-        <p class="view-on-github">
-          <a href="${discussionData.url || `https://github.com/${owner}/${repo}/discussions`}" 
-             target="_blank" 
-             rel="noopener noreferrer" 
-             class="github-link">View on GitHub →</a>
-        </p>
-      `;
+      commentsHTML += `<div id="comment-form-container">${createFormHTML(authState)}</div>`;
+
+      commentsHTML += `<p class="view-on-github"><a href="${discussionData.url}" target="_blank" rel="noopener noreferrer" class="github-link">View on GitHub →</a></p>`;
 
       commentsContainer.innerHTML = commentsHTML;
+      
+      if (authState.isLoggedIn) {
+        addFormSubmitListener(discussionData.id);
+      }
 
     } catch (error) {
-      console.error("Failed to load comments:", error);
+      console.error("Failed to load comments app:", error);
       commentsContainer.innerHTML = `<div class="error-box"><p>Sorry, we couldn't load the comments.</p><p class="error-message">Details: ${error.message}</p></div>`;
     }
   };
 
-  // Support both initial page load and Astro's SPA-like navigation
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderComments);
-  } else {
-    // DOM is already loaded
-    renderComments();
-  }
-  
-  // Also listen for Astro's page load event for SPA-like navigation
-  document.addEventListener('astro:page-load', renderComments);
+  const createCommentHTML = (comment) => `
+    <div class="comment">
+      <div class="comment-header">
+        <img src="${comment.author.avatarUrl}" alt="${comment.author.login}" width="40" height="40">
+        <strong>${comment.author.login}</strong>
+        <span class="comment-date">on ${new Date(comment.createdAt).toLocaleString()}</span>
+      </div>
+      <div class="comment-body">${comment.bodyHTML || ''}</div>
+    </div>`;
+
+  const createFormHTML = (authState) => {
+    if (authState.isLoggedIn) {
+      return `
+        <div class="comment-form-wrapper">
+          <img src="${authState.user.avatarUrl}" alt="${authState.user.login}" width="40" height="40" class="user-avatar">
+          <form id="comment-form">
+            <textarea name="body" placeholder="Add your comment..." required></textarea>
+            <div class="form-actions">
+              <button type="submit">Comment</button>
+            </div>
+          </form>
+        </div>`;
+    } else {
+      const currentPage = encodeURIComponent(window.location.pathname);
+      const loginUrl = `${API_URL}/api/login?redirect=${currentPage}`;
+      return `<p class="login-prompt">Please <a class="login-link" href="${loginUrl}">login with GitHub</a> to post a comment.</p>`;
+    }
+  };
+
+  const addFormSubmitListener = (discussionId) => {
+    const form = document.getElementById('comment-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const textarea = form.querySelector('textarea');
+      const button = form.querySelector('button');
+      const body = textarea.value.trim();
+
+      if (!body) return;
+
+      button.disabled = true;
+      button.textContent = 'Posting...';
+
+      try {
+        const res = await fetch(`${API_URL}/api/comment`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ discussionId, body }),
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || 'Failed to post comment.');
+        }
+
+        const newComment = await res.json();
+        const commentList = document.getElementById('comment-list');
+        
+        // Dynamically add the new comment to the list
+        const newCommentEl = document.createElement('div');
+        newCommentEl.innerHTML = createCommentHTML(newComment);
+        commentList.appendChild(newCommentEl.firstElementChild);
+
+        // Remove "Be the first to comment" message if it exists
+        const noCommentsMsg = document.getElementById('no-comments-yet');
+        if (noCommentsMsg) noCommentsMsg.remove();
+        
+        textarea.value = ''; // Clear textarea
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Comment';
+      }
+    });
+  };
+
+  // Run the app on page load and Astro's SPA navigation
+  document.addEventListener('astro:page-load', renderApp);
+  renderApp();
 </script>
 
 <style>
-  #comments-container {
-    margin-top: 2rem;
-    font-size: 1rem;
-  }
-  .discussion-body, .comment-body {
-    line-height: 1.7;
-  }
-  .discussion-body img, .comment-body img {
-    max-width: 100%;
-    border-radius: 8px;
-  }
-  .comment {
-    border: 1px solid #e1e4e8;
-    padding: 1rem 1.2rem;
-    margin-bottom: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  }
-  .comment-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #f0f2f5;
-  }
-  .comment-header img {
-    border-radius: 50%;
-  }
-  .comment-header strong {
-    font-size: 1.05em;
-  }
-  .comment-date {
-    color: #586069;
-    font-size: 0.9em;
-    margin-left: auto;
-  }
-  .login-link, .create-link, .github-link {
-    font-weight: bold;
-    color: var(--accent);
-    text-decoration: none;
-  }
-  .login-link:hover, .create-link:hover, .github-link:hover {
-    text-decoration: underline;
-  }
-  .view-on-github {
-    margin-top: 1.5rem;
-    text-align: center;
-    padding-top: 1rem;
-    border-top: 1px solid #e1e4e8;
-  }
-  .error-box {
-    background-color: #ffebee;
-    border: 1px solid #f44336;
-    color: #b71c1c;
-    padding: 1rem;
-    border-radius: 8px;
-  }
-  .error-message {
-    font-family: monospace;
-    font-size: 0.9em;
-    word-break: break-all;
-  }
-
-  /* Loading Spinner */
-  .comment-loader {
-    padding: 2rem;
-    text-align: center;
-    color: #586069;
-    font-size: 0.95em;
-  }
-  .comment-loader p {
-    margin: 0;
-  }
-  @keyframes dots {
-    0%, 20% { content: ''; }
-    40% { content: '.'; }
-    60% { content: '..'; }
-    80%, 100% { content: '...'; }
-  }
+.comment-form-wrapper { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+.user-avatar { border-radius: 50%; }
+#comment-form { flex-grow: 1; }
+#comment-form textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5da;
+  border-radius: 6px;
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+.form-actions { margin-top: 0.5rem; text-align: right; }
+.form-actions button {
+  background-color: #2ea44f;
+  color: white;
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.form-actions button:hover { background-color: #2c974b; }
+.form-actions button:disabled { background-color: #94d3a2; cursor: not-allowed; }
+.login-prompt { text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e1e4e8; }
 </style>
