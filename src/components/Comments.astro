@@ -16,11 +16,6 @@ const { owner, repo, title } = Astro.props;
 </div>
 
 <script>
-  const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  }
   // Helper function to create DOM elements safely
   const createEl = (tag, attrs = {}, children = []) => {
     const el = document.createElement(tag);
@@ -42,34 +37,28 @@ const { owner, repo, title } = Astro.props;
     if (!commentsContainer) return;
 
     const { owner, repo, title } = commentsContainer.dataset;
-    const accessToken = getCookie('github_token');
-    // Debug html output
-
-    if (!accessToken) {
-      commentsContainer.innerHTML = `<p>Please <a class="login-link" href="/api/auth/login">login with GitHub</a> to view and post comments.</p>`;
-      return;
-    }
 
     try {
-      // Use the confirmed production URL
-      const apiUrl = `https://command-proxy.vercel.app/api/find_discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`;
+      const apiUrl = `/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`;
       
-      console.log("Requesting API:", apiUrl);
+      console.log("Requesting local API proxy:", apiUrl);
 
       const response = await fetch(apiUrl, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
+        credentials: 'same-origin' // 确保发送 cookies
       });
 
-      console.log("Received response:", response);
+      if (response.status === 401) {
+        // Un authenticated
+        const currentPage = encodeURIComponent(window.location.pathname);
+        commentsContainer.innerHTML = `<p>Please <a class="login-link" href="/api/auth/login?redirect=${currentPage}">login with GitHub</a> to view and post comments.</p>`;
+        return;
+      }
 
       if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: `API request failed with status: ${response.status}` }));
         if (response.status === 404) {
           commentsContainer.innerHTML = `<p>No discussion found for this article. Be the first to <a class="create-link" href="https://github.com/${owner}/${repo}/discussions/new" target="_blank" rel="noopener noreferrer">create one</a>!</p>`;
         } else {
-          // Try to get a more specific error message from the API
-          const errorData = await response.json().catch(() => ({ error: `API request failed with status: ${response.status}` }));
           throw new Error(errorData.error || `API request failed`);
         }
         return;
@@ -83,69 +72,40 @@ const { owner, repo, title } = Astro.props;
         throw new Error("Invalid response format from API");
       }
 
-      // Clear the loading indicator
-      commentsContainer.innerHTML = '';
-
-      // Render discussion title and body
-      const titleEl = createEl('h2');
-      titleEl.textContent = discussionData.title;
-      
-      const bodyEl = createEl('div', { class: 'discussion-body' });
-      bodyEl.innerHTML = discussionData.bodyHTML || ''; // GitHub's HTML is sanitized
-      
-      const separator = createEl('hr');
-      const commentsTitle = createEl('h3');
-      commentsTitle.textContent = 'Comments';
-
-      commentsContainer.append(titleEl, bodyEl, separator, commentsTitle);
+      // Clear the loading indicator and build HTML string for better performance
+      let commentsHTML = `<h2>${discussionData.title}</h2>`;
+      commentsHTML += `<div class="discussion-body">${discussionData.bodyHTML || ''}</div>`;
+      commentsHTML += `<hr><h3>Comments</h3>`;
 
       // Render comments
       if (!discussionData.comments || !discussionData.comments.nodes || discussionData.comments.nodes.length === 0) {
-        const noComments = createEl('p');
-        noComments.textContent = 'Be the first to comment.';
-        commentsContainer.append(noComments);
+        commentsHTML += '<p>Be the first to comment.</p>';
       } else {
         discussionData.comments.nodes.forEach(comment => {
-          const authorImg = createEl('img', {
-            src: comment.author.avatarUrl,
-            alt: comment.author.login,
-            width: '40',
-            height: '40'
-          });
-          
-          const authorName = createEl('strong');
-          authorName.textContent = comment.author.login;
-          
-          const commentDate = createEl('span', { class: 'comment-date' });
-          commentDate.textContent = `on ${new Date(comment.createdAt).toLocaleString()}`;
-          
-          const headerDiv = createEl('div', { class: 'comment-header' });
-          headerDiv.appendChild(authorImg);
-          headerDiv.appendChild(authorName);
-          headerDiv.appendChild(commentDate);
-          
-          const bodyDiv = createEl('div', { class: 'comment-body' });
-          bodyDiv.innerHTML = comment.bodyHTML || ''; // GitHub's HTML is sanitized
-
-          const commentDiv = createEl('div', { class: 'comment' });
-          commentDiv.appendChild(headerDiv);
-          commentDiv.appendChild(bodyDiv);
-          
-          commentsContainer.append(commentDiv);
+          commentsHTML += `
+            <div class="comment">
+              <div class="comment-header">
+                <img src="${comment.author.avatarUrl}" alt="${comment.author.login}" width="40" height="40">
+                <strong>${comment.author.login}</strong>
+                <span class="comment-date">on ${new Date(comment.createdAt).toLocaleString()}</span>
+              </div>
+              <div class="comment-body">${comment.bodyHTML || ''}</div>
+            </div>
+          `;
         });
       }
 
       // Add a link to view on GitHub
-      const viewOnGitHub = createEl('p', { class: 'view-on-github' });
-      const gitHubLink = createEl('a', {
-        href: discussionData.url || `https://github.com/${owner}/${repo}/discussions`,
-        target: '_blank',
-        rel: 'noopener noreferrer',
-        class: 'github-link'
-      });
-      gitHubLink.textContent = 'View on GitHub →';
-      viewOnGitHub.appendChild(gitHubLink);
-      commentsContainer.append(viewOnGitHub);
+      commentsHTML += `
+        <p class="view-on-github">
+          <a href="${discussionData.url || `https://github.com/${owner}/${repo}/discussions`}" 
+             target="_blank" 
+             rel="noopener noreferrer" 
+             class="github-link">View on GitHub →</a>
+        </p>
+      `;
+
+      commentsContainer.innerHTML = commentsHTML;
 
     } catch (error) {
       console.error("Failed to load comments:", error);
@@ -153,7 +113,15 @@ const { owner, repo, title } = Astro.props;
     }
   };
 
-  // Listen for Astro's page load event for SPA-like navigation
+  // Support both initial page load and Astro's SPA-like navigation
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderComments);
+  } else {
+    // DOM is already loaded
+    renderComments();
+  }
+  
+  // Also listen for Astro's page load event for SPA-like navigation
   document.addEventListener('astro:page-load', renderComments);
 </script>
 

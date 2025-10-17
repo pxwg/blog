@@ -1,5 +1,6 @@
 // src/pages/api/auth/callback.ts
 import type { APIRoute } from 'astro';
+import { fade } from 'astro/virtual-modules/transitions.js';
 
 export const prerender = false;
 
@@ -7,18 +8,16 @@ const clientId = import.meta.env.PUBLIC_GITHUB_CLIENT_ID;
 const clientSecret = import.meta.env.GITHUB_CLIENT_SECRET;
 
 export const GET: APIRoute = async ({ request, cookies, redirect, url }) => {
-  // --- START: THE FIX ---
-  // Do not trust Astro.url. Instead, parse the URL directly from the underlying Request object.
-  // This gives us the raw, unmodified URL.
   const requestUrl = new URL(request.url);
-  console.log(`[/api/auth/callback ENTRY] Raw request URL: ${requestUrl.href}`);
-  // --- END: THE FIX ---
-
-  // Now, use our manually parsed URL to get the parameters.
   const code = requestUrl.searchParams.get('code');
   const state = requestUrl.searchParams.get('state');
   const error = requestUrl.searchParams.get('error'); 
+  
+  // 解码 state 参数
   const redirectTo = state ? decodeURIComponent(state) : '/';
+  
+  console.log('[/api/auth/callback] Received state:', state);
+  console.log('[/api/auth/callback] Decoded redirectTo:', redirectTo);
 
   if (error) {
     console.warn(`[/api/auth/callback] GitHub returned an auth error: ${error}`);
