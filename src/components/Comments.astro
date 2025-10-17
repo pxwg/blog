@@ -43,7 +43,7 @@ const { owner, repo, title } = Astro.props;
       console.log("Requesting local API proxy:", apiUrl);
 
       const response = await fetch(apiUrl, {
-        credentials: 'same-origin' // 确保发送 cookies
+        credentials: 'same-origin'
       });
 
       if (response.status === 401) {
