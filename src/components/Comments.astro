@@ -36,7 +36,6 @@ const { owner, repo, title } = Astro.props;
         fetch(`${API_URL}/api/user`, { credentials: 'include' }),
         fetch(`${API_URL}/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`)
       ]);
-      console.error("Failed to load comments app:", userRes, discussionRes);
 
       if (!discussionRes.ok) {
         if (discussionRes.status === 404) {
