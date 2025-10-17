@@ -1,33 +1,42 @@
 ---
+// Import environment variables for Giscus configuration.
 const repo = import.meta.env.PUBLIC_GISCUS_REPO;
 const repoId = import.meta.env.PUBLIC_GISCUS_REPO_ID;
 const category = import.meta.env.PUBLIC_GISCUS_CATEGORY;
 const categoryId = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID;
 
+// Check if all necessary Giscus variables are configured.
 const isGiscusConfigured = repo && repoId && category && categoryId;
 
 function getCurrentLanguage(): 'zh' | 'en' {
   const pathname = Astro.url.pathname;
   if (pathname.startsWith('/zh/')) return 'zh';
   if (pathname.startsWith('/en/')) return 'en';
+  // Default to English if no language prefix is found.
   return 'en';
 }
 
 const currentLang = getCurrentLanguage();
 
+// Map the site's language codes to Giscus-supported language codes.
 const giscusLangMap = {
   'zh': 'zh-CN',
   'en': 'en'
 };
 
 const giscusLang = giscusLangMap[currentLang];
+
+const giscusThemeUrl = 'https://pxwg-dogggie.github.io/blog/giscus-theme.css';
 ---
 
-{isGiscusConfigured && (
+{isGiscusConfigured ? (
   <div id="giscus-container" class="giscus mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
     <style is:global>
       .giscus, .giscus-frame {
         width: 100%;
+      }
+      .giscus-frame {
+        border-radius: 8px;
       }
     </style>
     <script
@@ -39,9 +48,9 @@ const giscusLang = giscusLangMap[currentLang];
       data-mapping="pathname"
       data-strict="0"
       data-reactions-enabled="1"
-      data-emit-metadata="1"
+      data-emit-metadata="0"
       data-input-position="top"
-      data-theme="https://pxwg-dogggie.github.io/blog/giscus-theme.css"
+      data-theme={giscusThemeUrl}
       data-lang={giscusLang}
       data-loading="lazy"
       crossorigin="anonymous"
@@ -49,10 +58,8 @@ const giscusLang = giscusLangMap[currentLang];
     >
     </script>
   </div>
-)}
-
-{!isGiscusConfigured && (
-  <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 text-center text-gray-500">
+) : (
+  <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 text-center text-gray-500 dark:text-gray-400">
     <p>
       {currentLang === 'zh'
         ? '评论功能暂未配置。如需启用评论，请配置 Giscus 环境变量。'
@@ -66,7 +73,9 @@ const giscusLang = giscusLangMap[currentLang];
   <script is:inline>
     function setGiscusTheme(theme) {
       const giscusFrame = document.querySelector('iframe.giscus-frame');
-      if (giscusFrame) {
+      if (giscusFrame && giscusFrame.contentWindow) {
+        // Send a message to the Giscus iframe to change its internal theme.
+        // We send the theme *name* ('light' or 'dark'), not the URL.
         giscusFrame.contentWindow.postMessage(
           { giscus: { setConfig: { theme: theme } } },
           'https://giscus.app'
@@ -74,25 +83,36 @@ const giscusLang = giscusLangMap[currentLang];
       }
     }
 
-    const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-    const themeMap = {
-      light: 'https://pxwg-dogggie.github.io/blog/giscus-theme.css',
-      dark: 'https://pxwg-dogggie.github.io/blog/giscus-theme.css',
+    // Helper function to get the current theme from the <html> element.
+    const getTheme = () => document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+
+    // Set the initial theme once the Giscus iframe has loaded.
+    // A small delay helps ensure the iframe is ready to receive the message.
+    const setInitialTheme = () => {
+        // We wrap this in a timeout to give the iframe time to load and be ready.
+        setTimeout(() => {
+            setGiscusTheme(getTheme());
+        }, 500);
     };
 
-    setTimeout(() => {
-      setGiscusTheme(themeMap[currentTheme]);
-    }, 1000);
+    // We can try setting the theme on different events to be robust.
+    window.addEventListener('load', setInitialTheme);
+    // If the page loads very fast, the iframe might not be there yet, so we also check DOMContentLoaded.
+    document.addEventListener('DOMContentLoaded', setInitialTheme);
 
+
+    // Use a MutationObserver to watch for class changes on the <html> element.
+    // This detects when your blog's theme switcher is used.
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'class') {
-          const newTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-          setGiscusTheme(themeMap[newTheme]);
+          const newTheme = getTheme();
+          setGiscusTheme(newTheme);
         }
       });
     });
 
+    // Start observing the <html> element for attribute changes.
     observer.observe(document.documentElement, {
       attributes: true,
     });
