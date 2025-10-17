@@ -94,7 +94,7 @@ Since `tinymist` replicates Typst's compiler logic, you can pass the `--input` a
 For instance, in the example above, you would simply add the `--input isDark=true` flag.
 
 #image_viewer(
-  path: "../assets/typst\_md\_tex\_1.png",
+  path: "../assets/typst_md_tex_1.png",
   desc: [The effect of a dark theme preview in Typst while writing this article.],
 )
 
