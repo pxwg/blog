@@ -8,13 +8,22 @@ type Kind = "blog" | "archive";
 type Item = CollectionEntry<Kind>;
 const fromCollection = async (c: Kind, sub: string, suf: string) =>
   (await getCollection(c)).map(
-    (item: Item): RSSFeedItem => ({
-      title: item.data.title,
-      description: item.data.description,
-      pubDate: item.data.date,
-      categories: item.data.tags,
-      link: `${kUrlBase}/${sub}/${item.id}${suf}`,
-    })
+    (item: Item): RSSFeedItem => {
+      // For blog posts, extract language and slug from item.id
+      let link = `${kUrlBase}/${sub}/${item.id}${suf}`;
+      if (c === "blog") {
+        const [lang, ...slugParts] = item.id.split('/');
+        const slug = slugParts.join('/');
+        link = `${kUrlBase}/${lang}/${sub}/${slug}${suf}`;
+      }
+      return {
+        title: item.data.title,
+        description: item.data.description,
+        pubDate: item.data.date,
+        categories: item.data.tags,
+        link,
+      };
+    }
   );
 
 export async function GET(context: APIContext) {
