@@ -1,103 +1,259 @@
 ---
-export const prerender = false;
-import { getUser, getOrCreateDiscussion } from '../utils/github';
-import CommentForm from './CommentForm.tsx';
+// src/components/Comments.astro
 
 export interface Props {
   postSlug: string;
 }
-
 const { postSlug } = Astro.props;
 
-// --- Data fetching logic remains the same ---
-const userToken = Astro.cookies.get('github_token')?.value;
-const readonlyToken = import.meta.env.GITHUB_TOKEN;
-
-const [user, discussion] = await Promise.all([
-  userToken ? getUser(userToken) : Promise.resolve(null),
-  getOrCreateDiscussion(postSlug, { userToken, readonlyToken }),
-]);
-
-const comments = discussion?.comments?.nodes || [];
-
-const loginUrl = `/api/auth/login?redirect_to=${Astro.url.pathname}`;
-const logoutUrl = `/api/auth/logout?redirect_to=${Astro.url.pathname}`;
+// We pass all necessary public env variables to the client-side script.
+const githubConfig = {
+  repoOwner: import.meta.env.PUBLIC_REPO_OWNER,
+  repoName: import.meta.env.PUBLIC_REPO_NAME,
+  categoryId: import.meta.env.GITHUB_DISCUSSION_CATEGORY_ID,
+  repoId: import.meta.env.GITHUB_REPOSITORY_ID,
+  readonlyToken: import.meta.env.GITHUB_TOKEN,
+  clientId: import.meta.env.PUBLIC_GITHUB_CLIENT_ID,
+};
 ---
 
-<section id="comments" class="comments-section">
-  <h2>Comments ({comments.length})</h2>
+<div id="comments-container" class="comments-section">
+  <p class="loading-message">Loading comments...</p>
+</div>
 
-  <div class="auth-section">
-    {user ? (
-      <p>
-        Logged in as <strong>{user.name || user.login}</strong>. <a href={logoutUrl}>Logout</a>
-      </p>
-    ) : (
-      <p>
-        <a href={loginUrl} class="login-button">
-          Login with GitHub to Comment
-        </a>
-      </p>
-    )}
-  </div>
+<script define:vars={{ postSlug, githubConfig }}>
+  // =================================================================
+  // == ALL LOGIC NOW LIVES AND RUNS IN THE USER'S BROWSER          ==
+  // =================================================================
 
-  {user && discussion && (
-    <CommentForm client:load discussionId={discussion.id} user={user} />
-  )}
+  // --- 1. UTILITIES & HELPERS ---
+  const GITHUB_GRAPHQL_API = 'https://api.github.com/graphql';
 
-  <div class="comments-list">
-    {comments.length > 0 ? (
-      comments.map(comment => (
-        <div class="comment">
-          <div class="comment-header">
-            <img src={comment.author.avatarUrl} alt={`${comment.author.login}'s avatar`} class="avatar" />
-            <strong>{comment.author.login}</strong>
-            <span class="timestamp">
-              on {new Date(comment.createdAt).toLocaleDateString()}
-            </span>
-          </div>
-          <div class="comment-body" set:html={comment.bodyHTML} />
-        </div>
-      ))
-    ) : (
-      <p>Be the first to leave a comment!</p>
-    )}
-  </div>
-</section>
+  // Helper function to create HTML elements easily
+  const h = (tag, attrs, ...children) => {
+    const el = document.createElement(tag);
+    if (attrs) {
+      for (const key in attrs) {
+        if (key.startsWith('on') && typeof attrs[key] === 'function') {
+          el.addEventListener(key.substring(2).toLowerCase(), attrs[key]);
+        } else {
+          el.setAttribute(key, attrs[key]);
+        }
+      }
+    }
+    for (const child of children) {
+      if (typeof child === 'string') {
+        el.appendChild(document.createTextNode(child));
+      } else if (child) {
+        el.appendChild(child);
+      }
+    }
+    return el;
+  };
+
+  // --- 2. GITHUB API LOGIC (adapted for client-side) ---
+  
+  // The GraphQL queries remain the same
+  const DISCUSSION_FRAGMENT = `
+    fragment DiscussionFields on Discussion {
+      id, number, title, bodyHTML, createdAt,
+      author { login, avatarUrl },
+      comments(first: 100) {
+        nodes {
+          id, bodyHTML, createdAt,
+          author { login, avatarUrl },
+          reactions(first: 1, content: HEART) { totalCount, viewerHasReacted }
+        }
+      }
+    }
+  `;
+  const GET_DISCUSSIONS_IN_CATEGORY_QUERY = `
+    query GetDiscussions($repoOwner: String!, $repoName: String!, $categoryId: ID!) {
+      repository(owner: $repoOwner, name: $repoName) {
+        discussions(first: 100, categoryId: $categoryId, orderBy: {field: CREATED_AT, direction: DESC}) {
+          nodes { ...DiscussionFields }
+        }
+      }
+    }
+    ${DISCUSSION_FRAGMENT}
+  `;
+  const CREATE_DISCUSSION_MUTATION = `mutation CreateDiscussion(...) { ... }`; // Abbreviated, copy from previous version
+  const ADD_COMMENT_MUTATION = `mutation AddComment(...) { ... }`; // Abbreviated, copy from previous version
+  const GET_USER_QUERY = `query { viewer { login, name, avatarUrl } }`;
+
+
+  // Generic query function
+  async function githubQuery(query, variables, token) {
+    if (!token) throw new Error('GitHub token is missing.');
+    const response = await fetch(GITHUB_GRAPHQL_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ query, variables }),
+    });
+    const data = await response.json();
+    if (data.errors) {
+      console.error('GitHub API Errors:', data.errors);
+      throw new Error('Failed to fetch from GitHub API');
+    }
+    return data.data;
+  }
+
+  // --- 3. UI RENDERING FUNCTIONS ---
+
+  function renderComment(comment) {
+    const commentEl = h('div', { class: 'comment' },
+      h('div', { class: 'comment-header' },
+        h('img', { src: comment.author.avatarUrl, alt: `${comment.author.login}'s avatar`, class: 'avatar' }),
+        h('strong', null, comment.author.login),
+        h('span', { class: 'timestamp' }, `on ${new Date(comment.createdAt).toLocaleDateString()}`)
+      )
+    );
+    const bodyEl = h('div', { class: 'comment-body' });
+    bodyEl.innerHTML = comment.bodyHTML; // Use innerHTML to render styled content from GitHub
+    commentEl.appendChild(bodyEl);
+    return commentEl;
+  }
+
+  function renderCommentForm(discussionId, user, onCommentPosted) {
+    let body = '';
+    let isSubmitting = false;
+    const textarea = h('textarea', { 
+      placeholder: 'Leave a comment...', 
+      required: true,
+      oninput: (e) => body = e.target.value,
+    });
+    const button = h('button', { type: 'submit' }, 'Submit');
+    
+    const form = h('form', { 
+      class: 'comment-form',
+      onsubmit: async (e) => {
+        e.preventDefault();
+        if (!body.trim() || isSubmitting) return;
+
+        isSubmitting = true;
+        button.textContent = 'Submitting...';
+        button.disabled = true;
+        textarea.disabled = true;
+
+        try {
+          const token = localStorage.getItem('github_token');
+          const data = await githubQuery(ADD_COMMENT_MUTATION, { discussionId, body }, token);
+          onCommentPosted(data.addDiscussionComment.comment);
+        } catch (err) {
+          console.error(err);
+          alert('Failed to post comment.');
+        } finally {
+          isSubmitting = false;
+          button.textContent = 'Submit';
+          button.disabled = false;
+          textarea.disabled = false;
+          textarea.value = '';
+          body = '';
+        }
+      }
+    },
+      h('div', { class: 'form-content' },
+        h('img', { src: user.avatarUrl, alt: 'Your avatar', class: 'avatar' }),
+        textarea
+      ),
+      h('div', { class: 'form-actions' }, button)
+    );
+    return form;
+  }
+  
+  // --- 4. MAIN APPLICATION LOGIC ---
+
+  async function main() {
+    const container = document.getElementById('comments-container');
+    container.innerHTML = ''; // Clear "Loading..." message
+
+    const userToken = localStorage.getItem('github_token');
+    const { readonlyToken, clientId, repoOwner, repoName, categoryId, repoId } = githubConfig;
+
+    // A. Render Authentication Section
+    const authSection = h('div', { class: 'auth-section' });
+    const user = userToken ? await githubQuery(GET_USER_QUERY, {}, userToken).then(d => d.viewer) : null;
+    
+    if (user) {
+      authSection.append(
+        h('p', null, `Logged in as `, h('strong', null, user.name || user.login), `. `, 
+          h('a', { href: '#', onclick: (e) => {
+            e.preventDefault();
+            localStorage.removeItem('github_token');
+            window.location.reload();
+          }}, 'Logout')
+        )
+      );
+    } else {
+      const loginUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=public_repo&state=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+      authSection.append(
+        h('p', null, h('a', { href: loginUrl, class: 'login-button' }, 'Login with GitHub to Comment'))
+      );
+    }
+    container.append(authSection);
+
+    // B. Fetch Discussion and Comments
+    const discussionTitle = `Comments for ${postSlug}`;
+    let discussion = null;
+    try {
+      const discussionsData = await githubQuery(GET_DISCUSSIONS_IN_CATEGORY_QUERY, { repoOwner, repoName, categoryId }, readonlyToken);
+      discussion = discussionsData.repository.discussions.nodes.find((d) => d.title === discussionTitle);
+
+      if (!discussion && userToken) { // If discussion doesn't exist and user is logged in, create it
+        const creationData = await githubQuery(CREATE_DISCUSSION_MUTATION, {
+            repoId, categoryId, title: discussionTitle, 
+            body: `This discussion was automatically created for comments on the blog post at \`${postSlug}\`.`,
+        }, userToken);
+        discussion = creationData.createDiscussion.discussion;
+      }
+    } catch (err) {
+        console.error("Failed to get or create discussion", err);
+        container.append(h('p', null, 'Error loading comments.'));
+        return;
+    }
+
+    // C. Render Comments List
+    container.append(h('h2', null, `Comments (${discussion?.comments?.nodes?.length || 0})`));
+    const commentsList = h('div', { class: 'comments-list' });
+    
+    if (discussion && discussion.comments.nodes.length > 0) {
+        discussion.comments.nodes.forEach(comment => commentsList.append(renderComment(comment)));
+    } else {
+        commentsList.append(h('p', null, 'Be the first to leave a comment!'));
+    }
+
+    // D. Render Comment Form (if logged in and discussion exists)
+    if (user && discussion) {
+      const form = renderCommentForm(discussion.id, user, (newComment) => {
+        // This function runs after a comment is successfully posted
+        // It adds the new comment to the list without a full page reload!
+        const newCommentEl = renderComment(newComment);
+        commentsList.append(newCommentEl);
+        // If it was the first comment, remove the "Be the first" message
+        const emptyMsg = commentsList.querySelector('p');
+        if (emptyMsg) emptyMsg.remove();
+      });
+      container.insertBefore(form, commentsList); // Insert form before the list
+    }
+    
+    container.append(commentsList);
+  }
+
+  // Run the main function when the page is ready
+  document.addEventListener('DOMContentLoaded', main);
+
+</script>
 
 <style>
-  .comments-section {
-    margin-top: 4rem;
-    padding-top: 2rem;
-    border-top: 1px solid #333;
-  }
+  .comments-section { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #333; }
   .auth-section { margin-bottom: 1.5rem; }
-  .login-button { /* Add styles */ }
-  .comments-list { display: flex; flex-direction: column; gap: 1.5rem; }
-  .comment {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; vertical-align: middle; margin-right: 8px;}
+  .comment-form .avatar { width: 40px; height: 40px; }
+  .comment-form textarea { width: 100%; min-height: 100px; /* add your styles */ }
+  .form-content { display: flex; gap: 1rem; }
+  .form-actions { display: flex; justify-content: flex-end; margin-top: 0.5rem; }
+  .comments-list { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; }
   .comment-header { display: flex; align-items: center; gap: 0.5rem; }
-  .avatar { width: 32px; height: 32px; border-radius: 50%; }
-  .timestamp { font-size: 0.8em; color: #888; }
-  .comment-body { /* Your styles for rendered markdown */ }
+  .comment-body { margin-top: 0.5rem; }
   .comment-body :global(p) { margin: 0; }
-
-  /* Form styles */
-  .comment-form { margin-bottom: 2rem; }
-  .form-content { display: flex; gap: 1rem; align-items: flex-start; }
-  .form-content textarea {
-    width: 100%;
-    min-height: 100px;
-    /* Add more styles */
-  }
-  .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 0.5rem;
-  }
-  .error-message { color: red; margin-right: 1rem; }
 </style>
