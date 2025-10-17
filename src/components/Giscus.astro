@@ -9,6 +9,24 @@ const categoryId = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID;
 
 // 检查是否配置了 giscus
 const isGiscusConfigured = repo && repoId && category && categoryId;
+
+// 获取当前语言
+function getCurrentLanguage(): 'zh' | 'en' {
+  const pathname = Astro.url.pathname;
+  if (pathname.startsWith('/zh/')) return 'zh';
+  if (pathname.startsWith('/en/')) return 'en';
+  return 'en'; // 默认语言
+}
+
+const currentLang = getCurrentLanguage();
+
+// 语言映射到 Giscus 支持的语言代码
+const giscusLangMap = {
+  'zh': 'zh-CN',
+  'en': 'en'
+};
+
+const giscusLang = giscusLangMap[currentLang];
 ---
 
 {isGiscusConfigured && (
@@ -25,7 +43,7 @@ const isGiscusConfigured = repo && repoId && category && categoryId;
       data-emit-metadata="1"
       data-input-position="top"
       data-theme="preferred_color_scheme"
-      data-lang="zh-CN"
+      data-lang={giscusLang}
       data-loading="lazy"
       crossorigin="anonymous"
       async
@@ -36,7 +54,12 @@ const isGiscusConfigured = repo && repoId && category && categoryId;
 
 {!isGiscusConfigured && (
   <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 text-center text-gray-500">
-    <p>评论功能暂未配置。如需启用评论，请配置 Giscus 环境变量。</p>
+    <p>
+      {currentLang === 'zh'
+        ? '评论功能暂未配置。如需启用评论，请配置 Giscus 环境变量。'
+        : 'Comment feature is not configured. Please configure Giscus environment variables to enable comments.'
+      }
+    </p>
   </div>
 )}
 
