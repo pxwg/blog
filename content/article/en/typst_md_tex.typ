@@ -52,6 +52,62 @@ Concerned about typesetting instability? Remember that Markdown can't even maint
 Worried about the ecosystem? Consider what note-takers truly need: a digital pen for capturing thoughts, not an industrial pressroom for perfect typesetting.
 While writing blogs or lecture notes—and even drafting papers—we don't require elaborate publishing tools.
 
+== Typst = Markdown + CSS + Pandoc + ...
+
+In the world of `Markdown`, the syntax itself (and its extensions) merely defines the structure of the content, imposing no constraints on its final appearance.
+This separation of content and style can lead to a loss of control, as we've discussed.
+However, this very "uncontrolled" separation can become a surprising advantage in certain scenarios.
+
+Imagine you're writing notes in a low-light environment. Your IDE or text editor renders the page in a pleasant, aesthetically pleasing dark theme.
+But then, recall your painful memories with LaTeX! The generated PDF preview right next to it is almost always black text on a white background (or a crudely inverted version), which feels jarring and uncomfortable to your eyes#footnote([Of course, I admit that modern PDF viewers like #link("https://sioyek-documentation.readthedocs.io/en/latest/")[Sioyek] and #link("https://pwmt.org/projects/zathura/")[Zathura] offer sophisticated color inversion. However, they each have their own issues with usability. For instance, the former often suffers from memory spikes and frequent crashes, while the latter can lose its reverse-search functionality. I acknowledge these might be my own problems, but they were certainly a motivation for me to change.]).
+
+#image_viewer(
+  path: "../assets/typst_md_tex_2.png",
+  desc: [The PDF preview is uncomfortable when writing notes with LaTeX in a dark theme.],
+)
+
+Now, if you had a smart Markdown preview tool and a CSS stylesheet tailored for a dark theme, you could happily write your notes in dark mode without being disturbed by a glaring white PDF.
+
+Trying to achieve this in LaTeX would require some rather complex packages to correctly determine at compile-time whether you're "previewing" or "printing"—the former needing a proper dark theme, the latter a traditional black-and-white style.
+But in Typst, the compiler natively supports the `--input` argument. By passing `key=value` pairs, you can easily switch themes at compile time (for example, using ```typst #isDark=true``` to indicate a dark theme).
+Next, in your template file, you can use ```typst sys.inputs``` to read the passed arguments and confirm if the dark theme should be rendered:
+
+```typst
+#let inputs = sys.inputs
+#let get_input(input_dict) = {
+  let isDark = false
+  for (key, value) in input_dict {
+    if key == "isDark" {
+      isDark = value
+    }
+  }
+  return (isDark: isDark)
+}
+#let (isDark) = get_input(inputs)
+```
+
+Then, you just need to define the corresponding color schemes to enable theme switching.
+
+The common practice in the `typst` community today is to use the #link("https://github.com/Myriad-Dreamin/tinymist")[Tinymist] language server for real-time previews.
+This language server opens a web server on a random local port, allowing you to preview your document live in a browser.
+Since `tinymist` replicates Typst's compiler logic, you can pass the `--input` argument to apply different themes.
+For instance, in the example above, you would simply add the `--input isDark=true` flag.
+
+#image_viewer(
+  path: "../assets/typst\_md\_tex\_1.png",
+  desc: [The effect of a dark theme preview in Typst while writing this article.],
+)
+
+You might have noticed that the font and line spacing in my preview above are also different.
+This, too, is achieved by cleverly using the `--input` parameter.
+The benefit is that when I use a terminal-based viewer that supports the `kitty` graphics protocol, like #link("https://github.com/chase/awrit")[awrit], I don't have to repeatedly zoom in or crop the margins.
+
+And so, with `typst`, we have easily replicated the functionality of `Markdown + CSS`.
+
+Furthermore, as a markup language designed for typesetting, `typst` natively outputs `pdf` and, since `v0.10.0`, has added support for `html` output.
+This allows `typst` to also function as a `Pandoc`-like tool, catering to the need for different output formats.
+
+
 = Affliction is Bodhi
 
 While framing Typst as a LaTeX alternative, we're naturally drawn to the grand vision: a unified syntax for all scientific documents—simple to use, write, and read.
