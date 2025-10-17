@@ -24,6 +24,14 @@ const { owner, repo, title } = Astro.props;
     const { owner, repo, title } = commentsContainer.dataset;
 
     try {
+      let discussionApiUrl = `${API_URL}/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`;
+      const commentJustPostedKey = `comment_posted_${title}`;
+
+      if (sessionStorage.getItem(commentJustPostedKey)) {
+        discussionApiUrl += `&bust=${Date.now()}`;
+        sessionStorage.removeItem(commentJustPostedKey);
+      }
+
       const [userRes, discussionRes] = await Promise.all([
         fetch(`${API_URL}/api/user`, { credentials: 'include' }),
         fetch(`${API_URL}/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`)
@@ -93,13 +101,13 @@ const { owner, repo, title } = Astro.props;
           </form>
         </div>`;
     } else {
-      const currentPage = encodeURIComponent(window.location.pathname);
-      const loginUrl = `${API_URL}/api/login?redirect=${currentPage}`;
-      return `<p class="login-prompt">Please <a class="login-link" href="${loginUrl}">login with GitHub</a> to post a comment.</p>`;
+      const currentPage = encodeURIComponent(window.location.href);
+      const loginUrl = `${API_URL}/api/login?redirect=${currentPage}`;
+      return `<p class="login-prompt">Please <a class="login-link" href="${loginUrl}">login with GitHub</a> to post a comment.</p>`;
     }
   };
 
-  const addFormSubmitListener = (discussionId) => {
+  const addFormSubmitListener = (discussionId, title) => {
     const form = document.getElementById('comment-form');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -138,6 +146,7 @@ const { owner, repo, title } = Astro.props;
         if (noCommentsMsg) noCommentsMsg.remove();
         
         textarea.value = ''; // Clear textarea
+        sessionStorage.setItem(`comment_posted_${title}`, 'true');
       } catch (error) {
         alert(`Error: ${error.message}`);
       } finally {
