@@ -1,0 +1,83 @@
+---
+// src/components/Giscus.astro
+
+// 从环境变量中读取 giscus 配置
+const repo = import.meta.env.PUBLIC_GISCUS_REPO;
+const repoId = import.meta.env.PUBLIC_GISCUS_REPO_ID;
+const category = import.meta.env.PUBLIC_GISCUS_CATEGORY;
+const categoryId = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID;
+
+// 检查是否配置了 giscus
+const isGiscusConfigured = repo && repoId && category && categoryId;
+---
+
+{isGiscusConfigured && (
+  <div id="giscus-container" class="giscus mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+    <script
+      src="https://giscus.app/client.js"
+      data-repo={repo}
+      data-repo-id={repoId}
+      data-category={category}
+      data-category-id={categoryId}
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="1"
+      data-input-position="top"
+      data-theme="preferred_color_scheme"
+      data-lang="zh-CN"
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async
+    >
+    </script>
+  </div>
+)}
+
+{!isGiscusConfigured && (
+  <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 text-center text-gray-500">
+    <p>评论功能暂未配置。如需启用评论，请配置 Giscus 环境变量。</p>
+  </div>
+)}
+
+{isGiscusConfigured && (
+  <script is:inline>
+    // 这个脚本用于监听您网站的主题切换，并通知 giscus 实时更换主题
+    function setGiscusTheme(theme) {
+      const giscusFrame = document.querySelector('iframe.giscus-frame');
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          { giscus: { setConfig: { theme: theme } } },
+          'https://giscus.app'
+        );
+      }
+    }
+
+    // 初始化时根据HTML的class设置主题
+    const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    // giscus 主题映射
+    const themeMap = {
+      light: 'light', // 网站白天模式对应 giscus 的 'light' 主题
+      dark: 'dark',   // 网站黑夜模式对应 giscus 的 'dark' 主题
+    };
+
+    // 延迟设置主题，确保 giscus 已加载
+    setTimeout(() => {
+      setGiscusTheme(themeMap[currentTheme]);
+    }, 1000);
+
+    // 监听主题变化
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          const newTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+          setGiscusTheme(themeMap[newTheme]);
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+    });
+  </script>
+)}
