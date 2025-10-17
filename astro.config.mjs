@@ -7,8 +7,8 @@ import { resolve } from "path";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
 // Please check `defineConfig/env` in astro.config.mjs for schema
-import { config } from 'dotenv';
-config({ path: '.env_private' });
+import { config } from "dotenv";
+config({ path: ".env_private" });
 
 const e = loadEnv(process.env.NODE_ENV || "", process.cwd(), "");
 const { SITE, URL_BASE } = e;
@@ -16,6 +16,7 @@ const { SITE, URL_BASE } = e;
 export default defineConfig({
   // Whether to prefetch links while hovering.
   // See: https://docs.astro.build/en/guides/prefetch/
+  output: "static",
   prefetch: {
     prefetchAll: true,
   },

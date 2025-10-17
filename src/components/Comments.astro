@@ -31,6 +31,8 @@ const { owner, repo, title } = Astro.props;
     return el;
   };
 
+  const API_URL = import.meta.env.PUBLIC_VERCEL_API_URL || 'https://your-vercel-project.vercel.app';
+
   const renderComments = async () => {
     const commentsContainer = document.getElementById('comments-container');
     if (!commentsContainer) return;
@@ -38,18 +40,19 @@ const { owner, repo, title } = Astro.props;
     const { owner, repo, title } = commentsContainer.dataset;
 
     try {
-      const apiUrl = `/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`;
+      const apiUrl = `${API_URL}/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`;
       
-      console.log("Requesting local API proxy:", apiUrl);
+      console.log("Requesting Vercel API:", apiUrl);
 
       const response = await fetch(apiUrl, {
-        credentials: 'same-origin'
+        credentials: 'include'
       });
 
       if (response.status === 401) {
-        // Un authenticated
+        // Unauthenticated
         const currentPage = encodeURIComponent(window.location.pathname);
-        commentsContainer.innerHTML = `<p>Please <a class="login-link" href="/api/auth/login?redirect=${currentPage}">login with GitHub</a> to view and post comments.</p>`;
+        const loginUrl = `${API_URL}/api/auth/login?redirect=${currentPage}`;
+        commentsContainer.innerHTML = `<p>Please <a class="login-link" href="${loginUrl}">login with GitHub</a> to view and post comments.</p>`;
         return;
       }
 
