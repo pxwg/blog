@@ -1,8 +1,4 @@
 ---
-/*
-  Giscus Component for Astro (Simplified Version)
-*/
-
 const repo = import.meta.env.PUBLIC_GISCUS_REPO;
 const repoId = import.meta.env.PUBLIC_GISCUS_REPO_ID;
 const category = import.meta.env.PUBLIC_GISCUS_CATEGORY;
@@ -26,19 +22,14 @@ const giscusLangMap = {
 
 const giscusLang = giscusLangMap[currentLang];
 
-// The single, public URL to your custom theme file.
 const giscusThemeUrl = 'https://pxwg-dogggie.github.io/blog/giscus-theme.css';
 ---
 
 {isGiscusConfigured ? (
   <div id="giscus-container" class="giscus mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
     <style is:global>
-      .giscus, .giscus-frame {
-        width: 100%;
-      }
-      .giscus-frame {
-        border-radius: 8px;
-      }
+      .giscus, .giscus-frame { width: 100%; }
+      .giscus-frame { border-radius: 8px; }
     </style>
     <script
       src="https://giscus.app/client.js"
@@ -58,14 +49,48 @@ const giscusThemeUrl = 'https://pxwg-dogggie.github.io/blog/giscus-theme.css';
       async
     >
     </script>
-    </div>
+  </div>
 ) : (
   <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 text-center text-gray-500 dark:text-gray-400">
-    <p>
-      {currentLang === 'zh'
-        ? '评论功能暂未配置。'
-        : 'Comment feature is not configured.'
-      }
-    </p>
+    <p>{currentLang === 'zh' ? '评论功能暂未配置。' : 'Comment feature is not configured.'}</p>
   </div>
+)}
+
+{isGiscusConfigured && (
+  <script is:inline>
+    function setGiscusTheme(theme) {
+      const giscusFrame = document.querySelector('iframe.giscus-frame');
+      if (giscusFrame && giscusFrame.contentWindow) {
+        giscusFrame.contentWindow.postMessage(
+          { giscus: { setConfig: { theme: theme } } },
+          'https://giscus.app'
+        );
+      }
+    }
+
+    const getTheme = () => document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+
+    function giscusMessageHandler(event) {
+        if (event.origin !== 'https://giscus.app') return;
+        if (event.data && event.data.giscus) {
+            // Giscus has loaded, set the initial theme.
+            setGiscusTheme(getTheme());
+            // We only need to do this once, so remove the listener.
+            window.removeEventListener('message', giscusMessageHandler);
+        }
+    }
+    window.addEventListener('message', giscusMessageHandler);
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          setGiscusTheme(getTheme());
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+    });
+  </script>
 )}
