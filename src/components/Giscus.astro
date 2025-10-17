@@ -1,26 +1,19 @@
----
-// src/components/Giscus.astro
-
-// 从环境变量中读取 giscus 配置
 const repo = import.meta.env.PUBLIC_GISCUS_REPO;
 const repoId = import.meta.env.PUBLIC_GISCUS_REPO_ID;
 const category = import.meta.env.PUBLIC_GISCUS_CATEGORY;
 const categoryId = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID;
 
-// 检查是否配置了 giscus
 const isGiscusConfigured = repo && repoId && category && categoryId;
 
-// 获取当前语言
 function getCurrentLanguage(): 'zh' | 'en' {
   const pathname = Astro.url.pathname;
   if (pathname.startsWith('/zh/')) return 'zh';
   if (pathname.startsWith('/en/')) return 'en';
-  return 'en'; // 默认语言
+  return 'en';
 }
 
 const currentLang = getCurrentLanguage();
 
-// 语言映射到 Giscus 支持的语言代码
 const giscusLangMap = {
   'zh': 'zh-CN',
   'en': 'en'
@@ -31,6 +24,11 @@ const giscusLang = giscusLangMap[currentLang];
 
 {isGiscusConfigured && (
   <div id="giscus-container" class="giscus mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+    <style is:global>
+      .giscus, .giscus-frame {
+        width: 100%;
+      }
+    </style>
     <script
       src="https://giscus.app/client.js"
       data-repo={repo}
@@ -42,7 +40,7 @@ const giscusLang = giscusLangMap[currentLang];
       data-reactions-enabled="1"
       data-emit-metadata="1"
       data-input-position="top"
-      data-theme="preferred_color_scheme"
+      data-theme="https://pxwg-dogggie.github.io/blog/giscus-theme.css"
       data-lang={giscusLang}
       data-loading="lazy"
       crossorigin="anonymous"
@@ -65,7 +63,6 @@ const giscusLang = giscusLangMap[currentLang];
 
 {isGiscusConfigured && (
   <script is:inline>
-    // 这个脚本用于监听您网站的主题切换，并通知 giscus 实时更换主题
     function setGiscusTheme(theme) {
       const giscusFrame = document.querySelector('iframe.giscus-frame');
       if (giscusFrame) {
@@ -76,20 +73,16 @@ const giscusLang = giscusLangMap[currentLang];
       }
     }
 
-    // 初始化时根据HTML的class设置主题
     const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-    // giscus 主题映射
     const themeMap = {
-      light: 'light', // 网站白天模式对应 giscus 的 'light' 主题
-      dark: 'dark',   // 网站黑夜模式对应 giscus 的 'dark' 主题
+      light: 'https://pxwg-dogggie.github.io/blog/giscus-theme.css',
+      dark: 'https://pxwg-dogggie.github.io/blog/giscus-theme.css',
     };
 
-    // 延迟设置主题，确保 giscus 已加载
     setTimeout(() => {
       setGiscusTheme(themeMap[currentTheme]);
     }, 1000);
 
-    // 监听主题变化
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'class') {
