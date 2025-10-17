@@ -12,8 +12,16 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   // Extract language from URL path
   const pathSegments = url.pathname.split('/').filter(Boolean);
+  const pathname = url.pathname;
   const urlLang = pathSegments[0] as "en" | "zh" | undefined;
 
+  // Bypass API routes
+  if (pathname.startsWith('/api/')) {
+    // 确认 API 路由是否被正确放行
+    // Confirm if the API route is being correctly bypassed.
+    console.log(`[MIDDLEWARE] Path starts with /api/, bypassing i18n logic.`);
+    return next();
+  }
   // Determine the current language
   let currentLang: "en" | "zh" = "en";
   let isDefaultLocale = true;

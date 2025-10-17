@@ -1,0 +1,103 @@
+---
+export const prerender = false;
+import { getUser, getOrCreateDiscussion } from '../utils/github';
+import CommentForm from './CommentForm.tsx';
+
+export interface Props {
+  postSlug: string;
+}
+
+const { postSlug } = Astro.props;
+
+// --- Data fetching logic remains the same ---
+const userToken = Astro.cookies.get('github_token')?.value;
+const readonlyToken = import.meta.env.GITHUB_TOKEN;
+
+const [user, discussion] = await Promise.all([
+  userToken ? getUser(userToken) : Promise.resolve(null),
+  getOrCreateDiscussion(postSlug, { userToken, readonlyToken }),
+]);
+
+const comments = discussion?.comments?.nodes || [];
+
+const loginUrl = `/api/auth/login?redirect_to=${Astro.url.pathname}`;
+const logoutUrl = `/api/auth/logout?redirect_to=${Astro.url.pathname}`;
+---
+
+<section id="comments" class="comments-section">
+  <h2>Comments ({comments.length})</h2>
+
+  <div class="auth-section">
+    {user ? (
+      <p>
+        Logged in as <strong>{user.name || user.login}</strong>. <a href={logoutUrl}>Logout</a>
+      </p>
+    ) : (
+      <p>
+        <a href={loginUrl} class="login-button">
+          Login with GitHub to Comment
+        </a>
+      </p>
+    )}
+  </div>
+
+  {user && discussion && (
+    <CommentForm client:load discussionId={discussion.id} user={user} />
+  )}
+
+  <div class="comments-list">
+    {comments.length > 0 ? (
+      comments.map(comment => (
+        <div class="comment">
+          <div class="comment-header">
+            <img src={comment.author.avatarUrl} alt={`${comment.author.login}'s avatar`} class="avatar" />
+            <strong>{comment.author.login}</strong>
+            <span class="timestamp">
+              on {new Date(comment.createdAt).toLocaleDateString()}
+            </span>
+          </div>
+          <div class="comment-body" set:html={comment.bodyHTML} />
+        </div>
+      ))
+    ) : (
+      <p>Be the first to leave a comment!</p>
+    )}
+  </div>
+</section>
+
+<style>
+  .comments-section {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #333;
+  }
+  .auth-section { margin-bottom: 1.5rem; }
+  .login-button { /* Add styles */ }
+  .comments-list { display: flex; flex-direction: column; gap: 1.5rem; }
+  .comment {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .comment-header { display: flex; align-items: center; gap: 0.5rem; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; }
+  .timestamp { font-size: 0.8em; color: #888; }
+  .comment-body { /* Your styles for rendered markdown */ }
+  .comment-body :global(p) { margin: 0; }
+
+  /* Form styles */
+  .comment-form { margin-bottom: 2rem; }
+  .form-content { display: flex; gap: 1rem; align-items: flex-start; }
+  .form-content textarea {
+    width: 100%;
+    min-height: 100px;
+    /* Add more styles */
+  }
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+  .error-message { color: red; margin-right: 1rem; }
+</style>

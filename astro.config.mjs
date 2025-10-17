@@ -7,6 +7,9 @@ import { resolve } from "path";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
 // Please check `defineConfig/env` in astro.config.mjs for schema
+import { config } from 'dotenv';
+config({ path: '.env_private' });
+
 const e = loadEnv(process.env.NODE_ENV || "", process.cwd(), "");
 const { SITE, URL_BASE } = e;
 
