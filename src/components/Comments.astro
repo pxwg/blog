@@ -51,7 +51,7 @@ const { owner, repo, title } = Astro.props;
       if (response.status === 401) {
         // Unauthenticated
         const currentPage = encodeURIComponent(window.location.pathname);
-        const loginUrl = `${API_URL}/api/auth/login?redirect=${currentPage}`;
+        const loginUrl = `${API_URL}/api/login?redirect=${currentPage}`;
         commentsContainer.innerHTML = `<p>Please <a class="login-link" href="${loginUrl}">login with GitHub</a> to view and post comments.</p>`;
         return;
       }
