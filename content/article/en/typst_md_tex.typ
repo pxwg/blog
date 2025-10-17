@@ -42,7 +42,7 @@ Simply put: LaTeX is overkill for notes. People use it only because Markdown lac
 Typst delivers a Markdown-like writing experience with live previews and straightforward syntax, while surpassing Markdown's capabilities through built-in features like mathematical typesetting, citation and more.
 Crucially, it produces PDFs natively—unlike Markdown which relies on external conversion tools. This positions Typst as the ideal middle ground, whereas LaTeX remains fundamentally mismatched for simple note-taking due to its excessive complexity.
 
-Historically (at least in my memory), physicists used typewritten text + handwritten formulas before adopting LaTeX for papers. Now, some misuse it for notes too.
+Historically (at least in my memory), physicists used typewritten text + handwritten formulas before adopting LaTeX for papers. Now, some have adapted it for notes, often with cumbersome results.
 LaTeX excels at paper typesetting but fails as a note tool. Markdown is lightweight but insufficient for academia.
 
 Extending Markdown (e.g., adding math support) caused syntax fragmentation—the same markup behaves differently across tools.
