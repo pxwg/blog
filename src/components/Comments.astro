@@ -17,21 +17,19 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
 
 <!-- UI TEMPLATES -->
 <template id="comment-item-template">
-  <div class="comment">
+  <div class="comment" data-fill-id="id">
     <div class="comment-header">
-      <img 
-        width="28" height="28" class="user-avatar"
-        data-fill-src="author.avatarUrl"
-        data-fill-alt="author.login"
-      >
-      <a 
-        target="_blank" rel="noopener noreferrer" class="user-name"
-        data-fill-href="author.login"
-        data-fill-text="author.login"
-      ></a>
+      <img width="28" height="28" class="user-avatar" data-fill-src="author.avatarUrl" data-fill-alt="author.login">
+      <a target="_blank" rel="noopener noreferrer" class="user-name" data-fill-href="author.login" data-fill-text="author.login"></a>
       <span class="comment-date" data-fill-text="createdAt"></span>
     </div>
     <div class="comment-body" data-fill-html="bodyHTML"></div>
+    <div class="comment-actions" data-fill-permissions="viewerCanUpdate,viewerCanDelete">
+      <button class="action-button reply-btn">Reply</button>
+      <button class="action-button edit-btn" style="display:none;">Edit</button>
+      <button class="action-button delete-btn" style="display:none;">Delete</button>
+    </div>
+    <div class="reply-form-container"></div>
   </div>
 </template>
 
@@ -55,6 +53,18 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
   <p class="login-prompt">
     Please <a id="login-link" href={loginUrl}>login with GitHub</a> to post a comment.
   </p>
+</template>
+
+<template id="edit-form-template">
+  <div class="edit-form-wrapper">
+    <form class="edit-form">
+      <textarea name="body" required></textarea>
+      <div class="form-actions">
+        <button type="button" class="action-button cancel-edit-btn">Cancel</button>
+        <button type="submit">Save</button>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -169,7 +179,7 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     color: var(--form-text-color);
   }
   .user-info .user-name {
-      font-weight: 600;
+    font-weight: 600;
   }
   .logout-btn {
     margin-left: auto;
@@ -183,10 +193,10 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     transition: all 0.2s ease;
   }
   .logout-btn:hover {
-      opacity: 0.7;
+    opacity: 0.7;
   }
   #comment-form {
-      padding: 0.5em;
+    padding: 0.5em;
   }
   #comment-form textarea {
     width: 100%;
@@ -254,4 +264,12 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
   .view-on-github a:hover {
     text-decoration: underline;
   }
+  .comment-actions { display: flex; justify-content: flex-end; gap: 0.5rem; padding: 0 0.75rem 0.25rem; font-size: 0.8em; }
+  .action-button { background: none; border: none; color: var(--comment-date-color); cursor: pointer; padding: 0.25rem 0.5rem; border-radius: 4px; }
+  .action-button:hover { background-color: rgba(128,128,128,0.1); color: var(--comment-text-color); }
+  .reply-form-container { margin: 0.5rem 0 0 1rem; border-left: 2px solid rgba(128,128,128,0.2); padding-left: 1rem; }
+  .reply-form-container .comment-form-wrapper { margin-top: 0; padding-top: 0.5rem; border-top: none; box-shadow: none; background: transparent; }
+  .edit-form-wrapper { padding: 0.25rem 0.75rem 0.5rem; }
+  .edit-form textarea { width: 100%; min-height: 80px; padding: 0.5em; border: 1px solid var(--form-border-color); background: var(--form-bg-color); color: var(--form-text-color); border-radius: 3px; font-family: inherit; }
+  .edit-form .form-actions button[type="submit"] { background: var(--form-button-color); color: #fff; }
 </style>

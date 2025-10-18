@@ -8,12 +8,12 @@ export interface Comment {
   author: CommentAuthor;
   bodyHTML: string;
   createdAt: string;
+  viewerCanUpdate: boolean;
+  viewerCanDelete: boolean;
 }
 
 export interface Discussion {
   id: string;
-  title: string;
-  bodyHTML: string;
   url: string;
   comments: {
     nodes: Comment[];
