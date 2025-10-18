@@ -19,7 +19,6 @@ class CommentsController {
         api.fetchAuthState(),
         api.fetchDiscussion(this.config),
       ]);
-
       this.authState = authState;
       this.discussion = discussionData;
 
@@ -30,7 +29,6 @@ class CommentsController {
 
       ui.renderInitialLayout(this.container, this.discussion, this.authState);
       this.attachEventListeners();
-
     } catch (error) {
       console.error("Failed to load comments app:", error);
       ui.renderError(this.container, error as Error);
@@ -41,20 +39,14 @@ class CommentsController {
     this.container.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
       if (target.matches('#logout-btn')) this.handleLogout();
-      if (target.matches('#login-link')) this.handleLogin();
+      if (target.matches('#login-link')) sessionStorage.setItem('just_logged_in', 'true');
     });
-
     this.container.addEventListener('submit', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.matches('#comment-form')) {
+      if ((e.target as HTMLElement).matches('#comment-form')) {
         e.preventDefault();
-        this.handleFormSubmit(target as HTMLFormElement);
+        this.handleFormSubmit(e.target as HTMLFormElement);
       }
     });
-  }
-
-  private handleLogin(): void {
-    sessionStorage.setItem('just_logged_in', 'true');
   }
 
   private async handleLogout(): Promise<void> {
@@ -63,24 +55,21 @@ class CommentsController {
       window.location.reload();
     } catch (error) {
       console.error('Logout failed:', error);
-      alert('Failed to logout. Please try again.');
+      alert('Failed to logout.');
     }
   }
 
   private async handleFormSubmit(form: HTMLFormElement): Promise<void> {
     if (!this.discussion?.id) return;
-    
     const textarea = form.querySelector('textarea');
     const button = form.querySelector('button[type="submit"]');
     if (!textarea || !button) return;
-
     const body = textarea.value.trim();
     if (!body) return;
 
     const originalButtonText = button.textContent;
     button.disabled = true;
     button.textContent = 'Posting...';
-
     try {
       const newComment = await api.postComment(this.discussion.id, body);
       ui.addCommentToDOM(newComment);
@@ -94,14 +83,13 @@ class CommentsController {
   }
 }
 
-// Factory function to initialize the comments controller
-export function initializeComments(containerId: string, config: CommentsConfig): void {
+export function initializeComments(containerId: string): void {
   const container = document.getElementById(containerId);
-  if (!container) {
-    console.error(`Container with id '${containerId}' not found`);
+  if (!container) return;
+  const { owner, repo, title } = container.dataset;
+  if (!owner || !repo || !title) {
+    console.error('Container missing required data attributes.');
     return;
   }
-
-  const controller = new CommentsController(container, config);
-  controller.init();
+  new CommentsController(container, { owner, repo, title }).init();
 }

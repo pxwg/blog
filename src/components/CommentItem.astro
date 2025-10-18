@@ -1,37 +1,23 @@
 <div class="comment">
   <div class="comment-header">
-    <img src="" alt="" width="28" height="28" class="user-avatar" data-template-field="author.avatarUrl" data-template-attr="src,alt:author.login">
-    <a href="" target="_blank" rel="noopener noreferrer" class="user-name" data-template-field="author.login" data-template-attr="href:https://github.com/{value}"></a>
-    <span class="comment-date" data-template-field="createdAt"></span>
+    <img 
+      src="" 
+      alt="" 
+      width="28" 
+      height="28" 
+      class="user-avatar"
+      data-fill="author.avatarUrl"
+      data-fill-target="src"
+    >
+    <a 
+      href="" 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      class="user-name"
+      data-fill="author.login"
+      data-attr-template="href:https://github.com/{value},alt:{value}"
+    ></a>
+    <span class="comment-date" data-fill="createdAt"></span>
   </div>
-  <div class="comment-body" data-template-field="bodyHTML"></div>
+  <div class="comment-body" data-fill="bodyHTML" data-fill-target="html"></div>
 </div>
-
-<style>
-  .comment {
-    border-left: 3px solid #d1d5da;
-    padding-left: 1.5rem;
-  }
-  .comment-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
-  }
-  .user-avatar {
-    border-radius: 50%;
-  }
-  .comment-header .user-name {
-    font-weight: 500;
-    text-decoration: none;
-    color: inherit;
-  }
-  .comment-date {
-    margin-left: auto;
-    font-size: 0.875rem;
-    color: #586069;
-  }
-  .comment-body {
-    line-height: 1.6;
-  }
-</style>
