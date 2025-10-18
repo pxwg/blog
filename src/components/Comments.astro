@@ -45,6 +45,18 @@ const { owner, repo, title } = Astro.props;
         fetch(discussionApiUrl, fetchOptions)
       ]);
 
+      let authState;
+      if (userRes.ok) {
+        authState = await userRes.json();
+      } else if (userRes.status === 401) {
+        // Token is invalid/expired, treat as logged out
+        authState = { isLoggedIn: false };
+      } else {
+        // Handle other user fetch errors if necessary
+        console.error(`User API request failed with status: ${userRes.status}`);
+        authState = { isLoggedIn: false };
+      }
+
       if (!discussionRes.ok) {
         if (discussionRes.status === 404) {
           commentsContainer.innerHTML = `<p>No discussion found for this article. Be the first to <a class="create-link" href="https://github.com/${owner}/${repo}/discussions/new?title=${encodeURIComponent(title)}" target="_blank" rel="noopener noreferrer">create one</a>!</p>`;
@@ -54,9 +66,7 @@ const { owner, repo, title } = Astro.props;
         return;
       }
       
-      const authState = await userRes.json();
       const discussionData = await discussionRes.json();
-      
       let commentsHTML = `<h2>${discussionData.title}</h2>`;
       commentsHTML += `<div class="discussion-body">${discussionData.bodyHTML || ''}</div><hr><h3>Comments</h3><div id="comment-list">`;
 
