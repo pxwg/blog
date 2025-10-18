@@ -15,168 +15,20 @@ const { owner, repo, title } = Astro.props;
 </div>
 
 <script>
-  const renderApp = async () => {
+  import { initializeComments } from '../utils/comments';
+
+  const renderApp = () => {
     const commentsContainer = document.getElementById('comments-container');
     if (!commentsContainer) return;
 
     const { owner, repo, title } = commentsContainer.dataset;
-
-    try {
-      const justLoggedIn = sessionStorage.getItem('just_logged_in');
-      if (justLoggedIn) {
-        sessionStorage.removeItem('just_logged_in');
-      }
-
-      const userApiUrl = `/api/user`;
-      const discussionApiUrl = `/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`;
-
-      const fetchOptions = {
-        credentials: 'include',
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
-        },
-      };
-
-      const [userRes, discussionRes] = await Promise.all([
-        fetch(userApiUrl, fetchOptions),
-        fetch(discussionApiUrl, fetchOptions)
-      ]);
-
-      let authState;
-      if (userRes.ok) {
-        authState = await userRes.json();
-      } else if (userRes.status === 401) {
-        // Token is invalid/expired, treat as logged out
-        authState = { isLoggedIn: false };
-      } else {
-        // Handle other user fetch errors if necessary
-        console.error(`User API request failed with status: ${userRes.status}`);
-        authState = { isLoggedIn: false };
-      }
-
-      if (!discussionRes.ok) {
-        if (discussionRes.status === 404) {
-          commentsContainer.innerHTML = `<p>No discussion found for this article. Be the first to <a class="create-link" href="https://github.com/${owner}/${repo}/discussions/new?title=${encodeURIComponent(title)}" target="_blank" rel="noopener noreferrer">create one</a>!</p>`;
-        } else {
-          throw new Error(`API request failed with status: ${discussionRes.status}`);
-        }
-        return;
-      }
-      
-      const discussionData = await discussionRes.json();
-      let commentsHTML = `<h2>${discussionData.title}</h2>`;
-      commentsHTML += `<div class="discussion-body">${discussionData.bodyHTML || ''}</div><hr><h3>Comments</h3><div id="comment-list">`;
-
-      if (!discussionData.comments?.nodes?.length) {
-        commentsHTML += '<p id="no-comments-yet">Be the first to comment.</p>';
-      } else {
-        discussionData.comments.nodes.forEach(comment => {
-          commentsHTML += createCommentHTML(comment);
-        });
-      }
-      commentsHTML += `</div>`; // Close #comment-list
-
-      commentsHTML += `<div id="comment-form-container">${createFormHTML(authState)}</div>`;
-
-      commentsHTML += `<p class="view-on-github"><a href="${discussionData.url}" target="_blank" rel="noopener noreferrer" class="github-link">View on GitHub →</a></p>`;
-
-      commentsContainer.innerHTML = commentsHTML;
-      
-      if (authState.isLoggedIn) {
-        addFormSubmitListener(discussionData.id, title);
-      } else {
-        addLoginListener();
-      }
-
-    } catch (error) {
-      console.error("Failed to load comments app:", error);
-      commentsContainer.innerHTML = `<div class="error-box"><p>Sorry, we couldn't load the comments.</p><p class="error-message">Details: ${error.message}</p></div>`;
+    
+    if (!owner || !repo || !title) {
+      console.error('Missing required data attributes');
+      return;
     }
-  };
 
-  const createCommentHTML = (comment) => `
-    <div class="comment">
-      <div class="comment-header">
-        <img src="${comment.author.avatarUrl}" alt="${comment.author.login}" width="40" height="40">
-        <strong>${comment.author.login}</strong>
-        <span class="comment-date">on ${new Date(comment.createdAt).toLocaleString()}</span>
-      </div>
-      <div class="comment-body">${comment.bodyHTML || ''}</div>
-    </div>`;
-
-  const createFormHTML = (authState) => {
-    if (authState.isLoggedIn) {
-      return `
-        <div class="comment-form-wrapper">
-          <img src="${authState.user.avatarUrl}" alt="${authState.user.login}" width="40" height="40" class="user-avatar">
-          <form id="comment-form">
-            <textarea name="body" placeholder="Add your comment..." required></textarea>
-            <div class="form-actions">
-              <button type="submit">Comment</button>
-            </div>
-          </form>
-        </div>`;
-    } else {
-      const currentPage = encodeURIComponent(window.location.href);
-      const loginUrl = `/api/login?redirect=${currentPage}`;
-      return `<p class="login-prompt">Please <a id="login-link" class="login-link" href="${loginUrl}">login with GitHub</a> to post a comment.</p>`;
-    }
-  };
-
-  const addLoginListener = () => {
-    const loginLink = document.getElementById('login-link');
-    if (loginLink) {
-      loginLink.addEventListener('click', (e) => {
-        sessionStorage.setItem('just_logged_in', 'true');
-      });
-    }
-  };
-
-  const addFormSubmitListener = (discussionId, title) => {
-    const form = document.getElementById('comment-form');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const textarea = form.querySelector('textarea');
-      const button = form.querySelector('button');
-      const body = textarea.value.trim();
-
-      if (!body) return;
-
-      button.disabled = true;
-      button.textContent = 'Posting...';
-
-      try {
-        const res = await fetch(`/api/comment`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ discussionId, body }),
-        });
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.error || 'Failed to post comment.');
-        }
-
-        const newComment = await res.json();
-        const commentList = document.getElementById('comment-list');
-        
-        const newCommentEl = document.createElement('div');
-        newCommentEl.innerHTML = createCommentHTML(newComment);
-        commentList.appendChild(newCommentEl.firstElementChild);
-
-        const noCommentsMsg = document.getElementById('no-comments-yet');
-        if (noCommentsMsg) noCommentsMsg.remove();
-        
-        textarea.value = '';
-      } catch (error) {
-        alert(`Error: ${error.message}`);
-      } finally {
-        button.disabled = false;
-        button.textContent = 'Comment';
-      }
-    });
+    initializeComments('comments-container', { owner, repo, title });
   };
 
   document.addEventListener('astro:page-load', renderApp);
@@ -184,9 +36,43 @@ const { owner, repo, title } = Astro.props;
 </script>
 
 <style>
-.comment-form-wrapper { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
-.user-avatar { border-radius: 50%; }
-#comment-form { flex-grow: 1; }
+.user-info { 
+  display: flex; 
+  align-items: center; 
+  gap: 0.75rem; 
+  margin-bottom: 0.75rem; 
+}
+.user-info .user-avatar { 
+  border-radius: 50%; 
+}
+.user-info .user-name { 
+  font-weight: 500; 
+}
+.user-info .logout-btn { 
+  margin-left: auto; 
+  background: #d73a49; 
+  color: white; 
+  border: none; 
+  border-radius: 6px; 
+  padding: 0.4rem 0.8rem; 
+  font-size: 0.9rem; 
+  cursor: pointer; 
+}
+.user-info .logout-btn:hover { 
+  background: #cb2431; 
+}
+.comment-form-wrapper { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 0.75rem; 
+  margin-top: 1.5rem; 
+}
+.user-avatar { 
+  border-radius: 50%; 
+}
+#comment-form { 
+  flex-grow: 1; 
+}
 #comment-form textarea {
   width: 100%;
   min-height: 80px;
@@ -197,7 +83,10 @@ const { owner, repo, title } = Astro.props;
   line-height: 1.5;
   resize: vertical;
 }
-.form-actions { margin-top: 0.5rem; text-align: right; }
+.form-actions { 
+  margin-top: 0.5rem; 
+  text-align: right; 
+}
 .form-actions button {
   background-color: #2ea44f;
   color: white;
@@ -207,7 +96,17 @@ const { owner, repo, title } = Astro.props;
   font-weight: 500;
   cursor: pointer;
 }
-.form-actions button:hover { background-color: #2c974b; }
-.form-actions button:disabled { background-color: #94d3a2; cursor: not-allowed; }
-.login-prompt { text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e1e4e8; }
+.form-actions button:hover { 
+  background-color: #2c974b; 
+}
+.form-actions button:disabled { 
+  background-color: #94d3a2; 
+  cursor: not-allowed; 
+}
+.login-prompt { 
+  text-align: center; 
+  margin-top: 1.5rem; 
+  padding-top: 1rem; 
+  border-top: 1px solid #e1e4e8; 
+}
 </style>
