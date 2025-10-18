@@ -24,17 +24,25 @@ const { owner, repo, title } = Astro.props;
     const { owner, repo, title } = commentsContainer.dataset;
 
     try {
-      let discussionApiUrl = `${API_URL}/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`;
-      const commentJustPostedKey = `comment_posted_${title}`;
-
-      if (sessionStorage.getItem(commentJustPostedKey)) {
-        discussionApiUrl += `&bust=${Date.now()}`;
-        sessionStorage.removeItem(commentJustPostedKey);
+      const justLoggedIn = sessionStorage.getItem('just_logged_in');
+      if (justLoggedIn) {
+        sessionStorage.removeItem('just_logged_in');
       }
 
+      const userApiUrl = `${API_URL}/api/user`;
+      const discussionApiUrl = `${API_URL}/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`;
+
+      const fetchOptions = {
+        credentials: 'include',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+        },
+      };
+
       const [userRes, discussionRes] = await Promise.all([
-        fetch(`${API_URL}/api/user`, { credentials: 'include' }),
-        fetch(`${API_URL}/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`)
+        fetch(userApiUrl, fetchOptions),
+        fetch(discussionApiUrl, fetchOptions)
       ]);
 
       if (!discussionRes.ok) {
@@ -68,7 +76,9 @@ const { owner, repo, title } = Astro.props;
       commentsContainer.innerHTML = commentsHTML;
       
       if (authState.isLoggedIn) {
-        addFormSubmitListener(discussionData.id);
+        addFormSubmitListener(discussionData.id, title);
+      } else {
+        addLoginListener();
       }
 
     } catch (error) {
@@ -101,8 +111,17 @@ const { owner, repo, title } = Astro.props;
         </div>`;
     } else {
       const currentPage = encodeURIComponent(window.location.href);
-      const loginUrl = `${API_URL}/api/login?redirect=${currentPage}`;
-      return `<p class="login-prompt">Please <a class="login-link" href="${loginUrl}">login with GitHub</a> to post a comment.</p>`;
+      const loginUrl = `${API_URL}/api/login?redirect=${currentPage}`;
+      return `<p class="login-prompt">Please <a id="login-link" class="login-link" href="${loginUrl}">login with GitHub</a> to post a comment.</p>`;
+    }
+  };
+
+  const addLoginListener = () => {
+    const loginLink = document.getElementById('login-link');
+    if (loginLink) {
+      loginLink.addEventListener('click', (e) => {
+        sessionStorage.setItem('just_logged_in', 'true');
+      });
     }
   };
 
@@ -135,17 +154,14 @@ const { owner, repo, title } = Astro.props;
         const newComment = await res.json();
         const commentList = document.getElementById('comment-list');
         
-        // Dynamically add the new comment to the list
         const newCommentEl = document.createElement('div');
         newCommentEl.innerHTML = createCommentHTML(newComment);
         commentList.appendChild(newCommentEl.firstElementChild);
 
-        // Remove "Be the first to comment" message if it exists
         const noCommentsMsg = document.getElementById('no-comments-yet');
         if (noCommentsMsg) noCommentsMsg.remove();
         
-        textarea.value = ''; // Clear textarea
-        sessionStorage.setItem(`comment_posted_${title}`, 'true');
+        textarea.value = '';
       } catch (error) {
         alert(`Error: ${error.message}`);
       } finally {
@@ -155,7 +171,6 @@ const { owner, repo, title } = Astro.props;
     });
   };
 
-  // Run the app on page load and Astro's SPA navigation
   document.addEventListener('astro:page-load', renderApp);
   renderApp();
 </script>
