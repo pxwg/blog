@@ -1,6 +1,26 @@
 import * as api from './api';
 import * as ui from './ui';
-import type { CommentsConfig, AuthState, Discussion } from './types';
+import type { CommentsConfig, AuthState, Discussion, Comment } from './types';
+
+function buildCommentTree(comments: Comment[]): Comment[] {
+  const commentMap = new Map<string, Comment>();
+  const topLevelComments: Comment[] = [];
+
+  comments.forEach((comment) => {
+    comment.replies = [];
+    commentMap.set(comment.id, comment);
+  });
+
+  comments.forEach((comment) => {
+    if (comment.replyTo && commentMap.has(comment.replyTo.id)) {
+      commentMap.get(comment.replyTo.id)!.replies!.push(comment);
+    } else {
+      topLevelComments.push(comment);
+    }
+  });
+
+  return topLevelComments;
+}
 
 class CommentsController {
   private container: HTMLElement;
@@ -28,27 +48,39 @@ class CommentsController {
         return ui.renderNoDiscussion(this.container, this.config);
       }
 
-      ui.renderInitialLayout(this.container, this.discussion, this.authState);
-      this.originalFormParent = this.container.querySelector('#comment-form-container');
+      const commentTree = buildCommentTree(this.discussion.comments.nodes);
+
+      ui.renderInitialLayout(
+        this.container,
+        this.discussion,
+        this.authState,
+        commentTree
+      );
+
+      this.originalFormParent = this.container.querySelector(
+        '#comment-form-container'
+      );
       this.attachEventListeners();
     } catch (error) {
-      console.error("Failed to load comments app:", error);
+      console.error('Failed to load comments app:', error);
       ui.renderError(this.container, error as Error);
     }
   }
-  
+
   private attachEventListeners(): void {
     this.container.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
       const commentEl = target.closest<HTMLElement>('.comment');
-      
+
       if (target.matches('.reply-btn')) this.handleReplyClick(commentEl!);
       else if (target.matches('.edit-btn')) ui.showEditForm(commentEl!);
-      else if (target.matches('.delete-btn')) this.handleDeleteClick(commentEl!);
+      else if (target.matches('.delete-btn'))
+        this.handleDeleteClick(commentEl!);
       else if (target.matches('.cancel-edit-btn')) ui.hideEditForm(commentEl!);
       else if (target.matches('.cancel-reply-btn')) this.handleCancelReply();
       else if (target.matches('#logout-btn')) this.handleLogout();
-      else if (target.matches('#login-link')) sessionStorage.setItem('just_logged_in', 'true');
+      else if (target.matches('#login-link'))
+        sessionStorage.setItem('just_logged_in', 'true');
     });
 
     this.container.addEventListener('submit', (e) => {
@@ -60,21 +92,26 @@ class CommentsController {
   }
 
   private handleReplyClick(commentEl: HTMLElement) {
-    const formWrapper = this.container.querySelector<HTMLElement>('.comment-form-wrapper');
+    const formWrapper = this.container.querySelector<HTMLElement>(
+      '.comment-form-wrapper'
+    );
     if (formWrapper) {
       ui.showReplyForm(commentEl, formWrapper);
     }
   }
 
   private handleCancelReply() {
-    const formWrapper = this.container.querySelector<HTMLElement>('.comment-form-wrapper');
+    const formWrapper = this.container.querySelector<HTMLElement>(
+      '.comment-form-wrapper'
+    );
     if (formWrapper && this.originalFormParent) {
       ui.hideReplyForm(formWrapper, this.originalFormParent);
     }
   }
 
   private async handleDeleteClick(commentEl: HTMLElement) {
-    if (!window.confirm('Are you sure you want to delete this comment?')) return;
+    if (!window.confirm('Are you sure you want to delete this comment?'))
+      return;
     const commentId = commentEl.dataset.commentId!;
     try {
       await api.deleteComment(commentId);
@@ -99,10 +136,13 @@ class CommentsController {
     button.textContent = 'Posting...';
 
     try {
-      const newComment = await api.postComment(this.discussion.id, body, replyToId);
+      const newComment = await api.postComment(
+        this.discussion.id,
+        body,
+        replyToId
+      );
       ui.addCommentToDOM(newComment);
       textarea.value = '';
-
       if (replyToId) {
         this.handleCancelReply();
       }
@@ -113,7 +153,7 @@ class CommentsController {
       button.textContent = originalButtonText;
     }
   }
-  
+
   private async handleEditFormSubmit(form: HTMLFormElement) {
     const commentEl = form.closest<HTMLElement>('.comment')!;
     const commentId = commentEl.dataset.commentId!;
@@ -121,7 +161,7 @@ class CommentsController {
     const button = form.querySelector('button[type="submit"]')!;
     const body = textarea.value.trim();
     if (!body) return;
-    
+
     const originalButtonText = button.textContent;
     button.disabled = true;
     button.textContent = 'Saving...';

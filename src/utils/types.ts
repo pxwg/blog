@@ -10,6 +10,10 @@ export interface Comment {
   createdAt: string;
   viewerCanUpdate: boolean;
   viewerCanDelete: boolean;
+  replyTo?: {
+    id: string;
+  };
+  replies?: Comment[];
 }
 
 export interface Discussion {

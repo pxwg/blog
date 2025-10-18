@@ -1,6 +1,4 @@
 ---
-// REFACTOR: Removed CommentItem import, as its content is now inlined below.
-
 export interface Props {
   owner: string;
   repo: string;
@@ -11,37 +9,61 @@ const { owner, repo, title } = Astro.props;
 const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
 ---
 
-<div id="comments-container" data-owner={owner} data-repo={repo} data-title={title}>
+<div
+  id="comments-container"
+  data-owner={owner;}
+  data-repo={repo;}
+  data-title={title;}
+>
   <div class="comment-loader"><p>Loading comments...</p></div>
 </div>
 
-<!-- UI TEMPLATES -->
+<!-- TEMPLATES -->
 <template id="comment-item-template">
-  <div class="comment" data-fill-id="id">
-    <div class="comment-header">
-      <img width="28" height="28" class="user-avatar" data-fill-src="author.avatarUrl" data-fill-alt="author.login">
-      <a target="_blank" rel="noopener noreferrer" class="user-name" data-fill-href="author.login" data-fill-text="author.login"></a>
-      <span class="comment-date" data-fill-text="createdAt"></span>
+  <div class="comment-wrapper">
+    <div class="comment" data-fill-id="id">
+      <div class="comment-header">
+        <img
+          width="28"
+          height="28"
+          class="user-avatar"
+          data-fill-src="author.avatarUrl"
+          data-fill-alt="author.login"
+        />
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          class="user-name"
+          data-fill-href="author.login"
+          data-fill-text="author.login"></a>
+        <span class="comment-date" data-fill-text="createdAt"></span>
+      </div>
+      <div class="comment-body" data-fill-html="bodyHTML"></div>
+      <div class="comment-actions">
+        <button class="action-button reply-btn">Reply</button>
+        <button class="action-button edit-btn" style="display:none;"
+          >Edit</button
+        >
+        <button class="action-button delete-btn" style="display:none;"
+          >Delete</button
+        >
+      </div>
+      <div class="reply-form-container"></div>
     </div>
-    <div class="comment-body" data-fill-html="bodyHTML"></div>
-    <div class="comment-actions" data-fill-permissions="viewerCanUpdate,viewerCanDelete">
-      <button class="action-button reply-btn">Reply</button>
-      <button class="action-button edit-btn" style="display:none;">Edit</button>
-      <button class="action-button delete-btn" style="display:none;">Delete</button>
-    </div>
-    <div class="reply-form-container"></div>
+    <div class="replies-container"></div>
   </div>
 </template>
 
 <template id="comment-form-template">
   <div class="comment-form-wrapper">
     <div class="user-info">
-      <img src="" alt="" width="28" height="28" class="user-avatar">
+      <img src="" alt="" width="28" height="28" class="user-avatar" />
       <span class="user-name"></span>
       <button id="logout-btn" class="logout-btn">Logout</button>
     </div>
     <form id="comment-form">
-      <textarea name="body" placeholder="Add your comment..." required></textarea>
+      <textarea name="body" placeholder="Add your comment..." required
+      ></textarea>
       <div class="form-actions">
         <button type="submit">Comment</button>
       </div>
@@ -51,7 +73,7 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
 
 <template id="login-prompt-template">
   <p class="login-prompt">
-    Please <a id="login-link" href={loginUrl}>login with GitHub</a> to post a comment.
+    Please <a id="login-link" href={loginUrl;}>login with GitHub</a> to post a comment.
   </p>
 </template>
 
@@ -60,7 +82,9 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     <form class="edit-form">
       <textarea name="body" required></textarea>
       <div class="form-actions">
-        <button type="button" class="action-button cancel-edit-btn">Cancel</button>
+        <button type="button" class="action-button cancel-edit-btn"
+          >Cancel</button
+        >
         <button type="submit">Save</button>
       </div>
     </form>
@@ -73,8 +97,16 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     const loginLink = document.querySelector('#login-prompt-template a');
     if (loginLink) {
       let href = loginLink.getAttribute('href') || '';
-      href = href.replace('{currentPage}', encodeURIComponent(window.location.href));
-      href = href.replace('{callbackUrl}', encodeURIComponent(`${window.location.protocol}//${window.location.host}/api/callback`));
+      href = href.replace(
+        '{currentPage}',
+        encodeURIComponent(window.location.href)
+      );
+      href = href.replace(
+        '{callbackUrl}',
+        encodeURIComponent(
+          `${window.location.protocol}//${window.location.host}/api/callback`
+        )
+      );
       loginLink.setAttribute('href', href);
     }
     initializeComments('comments-container');
@@ -125,7 +157,7 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     background: var(--comment-bg-color);
     border-left: 3px solid var(--comment-border-color);
     border-radius: 4px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
   }
   .comment-header {
     display: flex;
@@ -133,7 +165,7 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     gap: 0.5em;
     padding: 0.3em 0.75em;
     font-size: 0.9em;
-    border-bottom: 1px solid rgba(128,128,128,0.1);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
   }
   .user-avatar {
     border-radius: 50%;
@@ -153,21 +185,22 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     color: var(--comment-date-color);
   }
   .comment-body {
-    padding: 0.3em 0.75em;
-    line-height: 1.4;
+    padding: 0.5em 0.75em;
+    line-height: 1.5;
     font-size: 0.95em;
     color: var(--comment-text-color);
   }
-  .comment-form-wrapper, .login-prompt {
+  .comment-form-wrapper,
+  .login-prompt {
     margin-top: 1.5rem;
     padding-top: 1rem;
-    border-top: 1px solid rgba(128,128,128,0.2);
+    border-top: 1px solid rgba(128, 128, 128, 0.2);
   }
   .comment-form-wrapper {
     background: var(--form-bg-color);
     border-left: 3px solid var(--form-border-color);
     border-radius: 4px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
   }
   .user-info {
     display: flex;
@@ -175,7 +208,7 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     gap: 0.5em;
     padding: 0.4em 0.75em;
     font-size: 0.9em;
-    border-bottom: 1px solid rgba(128,128,128,0.1);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
     color: var(--form-text-color);
   }
   .user-info .user-name {
@@ -210,7 +243,9 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     font-size: 1em;
     resize: vertical;
     box-sizing: border-box;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
   }
   #comment-form textarea:focus {
     outline: none;
@@ -221,8 +256,9 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     margin-top: 0.5em;
     display: flex;
     justify-content: flex-end;
+    gap: 0.5rem;
   }
-  .form-actions button {
+  .form-actions button[type='submit'] {
     background: var(--form-button-color);
     color: #fff;
     border: none;
@@ -264,12 +300,68 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
   .view-on-github a:hover {
     text-decoration: underline;
   }
-  .comment-actions { display: flex; justify-content: flex-end; gap: 0.5rem; padding: 0 0.75rem 0.25rem; font-size: 0.8em; }
-  .action-button { background: none; border: none; color: var(--comment-date-color); cursor: pointer; padding: 0.25rem 0.5rem; border-radius: 4px; }
-  .action-button:hover { background-color: rgba(128,128,128,0.1); color: var(--comment-text-color); }
-  .reply-form-container { margin: 0.5rem 0 0 1rem; border-left: 2px solid rgba(128,128,128,0.2); padding-left: 1rem; }
-  .reply-form-container .comment-form-wrapper { margin-top: 0; padding-top: 0.5rem; border-top: none; box-shadow: none; background: transparent; }
-  .edit-form-wrapper { padding: 0.25rem 0.75rem 0.5rem; }
-  .edit-form textarea { width: 100%; min-height: 80px; padding: 0.5em; border: 1px solid var(--form-border-color); background: var(--form-bg-color); color: var(--form-text-color); border-radius: 3px; font-family: inherit; }
-  .edit-form .form-actions button[type="submit"] { background: var(--form-button-color); color: #fff; }
+
+  /* 新增功能样式 */
+  .comment-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0 0.75rem 0.25rem;
+    font-size: 0.8em;
+  }
+  .action-button {
+    background: none;
+    border: none;
+    color: var(--comment-date-color);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+  }
+  .action-button:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+    color: var(--comment-text-color);
+  }
+  .reply-form-container {
+    margin: 0.5rem 0 0 1rem;
+    border-left: 2px solid rgba(128, 128, 128, 0.2);
+    padding-left: 1rem;
+  }
+  .reply-form-container .comment-form-wrapper {
+    margin-top: 0;
+    padding-top: 0.5rem;
+    border-top: none;
+    box-shadow: none;
+    background: transparent;
+  }
+  .edit-form-wrapper {
+    padding: 0.25rem 0.75rem 0.5rem;
+  }
+  .edit-form textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 0.5em;
+    border: 1px solid var(--form-border-color);
+    background: var(--form-bg-color);
+    color: var(--form-text-color);
+    border-radius: 3px;
+    font-family: inherit;
+  }
+  .edit-form .form-actions button[type='submit'] {
+    background: var(--form-button-color);
+    color: #fff;
+  }
+
+  .comment-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  .replies-container {
+    margin-left: 1.5rem;
+    padding-left: 1.5rem;
+    border-left: 2px solid rgba(128, 128, 128, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
 </style>
