@@ -67,7 +67,7 @@ jobs:
           async function main() {
             // Use a Set to process each translationKey only once.
             const processedKeys = new Set();
-            const articleDir = path.join(process.cwd(), 'src', 'content', 'blog');
+            const articleDir = path.join(process.cwd(), 'content', 'article');
             const allFiles = findArticleFiles(articleDir);
             
             for (const filePath of allFiles) {
