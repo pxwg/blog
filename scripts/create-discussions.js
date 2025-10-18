@@ -13,38 +13,50 @@ function parseMeta(content, name) {
   return match ? match[1] : null;
 }
 
-// Find all HTML files in article directories
-function findArticleHtmlFiles(distDir) {
-  const articleDir = path.join(distDir, "article");
-  if (!fs.existsSync(articleDir)) {
-    console.error(`Article directory not found: ${articleDir}`);
-    return [];
+// Recursively find all HTML files
+function findAllHtmlFiles(dir, files = []) {
+  if (!fs.existsSync(dir)) {
+    return files;
   }
 
-  let files = [];
-
-  // Scan language directories (en, zh, etc.)
-  for (const langEntry of fs.readdirSync(articleDir, { withFileTypes: true })) {
-    if (!langEntry.isDirectory()) continue;
-
-    const langDir = path.join(articleDir, langEntry.name);
-
-    // Scan article directories within each language
-    for (const articleEntry of fs.readdirSync(langDir, {
-      withFileTypes: true,
-    })) {
-      if (!articleEntry.isDirectory()) continue;
-
-      const articlePath = path.join(langDir, articleEntry.name);
-      const indexPath = path.join(articlePath, "index.html");
-
-      if (fs.existsSync(indexPath)) {
-        files.push(indexPath);
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      findAllHtmlFiles(fullPath, files);
+    } else if (entry.isFile() && entry.name === "index.html") {
+      // Check if this HTML file has a translation-key meta tag
+      const content = fs.readFileSync(fullPath, "utf8");
+      if (parseMeta(content, "translation-key")) {
+        files.push(fullPath);
       }
     }
   }
 
   return files;
+}
+
+// Debug: print directory structure
+function printDirectoryStructure(dir, indent = 0, maxDepth = 5) {
+  if (!fs.existsSync(dir)) {
+    console.log("  ".repeat(indent) + `[NOT FOUND] ${dir}`);
+    return;
+  }
+
+  if (indent > maxDepth) {
+    console.log("  ".repeat(indent) + "...");
+    return;
+  }
+
+  console.log("  ".repeat(indent) + path.basename(dir) + "/");
+
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      printDirectoryStructure(path.join(dir, entry.name), indent + 1, maxDepth);
+    } else {
+      console.log("  ".repeat(indent + 1) + entry.name);
+    }
+  }
 }
 
 async function main() {
@@ -54,6 +66,14 @@ async function main() {
   const repoName =
     process.env.REPO_NAME || process.env.GITHUB_REPOSITORY?.split("/")[1];
   const ghToken = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
+
+  console.log("=== Debug Info ===");
+  console.log(`Working directory: ${process.cwd()}`);
+  console.log(`Dist directory: ${distDir}`);
+  console.log(`Dist exists: ${fs.existsSync(distDir)}`);
+  console.log("\nDirectory structure:");
+  printDirectoryStructure(distDir);
+  console.log("\n=== Starting Process ===\n");
 
   if (!ghToken) {
     console.error(
@@ -70,9 +90,11 @@ async function main() {
   }
 
   const processedKeys = new Set();
-  const htmlFiles = findArticleHtmlFiles(distDir);
+  const htmlFiles = findAllHtmlFiles(distDir);
 
-  console.log(`Found ${htmlFiles.length} article HTML files`);
+  console.log(`Found ${htmlFiles.length} HTML files with translation keys`);
+  htmlFiles.forEach((file) => console.log(`  - ${file}`));
+  console.log("");
 
   for (const filePath of htmlFiles) {
     const content = fs.readFileSync(filePath, "utf8");
