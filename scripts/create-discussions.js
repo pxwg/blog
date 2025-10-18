@@ -153,7 +153,7 @@ async function main() {
     console.log(`Processing: ${translationKey} (${title})`);
 
     // Check if discussion already exists for this translation key
-    const discussionTitle = `Discussion: ${translationKey}`;
+    const discussionTitle = `${translationKey}`;
     const searchQuery = `repo:${repoOwner}/${repoName} in:title "${discussionTitle}"`;
     const searchCommand = `gh api graphql -f query='query($q: String!) { search(query: $q, type: DISCUSSION, first: 1) { discussionCount } }' -f q='${searchQuery}' --jq '.data.search.discussionCount'`;
 
@@ -221,7 +221,8 @@ async function main() {
     }
 
     // Create discussion body with link to article
-    const articleUrl = `https://${repoOwner}.github.io/${repoName}/article/${translationKey}`;
+    // Hard coded "en" locale for now
+    const articleUrl = `https://${repoOwner}.github.io/${repoName}/en/article/${translationKey}`;
     const discussionBody = `Comment section for the article: **${title}**\n\nRead the article here: [${title}](${articleUrl})`;
 
     // Create discussion
