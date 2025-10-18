@@ -93,38 +93,81 @@ jobs:
           async function main() {
             const processedKeys = new Set();
             const htmlFiles = findHtmlFiles(path.join(process.cwd(), 'dist'));
+            
             for (const filePath of htmlFiles) {
               const content = fs.readFileSync(filePath, 'utf8');
-              const translationKey = parseMeta(content, 'translationKey');
-              const title = parseMeta(content, 'title') || path.basename(filePath);
+              const translationKey = parseMeta(content, 'translation-key');
+              const title = parseMeta(content, 'title') || 'Untitled';
 
+              // Skip if no translation key or already processed
               if (!translationKey || processedKeys.has(translationKey)) continue;
               processedKeys.add(translationKey);
 
-              const discussionBody = `<p>Comment section for the article: <strong>${title}</strong>.</p>
-                <p>Read the article here: <a href="https://homeward-sky.top/article/${translationKey}">${title}</a></p>`;
+              console.log(`Processing: ${translationKey}`);
 
-              // Check if discussion exists (customize search as needed)
-              const searchQuery = `repo:${process.env.REPO_OWNER}/${process.env.REPO_NAME} in:body "${translationKey}"`;
+              // Check if discussion already exists for this translation key
+              const searchQuery = `repo:${process.env.REPO_OWNER}/${process.env.REPO_NAME} in:title "Discussion: ${translationKey}"`;
               const searchCommand = `gh api graphql -f query='
-                query($q: String!) { search(query: $q, type: DISCUSSION, first: 1) { nodeCount } }' -f q="${searchQuery}" --jq '.data.search.nodeCount'`;
-              const result = execSync(searchCommand, { encoding: 'utf8' }).trim();
-              if (parseInt(result, 10) > 0) continue;
+                query($q: String!) { 
+                  search(query: $q, type: DISCUSSION, first: 1) { 
+                    nodeCount 
+                  } 
+                }' -f q="${searchQuery}" --jq '.data.search.nodeCount'`;
+              
+              let existingCount = 0;
+              try {
+                const result = execSync(searchCommand, { encoding: 'utf8' }).trim();
+                existingCount = parseInt(result, 10);
+              } catch (e) {
+                console.error(`Error checking discussion for ${translationKey}:`, e.message);
+                continue;
+              }
+
+              if (existingCount > 0) {
+                console.log(`Discussion already exists for: ${translationKey}`);
+                continue;
+              }
 
               // Get repo/category IDs
               const repoDataCommand = `gh api graphql -f query='
                 query {
                   repository(owner: "${process.env.REPO_OWNER}", name: "${process.env.REPO_NAME}") {
                     id
-                    discussionCategories(first: 10, name: "General") {
-                      nodes { id }
+                    discussionCategories(first: 10) {
+                      nodes { 
+                        id 
+                        name 
+                      }
                     }
                   }
                 }'`;
-              const repoData = JSON.parse(execSync(repoDataCommand, { encoding: 'utf8' }));
-              const repositoryId = repoData.data.repository.id;
-              const categoryId = repoData.data.repository.discussionCategories.nodes[0]?.id;
-              if (!categoryId) process.exit(1);
+              
+              let repositoryId, categoryId;
+              try {
+                const repoData = JSON.parse(execSync(repoDataCommand, { encoding: 'utf8' }));
+                repositoryId = repoData.data.repository.id;
+                const generalCategory = repoData.data.repository.discussionCategories.nodes.find(
+                  cat => cat.name === 'General'
+                );
+                categoryId = generalCategory?.id;
+                
+                if (!categoryId) {
+                  console.error('General category not found, using first category');
+                  categoryId = repoData.data.repository.discussionCategories.nodes[0]?.id;
+                }
+              } catch (e) {
+                console.error(`Error getting repo data:`, e.message);
+                continue;
+              }
+
+              if (!repositoryId || !categoryId) {
+                console.error('Missing repository or category ID');
+                continue;
+              }
+
+              // Create discussion body with link to article
+              const articleUrl = `https://${process.env.REPO_OWNER}.github.io/${process.env.REPO_NAME}/article/${translationKey}`;
+              const discussionBody = `Comment section for the article: **${title}**\\n\\nRead the article here: [${title}](${articleUrl})`;
 
               // Create discussion
               const createCommand = `gh api graphql -f query='
@@ -132,9 +175,18 @@ jobs:
                   createDiscussion(input: {repositoryId: $repoId, categoryId: $catId, title: $title, body: $body}) {
                     discussion { url }
                   }
-                }' -f repoId='${repositoryId}' -f catId='${categoryId}' -f title='Comment section for: ${title}' -f body='${discussionBody}'`;
-              try { execSync(createCommand); } catch (e) { }
+                }' -f repoId='${repositoryId}' -f catId='${categoryId}' -f title='Discussion: ${translationKey}' -f body='${discussionBody}'`;
+              
+              try {
+                const result = execSync(createCommand, { encoding: 'utf8' });
+                const discussionUrl = JSON.parse(result).data.createDiscussion.discussion.url;
+                console.log(`Created discussion for ${translationKey}: ${discussionUrl}`);
+              } catch (e) {
+                console.error(`Error creating discussion for ${translationKey}:`, e.message);
+              }
             }
+            
+            console.log(`Processed ${processedKeys.size} unique translation keys`);
           }
           main();
           EOF
