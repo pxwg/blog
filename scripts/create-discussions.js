@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
+const REPO_OWNER = process.env.REPO_OWNER || "pxwg";
+const REPO_NAME = process.env.REPO_NAME || "blog";
 
 // Helper: parse meta from HTML
 function parseMeta(content, name) {
@@ -75,10 +77,9 @@ function printDirectoryStructure(dir, indent = 0, maxDepth = 5) {
 
 async function main() {
   const distDir = path.join(process.cwd(), "dist");
-  const repoOwner =
-    process.env.REPO_OWNER || process.env.GITHUB_REPOSITORY?.split("/")[0];
-  const repoName =
-    process.env.REPO_NAME || process.env.GITHUB_REPOSITORY?.split("/")[1];
+  const repoOwner = REPO_OWNER;
+  // process.env.REPO_OWNER || process.env.GITHUB_REPOSITORY?.split("/")[0];
+  const repoName = REPO_NAME;
   const ghToken = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
 
   console.log("=== Debug Info ===");
@@ -154,7 +155,7 @@ async function main() {
     // Check if discussion already exists for this translation key
     const discussionTitle = `Discussion: ${translationKey}`;
     const searchQuery = `repo:${repoOwner}/${repoName} in:title "${discussionTitle}"`;
-    const searchCommand = `gh api graphql -f query='query($q: String!) { search(query: $q, type: DISCUSSION, first: 1) { nodeCount } }' -f q='${searchQuery}' --jq '.data.search.nodeCount'`;
+    const searchCommand = `gh api graphql -f query='query($q: String!) { search(query: $q, type: DISCUSSION, first: 1) { discussionCount } }' -f q='${searchQuery}' --jq '.data.search.discussionCount'`;
 
     let existingCount = 0;
     try {
