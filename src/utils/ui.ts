@@ -1,5 +1,23 @@
 import type { Discussion, AuthState, Comment, CommentsConfig } from './types';
 
+function fixLoginUrl(container: HTMLElement) {
+  const loginLink = container.querySelector('#login-link');
+  if (loginLink) {
+    let href = loginLink.getAttribute('href') || '';
+    href = href.replace(
+      '{currentPage}',
+      encodeURIComponent(window.location.href)
+    );
+    href = href.replace(
+      '{callbackUrl}',
+      encodeURIComponent(
+        `${window.location.protocol}//${window.location.host}/api/callback`
+      )
+    );
+    loginLink.setAttribute('href', href);
+  }
+}
+
 function populateTemplate(template: HTMLElement, data: Comment): HTMLElement {
   const clone = template.cloneNode(true) as HTMLElement;
   const getValue = (key: string) =>
@@ -116,6 +134,9 @@ export function renderInitialLayout(
       if (userName) userName.textContent = authState.user.login;
     }
     formContainer.appendChild(formTemplate);
+    if (!authState.isLoggedIn) {
+      fixLoginUrl(formContainer);
+    }
   }
 }
 
