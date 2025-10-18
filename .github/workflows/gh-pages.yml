@@ -16,6 +16,7 @@ permissions:
   pages: write
   id-token: write
   contents: read
+  discussions: write
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
@@ -62,13 +63,13 @@ jobs:
       # - name: Pull Data from Backend (Optional)
       #   run: pnpm run pull-data
       - run: pnpm build:deploy
+
       - name: Create Discussions for New Posts
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
         run: |
-          # Node.js script to scan dist and create discussions
           node <<'EOF'
           const fs = require('fs');
           const path = require('path');
@@ -77,6 +78,15 @@ jobs:
           // Helper: parse meta from HTML (example: <meta name="translationKey" content="xxx">)
           function parseMeta(content, name) {
             const match = content.match(new RegExp(`<meta[^>]+name=["']${name}["'][^>]+content=["']([^"']+)["']`, 'i'));
+            return match ? match[1] : null;
+          }
+
+          function parseTitle(content) {
+            // Try <meta name="title" ...>
+            let title = parseMeta(content, 'title');
+            if (title) return title;
+            // Fallback to <title>...</title>
+            const match = content.match(/<title>([^<]+)<\/title>/i);
             return match ? match[1] : null;
           }
 
@@ -96,7 +106,7 @@ jobs:
             for (const filePath of htmlFiles) {
               const content = fs.readFileSync(filePath, 'utf8');
               const translationKey = parseMeta(content, 'translationKey');
-              const title = parseMeta(content, 'title') || path.basename(filePath);
+              const title = parseTitle(content) || path.basename(filePath);
 
               if (!translationKey || processedKeys.has(translationKey)) continue;
               processedKeys.add(translationKey);
