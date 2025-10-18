@@ -152,13 +152,9 @@ async function main() {
     console.log(`Processing: ${translationKey} (${title})`);
 
     // Check if discussion already exists for this translation key
-    const searchQuery = `repo:${repoOwner}/${repoName} in:title "Discussion: ${translationKey}"`;
-    const searchCommand = `gh api graphql -f query='
-      query($q: String!) { 
-        search(query: $q, type: DISCUSSION, first: 1) { 
-          nodeCount 
-        } 
-      }' -f q="${searchQuery}" --jq '.data.search.nodeCount'`;
+    const discussionTitle = `Discussion: ${translationKey}`;
+    const searchQuery = `repo:${repoOwner}/${repoName} in:title "${discussionTitle}"`;
+    const searchCommand = `gh api graphql -f query='query($q: String!) { search(query: $q, type: DISCUSSION, first: 1) { nodeCount } }' -f q='${searchQuery}' --jq '.data.search.nodeCount'`;
 
     let existingCount = 0;
     try {
@@ -181,18 +177,7 @@ async function main() {
     }
 
     // Get repo/category IDs
-    const repoDataCommand = `gh api graphql -f query='
-      query {
-        repository(owner: "${repoOwner}", name: "${repoName}") {
-          id
-          discussionCategories(first: 10) {
-            nodes { 
-              id 
-              name 
-            }
-          }
-        }
-      }'`;
+    const repoDataCommand = `gh api graphql -f query='query { repository(owner: "${repoOwner}", name: "${repoName}") { id discussionCategories(first: 10) { nodes { id name } } } }'`;
 
     let repositoryId, categoryId;
     try {
@@ -203,14 +188,25 @@ async function main() {
         }),
       );
       repositoryId = repoData.data.repository.id;
-      const generalCategory =
+
+      // Look for Announcements category first
+      const announcementsCategory =
         repoData.data.repository.discussionCategories.nodes.find(
-          (cat) => cat.name === "General",
+          (cat) => cat.name === "Announcements",
         );
-      categoryId = generalCategory?.id;
+      categoryId = announcementsCategory?.id;
 
       if (!categoryId) {
-        console.log("General category not found, using first category");
+        console.log("Announcements category not found, trying General");
+        const generalCategory =
+          repoData.data.repository.discussionCategories.nodes.find(
+            (cat) => cat.name === "General",
+          );
+        categoryId = generalCategory?.id;
+      }
+
+      if (!categoryId) {
+        console.log("Using first available category");
         categoryId = repoData.data.repository.discussionCategories.nodes[0]?.id;
       }
     } catch (e) {
@@ -225,15 +221,10 @@ async function main() {
 
     // Create discussion body with link to article
     const articleUrl = `https://${repoOwner}.github.io/${repoName}/article/${translationKey}`;
-    const discussionBody = `Comment section for the article: **${title}**\\n\\nRead the article here: [${title}](${articleUrl})`;
+    const discussionBody = `Comment section for the article: **${title}**\n\nRead the article here: [${title}](${articleUrl})`;
 
     // Create discussion
-    const createCommand = `gh api graphql -f query='
-      mutation($repoId: ID!, $catId: ID!, $title: String!, $body: String!) {
-        createDiscussion(input: {repositoryId: $repoId, categoryId: $catId, title: $title, body: $body}) {
-          discussion { url }
-        }
-      }' -f repoId='${repositoryId}' -f catId='${categoryId}' -f title='Discussion: ${translationKey}' -f body='${discussionBody}'`;
+    const createCommand = `gh api graphql -f query='mutation($repoId: ID!, $catId: ID!, $title: String!, $body: String!) { createDiscussion(input: {repositoryId: $repoId, categoryId: $catId, title: $title, body: $body}) { discussion { url } } }' -f repoId='${repositoryId}' -f catId='${categoryId}' -f title='${discussionTitle}' -f body='${discussionBody}'`;
 
     try {
       const result = execSync(createCommand, {
