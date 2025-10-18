@@ -13,6 +13,7 @@ config({ path: ".env_private" });
 
 const e = loadEnv(process.env.NODE_ENV || "", process.cwd(), "");
 const { SITE, URL_BASE } = e;
+const PUBLIC_VERCEL_API_URL = e.PUBLIC_VERCEL_API_URL;
 
 export default defineConfig({
   // Whether to prefetch links while hovering.
@@ -64,6 +65,12 @@ export default defineConfig({
       https: {
         key: fs.readFileSync("./.cert/localhost-key.pem"),
         cert: fs.readFileSync("./.cert/localhost.pem"),
+      },
+      proxy: {
+        "/api": {
+          target: PUBLIC_VERCEL_API_URL || "https://command-proxy.vercel.app",
+          changeOrigin: true,
+        },
       },
     },
     resolve: {

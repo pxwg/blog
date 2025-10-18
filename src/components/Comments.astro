@@ -15,8 +15,6 @@ const { owner, repo, title } = Astro.props;
 </div>
 
 <script>
-  const API_URL = import.meta.env.PUBLIC_VERCEL_API_URL;
-
   const renderApp = async () => {
     const commentsContainer = document.getElementById('comments-container');
     if (!commentsContainer) return;
@@ -29,8 +27,8 @@ const { owner, repo, title } = Astro.props;
         sessionStorage.removeItem('just_logged_in');
       }
 
-      const userApiUrl = `${API_URL}/api/user`;
-      const discussionApiUrl = `${API_URL}/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`;
+      const userApiUrl = `/api/user`;
+      const discussionApiUrl = `/api/discussion?owner=${owner}&repo=${repo}&title=${encodeURIComponent(title)}`;
 
       const fetchOptions = {
         credentials: 'include',
@@ -121,7 +119,7 @@ const { owner, repo, title } = Astro.props;
         </div>`;
     } else {
       const currentPage = encodeURIComponent(window.location.href);
-      const loginUrl = `${API_URL}/api/login?redirect=${currentPage}`;
+      const loginUrl = `/api/login?redirect=${currentPage}`;
       return `<p class="login-prompt">Please <a id="login-link" class="login-link" href="${loginUrl}">login with GitHub</a> to post a comment.</p>`;
     }
   };
@@ -149,7 +147,7 @@ const { owner, repo, title } = Astro.props;
       button.textContent = 'Posting...';
 
       try {
-        const res = await fetch(`${API_URL}/api/comment`, {
+        const res = await fetch(`/api/comment`, {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
