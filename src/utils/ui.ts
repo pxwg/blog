@@ -3,36 +3,52 @@ import type { Discussion, AuthState, Comment, CommentsConfig } from './types';
 function populateTemplate(template: HTMLElement, data: any): HTMLElement {
   const clone = template.cloneNode(true) as HTMLElement;
 
-  clone.querySelectorAll<HTMLElement>('[data-fill]').forEach(el => {
-    const key = el.dataset.fill;
-    if (!key) return;
-    const value = key.split('.').reduce((o, i) => o?.[i], data);
-    if (value === undefined || value === null) return;
+  const getValue = (key: string | undefined): any => {
+    if (!key) return undefined;
+    return key.split('.').reduce((o, i) => o?.[i], data);
+  };
 
-    if (el.dataset.fillTarget === 'html') {
-      el.innerHTML = value;
-    } else if (el.dataset.fillTarget) {
-      el.setAttribute(el.dataset.fillTarget, value);
-    } else {
-      el.textContent = value;
+  const elementsToFill = clone.querySelectorAll<HTMLElement>('[data-fill-text], [data-fill-html], [data-fill-src], [data-fill-href], [data-fill-alt]');
+
+  elementsToFill.forEach(el => {
+    const textKey = el.dataset.fillText;
+    const htmlKey = el.dataset.fillHtml;
+    const srcKey = el.dataset.fillSrc;
+    const hrefKey = el.dataset.fillHref;
+    const altKey = el.dataset.fillAlt;
+
+    if (textKey) {
+      let value = getValue(textKey);
+      // Special handling for date formatting
+      if (textKey === 'createdAt' && value) {
+        value = new Date(value).toLocaleString();
+      }
+      if (value !== undefined) el.textContent = value;
     }
-  });
-  
-  clone.querySelectorAll<HTMLElement>('[data-attr-template]').forEach(el => {
-      const instructions = el.dataset.attrTemplate;
-      instructions?.split(',').forEach(inst => {
-          const [attr, template] = inst.split(':');
-          const key = el.dataset.fill;
-          if(!key) return;
-          const value = key.split('.').reduce((o, i) => o?.[i], data);
-          if (value === undefined || value === null) return;
-          
-          el.setAttribute(attr, template.replace('{value}', value));
-      });
+    if (htmlKey) {
+      const value = getValue(htmlKey);
+      if (value !== undefined) el.innerHTML = value;
+    }
+    if (srcKey) {
+      const value = getValue(srcKey);
+      if (value !== undefined) (el as HTMLImageElement | HTMLSourceElement).src = value;
+    }
+    if (hrefKey) {
+      const value = getValue(hrefKey);
+      if (value !== undefined) {
+        // BUG FIX: Construct the full URL properly here
+        (el as HTMLAnchorElement).href = `https://github.com/${value}`;
+      }
+    }
+    if (altKey) {
+      const value = getValue(altKey);
+      if (value !== undefined) (el as HTMLImageElement).alt = `${value}'s avatar`;
+    }
   });
 
   return clone;
 }
+
 
 export function renderInitialLayout(container: HTMLElement, discussion: Discussion, authState: AuthState): void {
   const commentTemplate = document.querySelector<HTMLTemplateElement>('#comment-item-template')?.content.firstElementChild as HTMLElement | null;
@@ -54,9 +70,7 @@ export function renderInitialLayout(container: HTMLElement, discussion: Discussi
 
   if (commentNodes.length > 0) {
     commentNodes.forEach(comment => {
-      // 日期需要预处理
-      const displayData = { ...comment, createdAt: new Date(comment.createdAt).toLocaleString() };
-      const commentEl = populateTemplate(commentTemplate, displayData);
+      const commentEl = populateTemplate(commentTemplate, comment);
       commentList.appendChild(commentEl);
     });
   } else {
@@ -70,7 +84,10 @@ export function renderInitialLayout(container: HTMLElement, discussion: Discussi
     if (authState.isLoggedIn && authState.user) {
       const userAvatar = (formTemplate as HTMLElement).querySelector<HTMLImageElement>('.user-avatar');
       const userName = (formTemplate as HTMLElement).querySelector<HTMLElement>('.user-name');
-      if (userAvatar) userAvatar.src = authState.user.avatarUrl;
+      if (userAvatar) {
+        userAvatar.src = authState.user.avatarUrl;
+        userAvatar.alt = `${authState.user.login}'s avatar`;
+      }
       if (userName) userName.textContent = authState.user.login;
     }
     formContainer.appendChild(formTemplate);
@@ -82,16 +99,15 @@ export function addCommentToDOM(comment: Comment): void {
   const commentTemplate = document.querySelector<HTMLTemplateElement>('#comment-item-template')?.content.firstElementChild as HTMLElement | null;
   if (!commentList || !commentTemplate) return;
 
-  const displayData = { ...comment, createdAt: new Date(comment.createdAt).toLocaleString() };
-  const newCommentEl = populateTemplate(commentTemplate, displayData);
+  const newCommentEl = populateTemplate(commentTemplate, comment);
   commentList.appendChild(newCommentEl);
   document.getElementById('no-comments-yet')?.remove();
 }
 
+// Unchanged functions
 export function renderError(container: HTMLElement, error: Error): void {
   container.innerHTML = `<div class="error-box"><p>Sorry, we couldn't load the comments.</p><p class="error-message">Details: ${error.message}</p></div>`;
 }
-
 export function renderNoDiscussion(container: HTMLElement, config: CommentsConfig): void {
   const { owner, repo, title } = config;
   container.innerHTML = `<p>No discussion found. <a href="https://github.com/${owner}/${repo}/discussions/new?title=${encodeURIComponent(title)}" target="_blank" rel="noopener noreferrer">Create one</a>!</p>`;
