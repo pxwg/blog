@@ -17,6 +17,7 @@ interface Props extends CollectionEntry<'blog'>['data'] {
   slug: CollectionEntry<'blog'>['slug'];
   headings: Heading[];
   translationUrl?: string;
+  translationKey?: string;
 }
 
 const {
@@ -31,6 +32,7 @@ const {
   translationUrl,
   'llm-translated': llmTranslated,
   headings
+  translationKey,
 } = Astro.props;
 
 // Use frontmatter language as primary source, fallback to URL detection
@@ -48,6 +50,7 @@ const pdfArchives = await getCollection("archive");
 <html lang={currentLang}>
   <head>
     <BaseHead title={title} description={description} />
+    <meta name="translation-key" content={translationKey || ""} />
     <style is:global>
       main {
         width: calc(100% - 2em);
