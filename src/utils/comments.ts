@@ -140,8 +140,7 @@ export class CommentsManager {
   }
 
   private render(discussionData: Discussion, authState: AuthState): void {
-    let html = `<h2>${discussionData.title}</h2>`;
-    html += `<div class="discussion-body">${discussionData.bodyHTML || ''}</div><hr><h3>Comments</h3>`;
+    let html = `<h3>Comments</h3>`;
     html += `<div id="comment-list">`;
 
     if (!discussionData.comments?.nodes?.length) {
