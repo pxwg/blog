@@ -4,13 +4,23 @@ import { execSync } from "child_process";
 
 // Helper: parse meta from HTML
 function parseMeta(content, name) {
-  const match = content.match(
+  // Try multiple patterns to match meta tags
+  const patterns = [
     new RegExp(
       `<meta[^>]+name=["']${name}["'][^>]+content=["']([^"']+)["']`,
       "i",
     ),
-  );
-  return match ? match[1] : null;
+    new RegExp(
+      `<meta[^>]+content=["']([^"']+)["'][^>]+name=["']${name}["']`,
+      "i",
+    ),
+  ];
+
+  for (const pattern of patterns) {
+    const match = content.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
 }
 
 // Recursively find all HTML files
@@ -26,7 +36,11 @@ function findAllHtmlFiles(dir, files = []) {
     } else if (entry.isFile() && entry.name === "index.html") {
       // Check if this HTML file has a translation-key meta tag
       const content = fs.readFileSync(fullPath, "utf8");
-      if (parseMeta(content, "translation-key")) {
+      const translationKey = parseMeta(content, "translation-key");
+
+      // Debug: show what we found
+      if (translationKey) {
+        console.log(`Found translation-key "${translationKey}" in ${fullPath}`);
         files.push(fullPath);
       }
     }
@@ -75,20 +89,6 @@ async function main() {
   printDirectoryStructure(distDir);
   console.log("\n=== Starting Process ===\n");
 
-  if (!ghToken) {
-    console.error(
-      "Error: GH_TOKEN or GITHUB_TOKEN environment variable is required",
-    );
-    process.exit(1);
-  }
-
-  if (!repoOwner || !repoName) {
-    console.error(
-      "Error: REPO_OWNER and REPO_NAME (or GITHUB_REPOSITORY) environment variables are required",
-    );
-    process.exit(1);
-  }
-
   const processedKeys = new Set();
   const htmlFiles = findAllHtmlFiles(distDir);
 
@@ -96,6 +96,7 @@ async function main() {
   htmlFiles.forEach((file) => console.log(`  - ${file}`));
   console.log("");
 
+  // Extract all unique translation keys
   for (const filePath of htmlFiles) {
     const content = fs.readFileSync(filePath, "utf8");
     const translationKey = parseMeta(content, "translation-key");
@@ -104,18 +105,50 @@ async function main() {
       parseMeta(content, "title") ||
       "Untitled";
 
-    // Skip if no translation key or already processed
-    if (!translationKey || translationKey === "") {
-      console.log(`Skipping ${filePath}: no translation key found`);
-      continue;
+    if (translationKey && translationKey !== "") {
+      processedKeys.add(translationKey);
+      console.log(`Found: ${translationKey} (${title})`);
+    }
+  }
+
+  console.log(`\n=== Summary ===`);
+  console.log(`Found ${processedKeys.size} unique translation keys:`);
+  processedKeys.forEach((key) => console.log(`  - ${key}`));
+
+  // If no GitHub token, stop here
+  if (!ghToken) {
+    console.log("\nNo GitHub token provided. Skipping discussion creation.");
+    console.log(
+      "To create discussions, set GH_TOKEN or GITHUB_TOKEN environment variable.",
+    );
+    return;
+  }
+
+  if (!repoOwner || !repoName) {
+    console.error(
+      "\nError: REPO_OWNER and REPO_NAME (or GITHUB_REPOSITORY) environment variables are required for creating discussions",
+    );
+    return;
+  }
+
+  console.log("\n=== Creating Discussions ===\n");
+
+  // Create discussions for each unique translation key
+  for (const translationKey of processedKeys) {
+    // Find the first file with this translation key to get the title
+    let title = "Untitled";
+    for (const filePath of htmlFiles) {
+      const content = fs.readFileSync(filePath, "utf8");
+      const key = parseMeta(content, "translation-key");
+      if (key === translationKey) {
+        title =
+          parseMeta(content, "og:title") ||
+          parseMeta(content, "title") ||
+          "Untitled";
+        break;
+      }
     }
 
-    if (processedKeys.has(translationKey)) {
-      console.log(`Skipping ${translationKey}: already processed`);
-      continue;
-    }
-
-    processedKeys.add(translationKey);
     console.log(`Processing: ${translationKey} (${title})`);
 
     // Check if discussion already exists for this translation key
@@ -220,7 +253,7 @@ async function main() {
     }
   }
 
-  console.log(`\n=== Summary ===`);
+  console.log(`\n=== Final Summary ===`);
   console.log(`Processed ${processedKeys.size} unique translation keys`);
 }
 
