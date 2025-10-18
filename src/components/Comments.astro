@@ -11,9 +11,9 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
 
 <div
   id="comments-container"
-  data-owner={owner;}
-  data-repo={repo;}
-  data-title={title;}
+  data-owner={owner}
+  data-repo={repo}
+  data-title={title}
 >
   <div class="comment-loader"><p>Loading comments...</p></div>
 </div>
@@ -73,7 +73,8 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
 
 <template id="login-prompt-template">
   <p class="login-prompt">
-    Please <a id="login-link" href={loginUrl;}>login with GitHub</a> to post a comment.
+    {/* 这个链接初始时会使用带有占位符的URL */}
+    Please <a id="login-link" href={loginUrl}>login with GitHub</a> to post a comment.
   </p>
 </template>
 
@@ -300,8 +301,6 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
   .view-on-github a:hover {
     text-decoration: underline;
   }
-
-  /* 新增功能样式 */
   .comment-actions {
     display: flex;
     justify-content: flex-end;
@@ -350,7 +349,6 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     background: var(--form-button-color);
     color: #fff;
   }
-
   .comment-wrapper {
     display: flex;
     flex-direction: column;
