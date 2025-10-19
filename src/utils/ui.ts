@@ -21,7 +21,7 @@ function fixLoginUrl(container: HTMLElement) {
 function populateTemplate(template: HTMLElement, data: Comment): HTMLElement {
   const clone = template.cloneNode(true) as HTMLElement;
   const getValue = (key: string) =>
-    key.split('.').reduce((o, i) => o?.[i], data);
+    key.split('.').reduce((o: any, i) => o?.[i], data);
 
   const commentNode = clone.querySelector<HTMLElement>('.comment')!;
   commentNode.dataset.commentId = data.id;
@@ -65,10 +65,17 @@ function populateTemplate(template: HTMLElement, data: Comment): HTMLElement {
     if (btn) btn.style.display = 'inline-block';
   }
 
+  if (data.replyTo) {
+    const replyBtn = clone.querySelector<HTMLButtonElement>('.reply-btn');
+    if (replyBtn) {
+      replyBtn.style.display = 'none';
+    }
+  }
+
   return clone;
 }
 
-function renderCommentTree(
+export function renderCommentTree(
   nodes: Comment[],
   container: HTMLElement,
   template: HTMLElement
@@ -137,31 +144,6 @@ export function renderInitialLayout(
     if (!authState.isLoggedIn) {
       fixLoginUrl(formContainer);
     }
-  }
-}
-
-export function addCommentToDOM(comment: Comment): void {
-  const commentTemplate = document.querySelector<HTMLTemplateElement>(
-    '#comment-item-template'
-  )?.content.firstElementChild as HTMLElement | null;
-  if (!commentTemplate) return;
-
-  const newCommentEl = populateTemplate(commentTemplate, comment);
-
-  let parentContainer: HTMLElement | null;
-  if (comment.replyTo) {
-    const parentWrapper = document
-      .querySelector(`.comment[data-comment-id="${comment.replyTo.id}"]`)
-      ?.closest('.comment-wrapper');
-    parentContainer =
-      parentWrapper?.querySelector('.replies-container') ?? null;
-  } else {
-    parentContainer = document.getElementById('comment-list');
-  }
-
-  if (parentContainer) {
-    parentContainer.appendChild(newCommentEl);
-    document.getElementById('no-comments-yet')?.remove();
   }
 }
 
@@ -251,5 +233,7 @@ export function renderNoDiscussion(
   config: CommentsConfig
 ): void {
   const { owner, repo, title } = config;
-  container.innerHTML = `<p>No discussion found. <a href="https://github.com/${owner}/${repo}/discussions/new?title=${encodeURIComponent(title)}" target="_blank" rel="noopener noreferrer">Create one</a>!</p>`;
+  container.innerHTML = `<p>No discussion found. <a href="https://github.com/${owner}/${repo}/discussions/new?title=${encodeURIComponent(
+    title
+  )}" target="_blank" rel="noopener noreferrer">Create one</a>!</p>`;
 }

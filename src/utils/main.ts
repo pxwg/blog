@@ -115,9 +115,37 @@ class CommentsController {
     const commentId = commentEl.dataset.commentId!;
     try {
       await api.deleteComment(commentId);
-      ui.removeCommentFromDOM(commentId);
+      this.discussion!.comments.nodes = this.discussion!.comments.nodes.filter(
+        (c) => c.id !== commentId
+      );
+      this.rerenderCommentList();
     } catch (error) {
       alert(`Error: ${(error as Error).message}`);
+    }
+  }
+
+  private rerenderCommentList() {
+    const commentTree = buildCommentTree(this.discussion!.comments.nodes);
+    const listContainer =
+      this.container.querySelector<HTMLElement>('#comment-list');
+    const commentTemplate = document.querySelector<HTMLTemplateElement>(
+      '#comment-item-template'
+    )?.content.firstElementChild as HTMLElement | null;
+
+    if (!listContainer || !commentTemplate) {
+      console.error('Could not find elements needed for re-rendering.');
+      return;
+    }
+
+    listContainer.innerHTML = '';
+    const noCommentsEl = document.getElementById('no-comments-yet');
+    if (noCommentsEl) noCommentsEl.remove();
+
+    if (commentTree.length > 0) {
+      ui.renderCommentTree(commentTree, listContainer, commentTemplate);
+    } else {
+      listContainer.innerHTML =
+        '<p id="no-comments-yet">Be the first to comment.</p>';
     }
   }
 
@@ -141,7 +169,15 @@ class CommentsController {
         body,
         replyToId
       );
-      ui.addCommentToDOM(newComment);
+
+      if (replyToId && !newComment.replyTo) {
+        newComment.replyTo = { id: replyToId };
+      }
+
+      this.discussion.comments.nodes.push(newComment);
+
+      this.rerenderCommentList();
+
       textarea.value = '';
       if (replyToId) {
         this.handleCancelReply();
