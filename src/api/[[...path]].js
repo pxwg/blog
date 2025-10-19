@@ -1,4 +1,4 @@
-import { createProxyMiddleware } from "http-proxy-middleware";
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 const TARGET_API_URL = process.env.PUBLIC_VERCEL_API_URL;
 
@@ -7,17 +7,17 @@ const apiProxy = createProxyMiddleware({
   changeOrigin: true,
   selfHandleResponse: true,
   pathRewrite: (path, req) => {
-    const apiPath = path.replace(/^\/api/, "");
+    const apiPath = path.replace(/^\/api/, '');
 
-    if (apiPath.startsWith("/login")) {
-      const protocol = req.headers["x-forwarded-proto"] || "https";
+    if (apiPath.startsWith('/login')) {
+      const protocol = req.headers['x-forwarded-proto'] || 'https';
       const host = req.headers.host;
       const callbackUrl = `${protocol}://${host}/api/callback`;
 
-      const fullUrl = new URL(apiPath, "http://dummy");
-      fullUrl.searchParams.set("callback_url", callbackUrl);
+      const fullUrl = new URL(apiPath, 'http://dummy');
+      fullUrl.searchParams.set('callback_url', callbackUrl);
 
-      console.log("Proxying login with callback_url:", callbackUrl);
+      console.log('Proxying login with callback_url:', callbackUrl);
       return `/api${fullUrl.pathname}${fullUrl.search}`;
     }
 
@@ -25,7 +25,7 @@ const apiProxy = createProxyMiddleware({
   },
   onProxyReq: (proxyReq, req) => {
     if (req.headers.cookie) {
-      proxyReq.setHeader("cookie", req.headers.cookie);
+      proxyReq.setHeader('cookie', req.headers.cookie);
     }
   },
   onProxyRes: (proxyRes, req, res) => {
