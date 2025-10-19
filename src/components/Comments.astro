@@ -1,0 +1,380 @@
+---
+export interface Props {
+  owner: string;
+  repo: string;
+  title: string;
+}
+
+const { owner, repo, title } = Astro.props;
+const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
+---
+
+<div
+  id="comments-container"
+  data-owner={owner}
+  data-repo={repo}
+  data-title={title}
+>
+  <div class="comment-loader"><p>Loading comments...</p></div>
+</div>
+
+<template id="comment-item-template">
+  <div class="comment-wrapper">
+    <div class="comment" data-fill-id="id">
+      <div class="comment-header">
+        <img
+          width="28"
+          height="28"
+          class="user-avatar"
+          data-fill-src="author.avatarUrl"
+          data-fill-alt="author.login"
+        />
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          class="user-name"
+          data-fill-href="author.login"
+          data-fill-text="author.login"></a>
+        <span class="comment-date" data-fill-text="createdAt"></span>
+      </div>
+      <div class="comment-body" data-fill-html="bodyHTML"></div>
+      <div class="comment-actions">
+        <button class="action-button reply-btn">Reply</button>
+        <button class="action-button edit-btn" style="display:none;"
+          >Edit</button
+        >
+        <button class="action-button delete-btn" style="display:none;"
+          >Delete</button
+        >
+      </div>
+      <div class="reply-form-container"></div>
+    </div>
+    <div class="replies-container"></div>
+  </div>
+</template>
+
+<template id="comment-form-template">
+  <div class="comment-form-wrapper">
+    <div class="user-info">
+      <img src="" alt="" width="28" height="28" class="user-avatar" />
+      <span class="user-name"></span>
+      <button id="logout-btn" class="logout-btn">Logout</button>
+    </div>
+    <form id="comment-form">
+      <textarea name="body" placeholder="Add your comment..." required
+      ></textarea>
+      <div class="form-actions">
+        <button type="submit">Comment</button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<template id="login-prompt-template">
+  <p class="login-prompt">
+    Please <a id="login-link" href={loginUrl}>login with GitHub</a> to post a comment.
+  </p>
+</template>
+
+<template id="edit-form-template">
+  <div class="edit-form-wrapper">
+    <form class="edit-form">
+      <textarea name="body" required></textarea>
+      <div class="form-actions">
+        <button type="button" class="action-button cancel-edit-btn"
+          >Cancel</button
+        >
+        <button type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script>
+  import { initializeComments } from '../utils/main';
+  const init = () => {
+    const loginLink = document.querySelector('#login-prompt-template a');
+    if (loginLink) {
+      let href = loginLink.getAttribute('href') || '';
+      href = href.replace(
+        '{currentPage}',
+        encodeURIComponent(window.location.href)
+      );
+      href = href.replace(
+        '{callbackUrl}',
+        encodeURIComponent(
+          `${window.location.protocol}//${window.location.host}/api/callback`
+        )
+      );
+      loginLink.setAttribute('href', href);
+    }
+    initializeComments('comments-container');
+  };
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>
+
+<style is:global>
+  :root {
+    --comment-border-color: #3498db;
+    --comment-bg-color: #e8f4f8;
+    --comment-text-color: #2c3e50;
+    --comment-link-color: #3498db;
+    --comment-link-hover-color: #2980b9;
+    --comment-date-color: #7f8c8d;
+    --form-border-color: #95a5a6;
+    --form-bg-color: #f9f4f4;
+    --form-text-color: #34495e;
+    --form-button-color: #7f8c8d;
+  }
+  :root.dark {
+    --comment-border-color: #5dade2;
+    --comment-bg-color: #1a2332;
+    --comment-text-color: #e8e8e8;
+    --comment-link-color: #5dade2;
+    --comment-link-hover-color: #85c1e9;
+    --comment-date-color: #95a5a6;
+    --form-border-color: #7f8c8d;
+    --form-bg-color: #1c1e20;
+    --form-text-color: #d0d0d0;
+    --form-button-color: #95a5a6;
+  }
+  #comments-container {
+    margin-top: 2rem;
+  }
+  .comment-loader {
+    text-align: center;
+    padding: 2rem;
+    color: var(--comment-date-color);
+  }
+  #comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .comment {
+    background: var(--comment-bg-color);
+    border-left: 3px solid var(--comment-border-color);
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  }
+  .comment-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.3em 0.75em;
+    font-size: 0.9em;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+  }
+  .user-avatar {
+    border-radius: 50%;
+  }
+  .comment-header .user-name {
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--comment-link-color);
+    transition: color 0.2s ease;
+  }
+  .comment-header .user-name:hover {
+    color: var(--comment-link-hover-color);
+  }
+  .comment-date {
+    font-size: 0.9em;
+    color: var(--comment-date-color);
+    white-space: nowrap; /* Prevents date from wrapping */
+  }
+  .comment-body {
+    padding: 0rem 1rem 0rem;
+    line-height: 1.4;
+    font-size: 0.95em;
+    color: var(--comment-text-color);
+  }
+  .comment-form-wrapper,
+  .comment-form-wrapper {
+    background: var(--form-bg-color);
+    border-left: 3px solid var(--form-border-color);
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  }
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.4em 0.75em;
+    font-size: 0.9em;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+    color: var(--form-text-color);
+  }
+  .user-info .user-name {
+    font-weight: 600;
+  }
+  .logout-btn {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid var(--form-button-color);
+    color: var(--form-button-color);
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+  }
+  .logout-btn:hover {
+    opacity: 0.7;
+  }
+  #comment-form {
+    padding: 0.5em;
+  }
+  #comment-form textarea {
+    width: 100%;
+    min-height: 50px;
+    padding: 0.5em;
+    border: 1px solid var(--form-border-color);
+    background: var(--form-bg-color);
+    color: var(--form-text-color);
+    border-radius: 3px;
+    font-family: inherit;
+    font-size: 1em;
+    resize: vertical;
+    box-sizing: border-box;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  #comment-form textarea:focus {
+    outline: none;
+    border-color: var(--accent, var(--comment-border-color));
+    box-shadow: 0 0 0 2px var(--accent-alpha, rgba(52, 152, 219, 0.2));
+  }
+  .form-actions {
+    margin-top: 0.5em;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+  .form-actions button[type='submit'] {
+    background: var(--form-button-color);
+    color: #fff;
+    border: none;
+    padding: 0.4em 1em;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: opacity 0.2s ease;
+  }
+  .form-actions button:hover {
+    opacity: 0.8;
+  }
+  .form-actions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .login-prompt {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    /* border-top: 1px solid var(--raw-bg-color); */
+    color: var(--gray-color);
+    font-size: 1em;
+    text-align: center;
+  }
+  .login-prompt a {
+    color: var(--accent);
+
+    text-decoration: underline;
+    cursor: pointer;
+    transition:
+      color 0.1s,
+      underline 0.1s;
+  }
+  .login-prompt a:hover {
+    color: var(--accent-dark);
+    text-decoration: underline solid 2px;
+  }
+  .login-prompt a:hover {
+    text-decoration: underline;
+  }
+  .view-on-github {
+    text-align: right;
+    margin-top: 1rem;
+    font-size: 0.9em;
+    color: var(--comment-date-color);
+  }
+  .view-on-github a {
+    color: var(--accent);
+    text-decoration: underline;
+    font-weight: 300;
+    transition:
+      color 0.1s,
+      underline 0.1s;
+  }
+  .view-on-github a:hover {
+    color: var(--accent-dark);
+    text-decoration: underline solid 2px;
+  }
+  .header-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .comment-actions {
+    display: flex;
+    gap: 0.25rem;
+    font-size: 0.8em;
+  }
+  .action-button {
+    background: none;
+    border: none;
+    color: var(--comment-date-color);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+  }
+  .action-button:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+    color: var(--comment-text-color);
+  }
+  .reply-form-container {
+    margin: 0.5rem 0 0 1rem;
+    border-left: 2px solid rgba(128, 128, 128, 0.2);
+    padding-left: 1rem;
+  }
+  .reply-form-container .comment-form-wrapper {
+    margin-top: 0;
+    padding-top: 0.5rem;
+    border-top: none;
+    box-shadow: none;
+    background: transparent;
+  }
+  .edit-form-wrapper {
+    padding: 0.25rem 0.75rem 0.5rem;
+  }
+  .edit-form textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 0.5em;
+    border: 1px solid var(--form-border-color);
+    background: var(--form-bg-color);
+    color: var(--form-text-color);
+    border-radius: 3px;
+    font-family: inherit;
+  }
+  .edit-form .form-actions button[type='submit'] {
+    background: var(--form-button-color);
+    color: #fff;
+  }
+  .comment-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  .replies-container {
+    margin-left: 1.5rem;
+    padding-left: 1.5rem;
+    border-left: 2px solid rgba(128, 128, 128, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+</style>

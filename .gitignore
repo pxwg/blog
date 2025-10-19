@@ -3,6 +3,9 @@ dist/
 # generated types
 .astro/
 
+# private
+.env_private
+
 # dependencies
 node_modules/
 # font assets
