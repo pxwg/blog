@@ -190,11 +190,6 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     color: var(--comment-text-color);
   }
   .comment-form-wrapper,
-  .login-prompt {
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(128, 128, 128, 0.2);
-  }
   .comment-form-wrapper {
     background: var(--form-bg-color);
     border-left: 3px solid var(--form-border-color);
@@ -275,13 +270,25 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     cursor: not-allowed;
   }
   .login-prompt {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    /* border-top: 1px solid var(--raw-bg-color); */
+    color: var(--gray-color);
+    font-size: 1em;
     text-align: center;
-    color: var(--form-text-color);
   }
   .login-prompt a {
-    color: var(--form-button-color);
-    text-decoration: none;
-    font-weight: 500;
+    color: var(--accent);
+
+    text-decoration: underline;
+    cursor: pointer;
+    transition:
+      color 0.1s,
+      underline 0.1s;
+  }
+  .login-prompt a:hover {
+    color: var(--accent-dark);
+    text-decoration: underline solid 2px;
   }
   .login-prompt a:hover {
     text-decoration: underline;
