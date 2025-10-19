@@ -97,13 +97,11 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
     if (loginLink) {
       let href = loginLink.getAttribute('href') || '';
       href = href.replace(
-        '{currentPage}',
-        encodeURIComponent(window.location.href)
-      );
-      href = href.replace(
         '{callbackUrl}',
         encodeURIComponent(
-          `${window.location.protocol}//${window.location.host}/api/callback`
+          import.meta.env.DEV
+            ? `${window.location.protocol}//${window.location.host}/api/callback`
+            : `${import.meta.env.PUBLIC_API_DOMAIN}/api/callback`
         )
       );
       loginLink.setAttribute('href', href);
