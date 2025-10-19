@@ -35,20 +35,18 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
           class="user-name"
           data-fill-href="author.login"
           data-fill-text="author.login"></a>
-        <div class="header-actions">
-          <div class="comment-actions">
-            <button class="action-button reply-btn">Reply</button>
-            <button class="action-button edit-btn" style="display:none;"
-              >Edit</button
-            >
-            <button class="action-button delete-btn" style="display:none;"
-              >Delete</button
-            >
-          </div>
-          <span class="comment-date" data-fill-text="createdAt"></span>
-        </div>
+        <span class="comment-date" data-fill-text="createdAt"></span>
       </div>
       <div class="comment-body" data-fill-html="bodyHTML"></div>
+      <div class="comment-actions">
+        <button class="action-button reply-btn">Reply</button>
+        <button class="action-button edit-btn" style="display:none;"
+          >Edit</button
+        >
+        <button class="action-button delete-btn" style="display:none;"
+          >Delete</button
+        >
+      </div>
       <div class="reply-form-container"></div>
     </div>
     <div class="replies-container"></div>
