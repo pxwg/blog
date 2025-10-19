@@ -157,17 +157,21 @@ class CommentsController {
     const commentId = commentEl.dataset.commentId!;
     try {
       await api.deleteComment(commentId);
-      this.discussion!.comments.nodes = this.discussion!.comments.nodes.filter(
-        (c) => c.id !== commentId
-      );
-      this.rerenderCommentList();
+      await this.refreshComments();
     } catch (error) {
       alert(`Error: ${(error as Error).message}`);
     }
   }
 
-  private rerenderCommentList() {
-    const commentTree = buildCommentTree(this.discussion!.comments.nodes);
+  private async refreshComments() {
+    this.discussion = await api.fetchDiscussion(this.config, true);
+    const commentTree = buildCommentTree(this.discussion?.comments.nodes ?? []);
+    this.rerenderCommentList(commentTree);
+  }
+
+  private rerenderCommentList(commentTree?: Comment[]) {
+    const tree =
+      commentTree ?? buildCommentTree(this.discussion!.comments.nodes);
     const listContainer =
       this.container.querySelector<HTMLElement>('#comment-list');
     const commentTemplate = document.querySelector<HTMLTemplateElement>(
@@ -183,13 +187,14 @@ class CommentsController {
     const noCommentsEl = document.getElementById('no-comments-yet');
     if (noCommentsEl) noCommentsEl.remove();
 
-    if (commentTree.length > 0) {
+    if (tree.length > 0) {
       ui.renderCommentTree(
-        commentTree,
+        tree,
         listContainer,
         commentTemplate,
         this.authState
       );
+    } else {
       listContainer.innerHTML =
         '<p id="no-comments-yet">Be the first to comment.</p>';
     }
@@ -210,19 +215,8 @@ class CommentsController {
     button.textContent = 'Posting...';
 
     try {
-      const newComment = await api.postComment(
-        this.discussion.id,
-        body,
-        replyToId
-      );
-
-      if (replyToId && !newComment.replyTo) {
-        newComment.replyTo = { id: replyToId };
-      }
-
-      this.discussion.comments.nodes.push(newComment);
-      this.rerenderCommentList();
-
+      await api.postComment(this.discussion.id, body, replyToId);
+      await this.refreshComments();
       textarea.value = '';
       if (replyToId) {
         this.handleCancelReply();
@@ -249,7 +243,7 @@ class CommentsController {
 
     try {
       await api.updateComment(commentId, body);
-      await this.init();
+      await this.refreshComments();
     } catch (error) {
       alert(`Error: ${(error as Error).message}`);
       button.disabled = false;
