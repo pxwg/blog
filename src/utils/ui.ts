@@ -82,7 +82,11 @@ function fixLoginUrl(container: HTMLElement) {
   }
 }
 
-function populateTemplate(template: HTMLElement, data: Comment): HTMLElement {
+function populateTemplate(
+  template: HTMLElement,
+  data: Comment,
+  authState: AuthState
+): HTMLElement {
   const clone = template.cloneNode(true) as HTMLElement;
   const getValue = (key: string) =>
     key.split('.').reduce((o: any, i) => o?.[i], data);
@@ -101,7 +105,6 @@ function populateTemplate(template: HTMLElement, data: Comment): HTMLElement {
     }
     if (value !== undefined) el.textContent = value;
   });
-
   clone.querySelectorAll<HTMLElement>('[data-fill-html]').forEach((el) => {
     const value = getValue(el.dataset.fillHtml!);
     if (value !== undefined) {
@@ -109,36 +112,43 @@ function populateTemplate(template: HTMLElement, data: Comment): HTMLElement {
       renderMathInElement(el);
     }
   });
-
   clone.querySelectorAll<HTMLImageElement>('[data-fill-src]').forEach((el) => {
     const value = getValue(el.dataset.fillSrc!);
     if (value !== undefined) el.src = value;
   });
-
   clone
     .querySelectorAll<HTMLAnchorElement>('[data-fill-href]')
     .forEach((el) => {
       const value = getValue(el.dataset.fillHref!);
       if (value !== undefined) el.href = `https://github.com/${value}`;
     });
-
   clone.querySelectorAll<HTMLImageElement>('[data-fill-alt]').forEach((el) => {
     const value = getValue(el.dataset.fillAlt!);
     if (value !== undefined) el.alt = `${value}'s avatar`;
   });
 
-  if (data.viewerCanUpdate) {
-    const btn = clone.querySelector<HTMLElement>('.edit-btn');
-    if (btn) btn.style.display = 'inline-block';
-  }
-  if (data.viewerCanDelete) {
-    const btn = clone.querySelector<HTMLElement>('.delete-btn');
-    if (btn) btn.style.display = 'inline-block';
-  }
+  const replyBtn = clone.querySelector<HTMLElement>('.reply-btn');
+  const editBtn = clone.querySelector<HTMLElement>('.edit-btn');
+  const deleteBtn = clone.querySelector<HTMLElement>('.delete-btn');
 
-  if (data.replyTo) {
-    const replyBtn = clone.querySelector<HTMLButtonElement>('.reply-btn');
+  if (!authState.isLoggedIn) {
     if (replyBtn) replyBtn.style.display = 'none';
+    if (editBtn) editBtn.style.display = 'none';
+    if (deleteBtn) deleteBtn.style.display = 'none';
+  } else {
+    if (replyBtn && !data.replyTo) {
+      replyBtn.style.display = 'inline-block';
+    } else if (replyBtn) {
+      replyBtn.style.display = 'none';
+    }
+
+    if (editBtn && data.viewerCanUpdate) {
+      editBtn.style.display = 'inline-block';
+    }
+
+    if (deleteBtn && data.viewerCanDelete) {
+      deleteBtn.style.display = 'inline-block';
+    }
   }
 
   return clone;
@@ -147,16 +157,17 @@ function populateTemplate(template: HTMLElement, data: Comment): HTMLElement {
 export function renderCommentTree(
   nodes: Comment[],
   container: HTMLElement,
-  template: HTMLElement
+  template: HTMLElement,
+  authState: AuthState
 ) {
   nodes.forEach((comment) => {
-    const commentWrapperEl = populateTemplate(template, comment);
+    const commentWrapperEl = populateTemplate(template, comment, authState);
     container.appendChild(commentWrapperEl);
 
     if (comment.replies && comment.replies.length > 0) {
       const repliesContainer =
         commentWrapperEl.querySelector<HTMLElement>('.replies-container')!;
-      renderCommentTree(comment.replies, repliesContainer, template);
+      renderCommentTree(comment.replies, repliesContainer, template, authState);
     }
   });
 }
@@ -180,7 +191,7 @@ export function renderInitialLayout(
   const commentList = container.querySelector<HTMLElement>('#comment-list')!;
 
   if (commentTree.length > 0) {
-    renderCommentTree(commentTree, commentList, commentTemplate);
+    renderCommentTree(commentTree, commentList, commentTemplate, authState);
   } else {
     commentList.innerHTML =
       '<p id="no-comments-yet">Be the first to comment.</p>';
@@ -310,8 +321,8 @@ export function removeCommentFromDOM(commentId: string) {
 
 export function renderError(container: HTMLElement, error: Error): void {
   container.innerHTML = `<div class="error-box">
-  <p>Sorry, we couldn't load the comments.</p>
-  <p class="error-message">Details: ${error.message}</p>
+  <p>Sorry, we couldn't load the comments.</p>
+  <p class="error-message">Details: ${error.message}</p>
 </div>`;
 }
 
@@ -320,5 +331,7 @@ export function renderNoDiscussion(
   config: CommentsConfig
 ): void {
   const { owner, repo, title } = config;
-  container.innerHTML = `<p>No discussion found. <a href="https://github.com/${owner}/${repo}/discussions/new?title=${encodeURIComponent(title)}" target="_blank" rel="noopener noreferrer">Create one</a>!</p>`;
+  container.innerHTML = `<p>No discussion found. <a href="https://github.com/${owner}/${repo}/discussions/new?title=${encodeURIComponent(
+    title
+  )}" target="_blank" rel="noopener noreferrer">Create one</a>!</p>`;
 }
