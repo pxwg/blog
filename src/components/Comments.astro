@@ -6,7 +6,14 @@ export interface Props {
 }
 
 const { owner, repo, title } = Astro.props;
-const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
+
+// Determine API domain based on environment
+const apiDomain = import.meta.env.PUBLIC_API_DOMAIN || '';
+const loginUrl = import.meta.env.DEV
+  ? `/api/login?redirect={currentPage}&callback_url={callbackUrl}`
+  : `${apiDomain}/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
+
+const dev = import.meta.env.DEV;
 ---
 
 <div
@@ -14,6 +21,7 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
   data-owner={owner}
   data-repo={repo}
   data-title={title}
+  data-login-url={loginUrl}
 >
   <div class="comment-loader"><p>Loading comments...</p></div>
 </div>
@@ -93,6 +101,8 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
 <script>
   import { initializeComments } from '../utils/main';
   const init = () => {
+    const container = document.getElementById('comments-container');
+    const apiDomain = container?.getAttribute('data-api-domain') || '';
     const loginLink = document.querySelector('#login-prompt-template a');
     if (loginLink) {
       let href = loginLink.getAttribute('href') || '';
@@ -101,7 +111,7 @@ const loginUrl = `/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
         encodeURIComponent(
           import.meta.env.DEV
             ? `${window.location.protocol}//${window.location.host}/api/callback`
-            : `${import.meta.env.PUBLIC_API_DOMAIN}/api/callback`
+            : `${apiDomain}/api/callback`
         )
       );
       loginLink.setAttribute('href', href);
