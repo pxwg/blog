@@ -29,9 +29,13 @@ export async function fetchAuthState(): Promise<AuthState> {
 }
 
 export async function fetchDiscussion(
-  config: CommentsConfig
+  config: CommentsConfig,
+  forceFresh = false
 ): Promise<Discussion | null> {
-  const url = `/api/discussion?owner=${config.owner}&repo=${config.repo}&title=${encodeURIComponent(config.title)}`;
+  let url = `/api/discussion?owner=${config.owner}&repo=${config.repo}&title=${encodeURIComponent(config.title)}`;
+  if (forceFresh) {
+    url += '&noCache=true';
+  }
   const res = await fetch(url, { ...COMMON_FETCH_OPTIONS, method: 'GET' });
   if (res.status === 404) return null;
   return handleResponse<Discussion>(res);
@@ -72,9 +76,9 @@ export async function deleteComment(commentId: string): Promise<void> {
 }
 
 export async function logout(): Promise<void> {
-  const res = await fetch('/api/logout', {
+  const res = await fetch(`/api/user`, {
     ...COMMON_FETCH_OPTIONS,
-    method: 'GET',
+    method: 'DELETE',
   });
   await handleResponse<void>(res);
 }

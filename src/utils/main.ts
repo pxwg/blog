@@ -36,10 +36,16 @@ class CommentsController {
 
   public async init(): Promise<void> {
     try {
+      const forceFresh = sessionStorage.getItem('comment_posted') === 'true';
+
       const [authState, discussionData] = await Promise.all([
         api.fetchAuthState(),
-        api.fetchDiscussion(this.config),
+        api.fetchDiscussion(this.config, forceFresh),
       ]);
+
+      if (forceFresh) {
+        sessionStorage.removeItem('comment_posted');
+      }
 
       this.authState = authState;
       this.discussion = discussionData;
@@ -118,6 +124,7 @@ class CommentsController {
       this.discussion!.comments.nodes = this.discussion!.comments.nodes.filter(
         (c) => c.id !== commentId
       );
+      sessionStorage.setItem('comment_posted', 'true'); //
       this.rerenderCommentList();
     } catch (error) {
       alert(`Error: ${(error as Error).message}`);
@@ -175,6 +182,8 @@ class CommentsController {
       }
 
       this.discussion.comments.nodes.push(newComment);
+
+      sessionStorage.setItem('comment_posted', 'true');
 
       this.rerenderCommentList();
 
