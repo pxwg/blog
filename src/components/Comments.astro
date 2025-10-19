@@ -9,9 +9,8 @@ const { owner, repo, title } = Astro.props;
 
 // Determine API domain based on environment
 const apiDomain = import.meta.env.PUBLIC_API_DOMAIN || '';
-const loginUrl = import.meta.env.DEV
-  ? `/api/login?redirect={currentPage}&callback_url={callbackUrl}`
-  : `${apiDomain}/api/login?redirect={currentPage}&callback_url={callbackUrl}`;
+const callbackUrl = `${apiDomain}/api/callback`;
+const loginUrl = `${apiDomain}/api/login?redirect={currentPage}&callback_url=${encodeURIComponent(callbackUrl)}`;
 
 const dev = import.meta.env.DEV;
 ---
@@ -22,6 +21,7 @@ const dev = import.meta.env.DEV;
   data-repo={repo}
   data-title={title}
   data-login-url={loginUrl}
+  data-api-domain={apiDomain}
 >
   <div class="comment-loader"><p>Loading comments...</p></div>
 </div>
