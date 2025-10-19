@@ -32,5 +32,5 @@ test.html
 # Claude
 CLAUDE.md
 
-# HTTP certificate files
+# Https certificates
 .cert/
