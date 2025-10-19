@@ -1,4 +1,20 @@
+// src/utils/ui.ts
 import type { Discussion, AuthState, Comment, CommentsConfig } from './types';
+
+function autosizeTextarea(textarea: HTMLTextAreaElement) {
+  const initialHeight = '4.5em';
+  textarea.style.height = initialHeight;
+  textarea.style.resize = 'none';
+  textarea.style.overflowY = 'hidden';
+
+  const adjustHeight = () => {
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  };
+
+  textarea.addEventListener('input', adjustHeight);
+  adjustHeight();
+}
 
 function fixLoginUrl(container: HTMLElement) {
   const loginLink = container.querySelector('#login-link');
@@ -67,9 +83,7 @@ function populateTemplate(template: HTMLElement, data: Comment): HTMLElement {
 
   if (data.replyTo) {
     const replyBtn = clone.querySelector<HTMLButtonElement>('.reply-btn');
-    if (replyBtn) {
-      replyBtn.style.display = 'none';
-    }
+    if (replyBtn) replyBtn.style.display = 'none';
   }
 
   return clone;
@@ -139,6 +153,11 @@ export function renderInitialLayout(
         userAvatar.alt = `${authState.user.login}'s avatar`;
       }
       if (userName) userName.textContent = authState.user.login;
+
+      const mainTextarea = (formTemplate as HTMLElement).querySelector(
+        'textarea'
+      );
+      if (mainTextarea) autosizeTextarea(mainTextarea);
     }
     formContainer.appendChild(formTemplate);
     if (!authState.isLoggedIn) {
@@ -156,6 +175,10 @@ export function showReplyForm(
   )!;
   replyContainer.appendChild(formWrapper);
   formWrapper.dataset.replyToId = commentEl.dataset.commentId;
+
+  const replyTextarea = formWrapper.querySelector('textarea');
+  if (replyTextarea) autosizeTextarea(replyTextarea);
+
   if (!formWrapper.querySelector('.cancel-reply-btn')) {
     const cancelButton = document.createElement('button');
     cancelButton.type = 'button';
@@ -172,7 +195,11 @@ export function hideReplyForm(
   originalParent.appendChild(formWrapper);
   delete formWrapper.dataset.replyToId;
   formWrapper.querySelector('.cancel-reply-btn')?.remove();
-  (formWrapper.querySelector('textarea') as HTMLTextAreaElement)!.value = '';
+  const textarea = formWrapper.querySelector('textarea') as HTMLTextAreaElement;
+  if (textarea) {
+    textarea.value = '';
+    textarea.style.height = '4.5em';
+  }
 }
 
 export function showEditForm(commentEl: HTMLElement) {
@@ -189,7 +216,10 @@ export function showEditForm(commentEl: HTMLElement) {
 
   const editForm = editFormTemplate.content.cloneNode(true) as HTMLElement;
   const textarea = editForm.querySelector('textarea');
-  if (textarea) textarea.value = currentText;
+  if (textarea) {
+    textarea.value = currentText;
+    autosizeTextarea(textarea);
+  }
 
   body.style.display = 'none';
   actions.style.display = 'none';
@@ -211,7 +241,9 @@ export function updateCommentInDOM(commentId: string, newBodyHTML: string) {
   );
   if (!commentEl) return;
   const body = commentEl.querySelector<HTMLElement>('.comment-body');
-  if (body) body.innerHTML = newBodyHTML;
+  if (body) {
+    body.innerHTML = newBodyHTML;
+  }
   hideEditForm(commentEl);
 }
 
@@ -224,8 +256,8 @@ export function removeCommentFromDOM(commentId: string) {
 
 export function renderError(container: HTMLElement, error: Error): void {
   container.innerHTML = `<div class="error-box">
-  <p>Sorry, we couldn't load the comments.</p>
-  <p class="error-message">Details: ${error.message}</p>
+  <p>Sorry, we couldn't load the comments.</p>
+  <p class="error-message">Details: ${error.message}</p>
 </div>`;
 }
 export function renderNoDiscussion(
