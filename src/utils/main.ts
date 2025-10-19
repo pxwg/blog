@@ -118,6 +118,7 @@ class CommentsController {
       '.comment-form-wrapper'
     );
     if (formWrapper && this.originalFormParent) {
+      this.originalFormParent.appendChild(formWrapper);
       ui.hideReplyForm(formWrapper, this.originalFormParent);
     }
   }
@@ -220,6 +221,10 @@ class CommentsController {
       textarea.value = '';
       if (replyToId) {
         this.handleCancelReply();
+        const formWrapper = form.closest<HTMLElement>('.comment-form-wrapper');
+        if (formWrapper && this.originalFormParent) {
+          this.originalFormParent.appendChild(formWrapper);
+        }
       }
     } catch (error) {
       alert(`Error: ${(error as Error).message}`);
