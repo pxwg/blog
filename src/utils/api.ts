@@ -5,6 +5,14 @@ const COMMON_FETCH_OPTIONS: RequestInit = {
   headers: { 'Cache-Control': 'no-cache', 'Content-Type': 'application/json' },
 };
 
+const API_BASE_URL = import.meta.env.DEV
+  ? ''
+  : import.meta.env.PUBLIC_API_DOMAIN || '';
+
+function buildApiUrl(path: string): string {
+  return `${API_BASE_URL}${path}`;
+}
+
 async function handleResponse<T>(res: Response): Promise<T> {
   if (res.status === 204) return null as T;
   const data = await res.json();
@@ -16,7 +24,7 @@ async function handleResponse<T>(res: Response): Promise<T> {
 
 export async function fetchAuthState(): Promise<AuthState> {
   try {
-    const res = await fetch(`/api/user`, {
+    const res = await fetch(buildApiUrl(`/api/user`), {
       ...COMMON_FETCH_OPTIONS,
       method: 'GET',
     });
@@ -32,7 +40,9 @@ export async function fetchDiscussion(
   config: CommentsConfig,
   forceFresh = false
 ): Promise<Discussion | null> {
-  let url = `/api/discussion?owner=${config.owner}&repo=${config.repo}&title=${encodeURIComponent(config.title)}`;
+  let url = buildApiUrl(
+    `/api/discussion?owner=${config.owner}&repo=${config.repo}&title=${encodeURIComponent(config.title)}`
+  );
   if (forceFresh) {
     url += '&noCache=true';
   }
@@ -46,7 +56,7 @@ export async function postComment(
   body: string,
   replyToId?: string
 ): Promise<Comment> {
-  const res = await fetch(`/api/comment`, {
+  const res = await fetch(buildApiUrl(`/api/comment`), {
     ...COMMON_FETCH_OPTIONS,
     method: 'POST',
     body: JSON.stringify({ discussionId, body, replyToId }),
@@ -58,7 +68,7 @@ export async function updateComment(
   commentId: string,
   body: string
 ): Promise<{ id: string; bodyHTML: string }> {
-  const res = await fetch(`/api/comment`, {
+  const res = await fetch(buildApiUrl(`/api/comment`), {
     ...COMMON_FETCH_OPTIONS,
     method: 'PATCH',
     body: JSON.stringify({ commentId, body }),
@@ -67,7 +77,7 @@ export async function updateComment(
 }
 
 export async function deleteComment(commentId: string): Promise<void> {
-  const res = await fetch(`/api/comment`, {
+  const res = await fetch(buildApiUrl(`/api/comment`), {
     ...COMMON_FETCH_OPTIONS,
     method: 'DELETE',
     body: JSON.stringify({ commentId }),
@@ -76,7 +86,7 @@ export async function deleteComment(commentId: string): Promise<void> {
 }
 
 export async function logout(): Promise<void> {
-  const res = await fetch(`/api/user`, {
+  const res = await fetch(buildApiUrl(`/api/user`), {
     ...COMMON_FETCH_OPTIONS,
     method: 'DELETE',
   });

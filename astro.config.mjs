@@ -63,8 +63,8 @@ export default defineConfig({
   vite: {
     server: {
       // https: {
-      //   key: fs.readFileSync("./.cert/localhost-key.pem"),
-      //   cert: fs.readFileSync("./.cert/localhost.pem"),
+      //   key: fs.readFileSync('./.cert/localhost-key.pem'),
+      //   cert: fs.readFileSync('./.cert/localhost.pem'),
       // },
       proxy: {
         '/api': {
