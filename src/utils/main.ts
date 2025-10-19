@@ -29,23 +29,23 @@ class CommentsController {
   private discussion: Discussion | null = null;
   private originalFormParent: HTMLElement | null = null;
 
+  private clickHandler: (e: Event) => void;
+  private submitHandler: (e: Event) => void;
+
   constructor(container: HTMLElement, config: CommentsConfig) {
     this.container = container;
     this.config = config;
+
+    this.clickHandler = this.handleClick.bind(this);
+    this.submitHandler = this.handleSubmit.bind(this);
   }
 
   public async init(): Promise<void> {
     try {
-      const forceFresh = sessionStorage.getItem('comment_posted') === 'true';
-
       const [authState, discussionData] = await Promise.all([
         api.fetchAuthState(),
-        api.fetchDiscussion(this.config, forceFresh),
+        api.fetchDiscussion(this.config),
       ]);
-
-      if (forceFresh) {
-        sessionStorage.removeItem('comment_posted');
-      }
 
       this.authState = authState;
       this.discussion = discussionData;
@@ -74,27 +74,34 @@ class CommentsController {
   }
 
   private attachEventListeners(): void {
-    this.container.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      const commentEl = target.closest<HTMLElement>('.comment');
+    this.container.removeEventListener('click', this.clickHandler);
+    this.container.removeEventListener('submit', this.submitHandler);
 
-      if (target.matches('.reply-btn')) this.handleReplyClick(commentEl!);
-      else if (target.matches('.edit-btn')) ui.showEditForm(commentEl!);
-      else if (target.matches('.delete-btn'))
-        this.handleDeleteClick(commentEl!);
-      else if (target.matches('.cancel-edit-btn')) ui.hideEditForm(commentEl!);
-      else if (target.matches('.cancel-reply-btn')) this.handleCancelReply();
-      else if (target.matches('#logout-btn')) this.handleLogout();
-      else if (target.matches('#login-link'))
-        sessionStorage.setItem('just_logged_in', 'true');
-    });
+    this.container.addEventListener('click', this.clickHandler);
+    this.container.addEventListener('submit', this.submitHandler);
+  }
 
-    this.container.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const form = e.target as HTMLFormElement;
-      if (form.matches('#comment-form')) this.handleMainFormSubmit(form);
-      if (form.matches('.edit-form')) this.handleEditFormSubmit(form);
-    });
+  private handleClick(e: Event) {
+    const target = e.target as HTMLElement;
+    const commentEl = target.closest<HTMLElement>('.comment');
+
+    if (!commentEl && !target.matches('#logout-btn')) return;
+
+    if (target.matches('.reply-btn')) this.handleReplyClick(commentEl!);
+    else if (target.matches('.edit-btn')) this.handleEditClick(commentEl!);
+    else if (target.matches('.delete-btn')) this.handleDeleteClick(commentEl!);
+    else if (target.matches('.cancel-edit-btn')) ui.hideEditForm(commentEl!);
+    else if (target.matches('.cancel-reply-btn')) this.handleCancelReply();
+    else if (target.matches('#logout-btn')) this.handleLogout();
+    else if (target.matches('#login-link'))
+      sessionStorage.setItem('just_logged_in', 'true');
+  }
+
+  private handleSubmit(e: Event) {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    if (form.matches('#comment-form')) this.handleMainFormSubmit(form);
+    if (form.matches('.edit-form')) this.handleEditFormSubmit(form);
   }
 
   private handleReplyClick(commentEl: HTMLElement) {
@@ -115,6 +122,35 @@ class CommentsController {
     }
   }
 
+  private async handleEditClick(commentEl: HTMLElement) {
+    const commentId = commentEl.dataset.commentId;
+    if (!commentId) return;
+
+    const editButton = commentEl.querySelector<HTMLButtonElement>('.edit-btn');
+    if (editButton) {
+      editButton.disabled = true;
+      editButton.textContent = 'Loading...';
+    }
+
+    try {
+      await this.init();
+
+      const newCommentEl = this.container.querySelector<HTMLElement>(
+        `.comment[data-comment-id="${commentId}"]`
+      );
+
+      if (newCommentEl) {
+        ui.showEditForm(newCommentEl);
+      }
+    } catch (error) {
+      alert(`Error loading latest comment: ${(error as Error).message}`);
+      if (editButton) {
+        editButton.disabled = false;
+        editButton.textContent = 'Edit';
+      }
+    }
+  }
+
   private async handleDeleteClick(commentEl: HTMLElement) {
     if (!window.confirm('Are you sure you want to delete this comment?'))
       return;
@@ -124,7 +160,6 @@ class CommentsController {
       this.discussion!.comments.nodes = this.discussion!.comments.nodes.filter(
         (c) => c.id !== commentId
       );
-      sessionStorage.setItem('comment_posted', 'true'); //
       this.rerenderCommentList();
     } catch (error) {
       alert(`Error: ${(error as Error).message}`);
@@ -182,9 +217,6 @@ class CommentsController {
       }
 
       this.discussion.comments.nodes.push(newComment);
-
-      sessionStorage.setItem('comment_posted', 'true');
-
       this.rerenderCommentList();
 
       textarea.value = '';
@@ -212,8 +244,8 @@ class CommentsController {
     button.textContent = 'Saving...';
 
     try {
-      const updatedComment = await api.updateComment(commentId, body);
-      ui.updateCommentInDOM(commentId, updatedComment.bodyHTML);
+      await api.updateComment(commentId, body);
+      await this.init();
     } catch (error) {
       alert(`Error: ${(error as Error).message}`);
       button.disabled = false;

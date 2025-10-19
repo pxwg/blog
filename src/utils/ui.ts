@@ -1,58 +1,41 @@
-// src/utils/ui.ts
-
 import type { Discussion, AuthState, Comment, CommentsConfig } from './types';
 import { marked } from 'marked';
 import katex from 'katex';
 
-// ==================== 修复后的数学公式渲染功能 ====================
-/**
- * 查找并渲染指定元素内的所有数学公式
- * @param element - The HTML element to search within.
- */
 function renderMathInElement(element: HTMLElement) {
-  // 正则表达式查找 $$...$$ (块级) 和 $...$ (行内) 公式
   const mathRegex = /(\$\$[\s\S]*?\$\$|\$[^$]*?\$)/g;
-
-  // 递归遍历DOM节点
   const walkAndRender = (node: Node) => {
     if (node.nodeType === 3) {
-      // 文本节点
       const text = node.textContent || '';
-      const parts = text.split(mathRegex);
-
-      if (parts.length > 1) {
-        const fragment = document.createDocumentFragment();
-        parts.forEach((part, i) => {
-          // 匹配到的部分 (即公式) 总是在奇数索引
-          if (i % 2 === 1) {
-            const isBlock = part.startsWith('$$');
-            const math = part.slice(isBlock ? 2 : 1, isBlock ? -2 : -1);
-
-            // 确保我们传递给KaTeX的是一个有效的字符串
-            if (typeof math === 'string') {
-              try {
-                const html = katex.renderToString(math, {
-                  displayMode: isBlock,
-                  throwOnError: false,
-                });
-                const span = document.createElement('span');
-                span.innerHTML = html;
-                fragment.appendChild(span);
-              } catch (e) {
-                const errorSpan = document.createElement('span');
-                errorSpan.style.color = 'red';
-                errorSpan.textContent = part; // 渲染失败时显示原始文本
-                fragment.appendChild(errorSpan);
+      if (text.includes('$')) {
+        const parts = text.split(mathRegex);
+        if (parts.length > 1) {
+          const fragment = document.createDocumentFragment();
+          parts.forEach((part, i) => {
+            if (i % 2 === 1) {
+              const isBlock = part.startsWith('$$');
+              const math = part.slice(isBlock ? 2 : 1, isBlock ? -2 : -1);
+              if (typeof math === 'string') {
+                try {
+                  const html = katex.renderToString(math, {
+                    displayMode: isBlock,
+                    throwOnError: false,
+                  });
+                  const span = document.createElement('span');
+                  span.innerHTML = html;
+                  fragment.appendChild(span);
+                } catch (e) {
+                  fragment.appendChild(document.createTextNode(part));
+                }
               }
+            } else if (part) {
+              fragment.appendChild(document.createTextNode(part));
             }
-          } else if (part) {
-            fragment.appendChild(document.createTextNode(part));
-          }
-        });
-        node.parentNode?.replaceChild(fragment, node);
+          });
+          node.parentNode?.replaceChild(fragment, node);
+        }
       }
     } else if (node.nodeType === 1) {
-      // 元素节点
       const el = node as HTMLElement;
       const tagName = el.tagName.toLowerCase();
       if (
@@ -65,23 +48,18 @@ function renderMathInElement(element: HTMLElement) {
       }
     }
   };
-
   walkAndRender(element);
 }
-// ====================================================================
 
-// 你已有的 autosizeTextarea 函数，保持不变
 function autosizeTextarea(textarea: HTMLTextAreaElement) {
   const initialHeight = '4.5em';
   textarea.style.height = initialHeight;
   textarea.style.resize = 'none';
   textarea.style.overflowY = 'hidden';
-
   const adjustHeight = () => {
     textarea.style.height = 'auto';
     textarea.style.height = `${textarea.scrollHeight}px`;
   };
-
   textarea.addEventListener('input', adjustHeight);
   adjustHeight();
 }
@@ -111,6 +89,10 @@ function populateTemplate(template: HTMLElement, data: Comment): HTMLElement {
 
   const commentNode = clone.querySelector<HTMLElement>('.comment')!;
   commentNode.dataset.commentId = data.id;
+
+  if (data.body) {
+    commentNode.dataset.rawBody = data.body;
+  }
 
   clone.querySelectorAll<HTMLElement>('[data-fill-text]').forEach((el) => {
     let value = getValue(el.dataset.fillText!);
@@ -162,7 +144,6 @@ function populateTemplate(template: HTMLElement, data: Comment): HTMLElement {
   return clone;
 }
 
-// ... (剩下的所有函数都保持不变) ...
 export function renderCommentTree(
   nodes: Comment[],
   container: HTMLElement,
@@ -284,9 +265,7 @@ export function showEditForm(commentEl: HTMLElement) {
   );
   if (!body || !actions || !editFormTemplate) return;
 
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = body.innerHTML;
-  const currentText = tempDiv.textContent || '';
+  const currentText = (commentEl.dataset.rawBody || '').trim();
 
   const editForm = editFormTemplate.content.cloneNode(true) as HTMLElement;
   const textarea = editForm.querySelector('textarea');
@@ -335,12 +314,11 @@ export function renderError(container: HTMLElement, error: Error): void {
   <p class="error-message">Details: ${error.message}</p>
 </div>`;
 }
+
 export function renderNoDiscussion(
   container: HTMLElement,
   config: CommentsConfig
 ): void {
   const { owner, repo, title } = config;
-  container.innerHTML = `<p>No discussion found. <a href="https://github.com/${owner}/${repo}/discussions/new?title=${encodeURIComponent(
-    title
-  )}" target="_blank" rel="noopener noreferrer">Create one</a>!</p>`;
+  container.innerHTML = `<p>No discussion found. <a href="https://github.com/${owner}/${repo}/discussions/new?title=${encodeURIComponent(title)}" target="_blank" rel="noopener noreferrer">Create one</a>!</p>`;
 }
