@@ -6,6 +6,7 @@ export interface CommentAuthor {
 export interface Comment {
   id: string;
   author: CommentAuthor;
+  body: string;
   bodyHTML: string;
   createdAt: string;
   viewerCanUpdate: boolean;
