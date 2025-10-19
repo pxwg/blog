@@ -184,8 +184,12 @@ class CommentsController {
     if (noCommentsEl) noCommentsEl.remove();
 
     if (commentTree.length > 0) {
-      ui.renderCommentTree(commentTree, listContainer, commentTemplate);
-    } else {
+      ui.renderCommentTree(
+        commentTree,
+        listContainer,
+        commentTemplate,
+        this.authState
+      );
       listContainer.innerHTML =
         '<p id="no-comments-yet">Be the first to comment.</p>';
     }
