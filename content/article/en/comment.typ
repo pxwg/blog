@@ -2,7 +2,7 @@
 #let title = "A Hand-Rolled Comment System"
 #show: main.with(
   title: title,
-  desc: [I added a homebrewed comment system to my blog, built on a Serverless architecture and GitHub Discussions.],
+  desc: [I added a homemade comment system to my blog, built on a Serverless architecture and GitHub Discussions.],
   date: "2025-10-22",
   tags: (
     blog-tags.programming,
