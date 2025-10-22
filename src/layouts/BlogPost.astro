@@ -1,25 +1,27 @@
 ---
-import type { CollectionEntry, Heading } from "astro:content";
-import { getCollection } from "astro:content";
+import type { CollectionEntry, Heading } from 'astro:content';
+import { getCollection } from 'astro:content';
 
-import { PostClick } from "@myriaddreamin/tylant";
-import TagList from "$components/TagList.astro";
+import { PostClick } from '@myriaddreamin/tylant';
+import TagList from '$components/TagList.astro';
 
-import BaseHead from "$components/BaseHead.astro";
-import Header from "$components/Header.astro";
-import Footer from "$components/Footer.astro";
-import FormattedDate from "$components/FormattedDate.astro";
-import TranslationLink from "$components/TranslationLink.astro";
-import Comments from "$components/Comments.astro";
-import { kEnableClick, kArticleStats, kEnableReaction } from "$consts";
+import BaseHead from '$components/BaseHead.astro';
+import Header from '$components/Header.astro';
+import Footer from '$components/Footer.astro';
+import FormattedDate from '$components/FormattedDate.astro';
+import TranslationLink from '$components/TranslationLink.astro';
+import Comments from '$components/Comments.astro';
+import { kEnableClick, kArticleStats, kEnableReaction } from '$consts';
 
-interface Props extends CollectionEntry<'blog'>['data'] {
+type Props = CollectionEntry<'blog'>['data'] & {
   id: CollectionEntry<'blog'>['id'];
   slug: CollectionEntry<'blog'>['slug'];
   headings: Heading[];
   translationUrl?: string;
   translationKey: string;
-}
+};
+
+const isAboutPage = Astro.url.pathname.includes('/about/');
 
 const {
   id,
@@ -33,12 +35,13 @@ const {
   translationUrl,
   'llm-translated': llmTranslated,
   translationKey,
-  headings
+  headings,
 } = Astro.props;
 const postSlug = Astro.url.pathname;
 
 // Use frontmatter language as primary source, fallback to URL detection
-const currentLang = lang || (Astro.url.pathname.startsWith('/zh/') ? 'zh' : 'en');
+const currentLang =
+  lang || (Astro.url.pathname.startsWith('/zh/') ? 'zh' : 'en');
 
 const stat: { like?: number; click?: number } =
   ((kEnableClick || kEnableReaction) &&
@@ -46,14 +49,19 @@ const stat: { like?: number; click?: number } =
   {};
 const click = stat.click || 0;
 const like = stat.like || 0;
-const pdfArchives = await getCollection("archive");
+const pdfArchives = await getCollection('archive');
 ---
 
 <html lang={currentLang}>
   <head>
     <BaseHead title={title} description={description} />
-    <meta name="translation-key" content={translationKey || ""} />
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" integrity="sha384-wcIxkf4k558AjM3Yz3BBFQUbk/zgIYC2R0QpeeYb+TwlBVMrlgLqwRjRtGZiK7ww" crossorigin="anonymous">
+    <meta name="translation-key" content={translationKey || ''} />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css"
+      integrity="sha384-wcIxkf4k558AjM3Yz3BBFQUbk/zgIYC2R0QpeeYb+TwlBVMrlgLqwRjRtGZiK7ww"
+      crossorigin="anonymous"
+    />
     <style is:global>
       main {
         width: calc(100% - 2em);
@@ -153,7 +161,7 @@ const pdfArchives = await getCollection("archive");
                   updatedDate && (
                     <>
                       <span class="last-updated-on">
-                        , Last updated on{" "}
+                        , Last updated on{' '}
                         <FormattedDate date={updatedDate || date} />
                       </span>
                     </>
@@ -165,7 +173,7 @@ const pdfArchives = await getCollection("archive");
                   <>
                     <span>·</span>
                     <div class="click-count">
-                      {click} {click === 1 ? "view" : "views"}
+                      {click} {click === 1 ? 'view' : 'views'}
                     </div>
                   </>
                 )
@@ -175,31 +183,35 @@ const pdfArchives = await getCollection("archive");
                   <>
                     <span>·</span>
                     <span class="like-count">
-                      {like} {like === 1 ? "like" : "likes"}
+                      {like} {like === 1 ? 'like' : 'likes'}
                     </span>
                   </>
                 )
               }
             </div>
             <h1>{title}</h1>
-            <TranslationLink
-              entry={Astro.props}
-              locale={currentLang}
-              llmTranslated={llmTranslated}
-            />
+            {
+              !isAboutPage && (
+                <TranslationLink
+                  entry={Astro.props}
+                  locale={currentLang}
+                  llmTranslated={llmTranslated}
+                />
+              )
+            }
             <hr />
           </section>
           <slot />
         </div>
       </article>
-      {tags && <TagList tags={tags} lang={lang || currentLang}/>}
-      <div class="comment-region">
-        <Comments 
-          owner="pxwg" 
-          repo="blog" 
-          title={translationKey}
-        />
-      </div>
+      {tags && <TagList tags={tags} lang={lang || currentLang} />}
+      {
+        !isAboutPage && (
+          <div class="comment-region">
+            <Comments owner="pxwg" repo="blog" title={translationKey} />
+          </div>
+        )
+      }
     </main>
     <Footer />
   </body>
