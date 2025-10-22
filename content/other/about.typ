@@ -11,9 +11,8 @@ I am also a fan of tennis, playing weekly matches with friends at the Zijing Ten
 == About this blog
 
 This blog focuses on:
-- Physics and mathematical physics notes, with emphasis on non-perturbative QFT and related topics.
-- Programming and tooling, including MacOS, Neovim, and developer productivity.
-- Typst usage, tips, and rendering experiments.
+- Physics and math notes, with emphasis on non-perturbative QFT and related mathematical structures/tools.
+- Programming and tooling, including Neovim, web development, typst, productivity tips, etc.
 - Some personal stuffs.
 
 It is built with #link("https://github.com/Myriad-Dreamin/tylant")[tylant], a Typst-based static site generator.
