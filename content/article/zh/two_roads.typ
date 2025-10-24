@@ -3,7 +3,7 @@
 #show: main.with(
   title: title,
   desc: [每一条都是前路。],
-  date: "2025-10-23",
+  date: "2025-10-24",
   tags: (
     blog-tags.misc,
     blog-tags.prose,
