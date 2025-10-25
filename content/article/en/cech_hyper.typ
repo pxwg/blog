@@ -478,8 +478,3 @@ $
 $
 is indeed an isomorphism!
 Thus, we finally showed that, the Čech-de Rham complex we introduced in the previous blog is indeed a model of the derived global section of the complex of sheaves $cal(K)^(bullet)$, i.e., $R Gamma(X, cal(K)^(bullet))$.
-
-
-// The spectral sequence immediately shows the Čech-de Rham complex is indeed a model of the derived global section of the complex of sheaves $cal(K)^(bullet)$, i.e., $R Gamma(X, cal(K)^(bullet))$.
-
-// Such construction formulated our intuition of using Čech complex to obtain the _global information_ of the complex of sheaves $cal(K)^(bullet)$ from its _local data_, previously discussed in #link(u1_grav)[this blog].
