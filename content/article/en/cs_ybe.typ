@@ -35,12 +35,12 @@ This action is invariant under gauge transformations $A |-> g^(-1) A g + g^(-1) 
 
 In physical literature, people often consider the Chern-Simons action with a coupling constant $k$:
 $
-  S_(CS)[A] = k / (4 pi) CS_(X)[A].
+  S^(k)_(CS)[A] = k / (4 pi) CS_(X)[A].
 $
 where $k$ is quantized to ensure gauge invariance at the quantum level.
 Formally, using the path integral formalism, the partition function of Chern-Simons theory is formally given by:
 $
-  Z_(CS)(X) = integral d mu_(X)[A] thin e^(i S_(CS)[A]),
+  Z^(k)_(CS)(X) = integral d mu_(X)[A] thin e^(i S^(k)_(CS)[A]),
 $
 i.e., integrating over the quotient space of the space of all connections in $G$-bundles over $X$ modulo gauge transformations.
 
@@ -99,7 +99,7 @@ $
   CS_(X)[A] := integral_(X) A overline(diff)_(t) A,
 $
 where $overline(diff)_(t) := d t overline(partial)$.
-Under this gauge fixing, the path integral would be reduced to a purely Gaussian integral!
+Under this gauge fixing, the path integral would be reduced to a purely Gaussian integral.
 
 
 // Axial Gauge -> Kont. integral -> KZ connection
