@@ -19,6 +19,8 @@
 #let CS = math.upright("CS")
 #let wedge = math.and
 #let GL = math.upright("GL")
+#let Conf = math.upright("Conf")
+#let Hol = math.upright("Hol")
 
 = Chern-Simons Theory Revisit
 
@@ -50,7 +52,7 @@ At the perturbative level, one can expand the partition function around flat con
 
 The gauge-invariant observables in Chern-Simons theory are _Wilson loops_, which are defined with data $(K, rho)$, where $K: SS^(1) arrow.hook X$ is a knot embedded in $X$, and $rho: G -> GL(V)$ is a representation of the gauge group $G$ on a vector space $V$, and could be written as:
 $
-  W_(K)(rho) = tr_(rho) cal(P) exp(integral_(K) A),
+  W_(K)(rho) = tr_(rho) cal(P) exp(integral_(K) i A),
 $
 where $cal(P) exp$ denotes the path-ordered exponential along the knot $K$.
 
@@ -84,8 +86,6 @@ In this case, the Morse knots could be defined with respect to the height functi
 We also choose a set of bases ${t_(a)}$ for gauge Lie algebra $frak(g)$, such that $tr(t_(a) t_(b)) = delta_(a b)$, $[t_i, t_j] = f_(i j)^(k) t_(k)$.
 Then the gauge connection $A$ could be expressed as $A = A^(a) t_(a)$, where $A^(a) in Omega^(1)(X)$ are ordinary 1-forms on $X$ (after choosing a reference trivialization of the principal $G$-bundle).
 
-== Axial Gauge and Perturbative Expansion
-
 To perform perturbative expansion, we need to fix a gauge.
 In this case, a natural gauge fixing condition could be realized following.
 First, using the complex structure on $Sigma$, we could introduce complex coordinates $(z, overline(z))$ on $Sigma$.
@@ -101,10 +101,107 @@ $
 where $overline(diff)_(t) := d t overline(partial)$.
 Under this gauge fixing, the path integral would be reduced to a purely Gaussian integral.
 
+To using the perturbative method, we need to compute the propagator (two-point correlation function) of the gauge field $A$.
+At the axial gauge, the propagator could be computed as:
+$
+  angle.l A_(i)^(a)(z_1, t_1) A_(j)^(b)(z_2, t_2) angle.r = delta^(a b) frac(1, i k) frac(d z_1 - d z_2, z_1 - z_2) delta(t_1 - t_2).
+$
+
+Thus, the expectation value of Wilson loops could be computed using Wick's theorem.
+To compute this expectation value, we choose a Morse knot $K$ embedded in $X$ and a parameterization $gamma: [0, 1] arrow.hook K subset X$ of the knot.
+Then the Wilson loop observable could be expanded as:
+$
+  W_(K)(rho) = 1 + sum_(n=1)^(oo) i^(n) tr_(rho) integral_(0 <= t_1 <= ... <= t_n <= 1) A(gamma(t_1)) ... A(gamma(t_n)),
+$
+using the decomposition of the gauge field $A = A^(a) t_(a)$, we could rewrite this as:
+$
+  W_(K)(rho) & = 1 + sum_(n=1)^(oo) i^(n) sum_(a_1, ..., a_n) tr_(rho)(t_(a_1) ... t_(a_n)) integral_(0 <= t_1 <= ... <= t_n <= 1) A^(a_1)(gamma(t_1)) ... A^(a_n)(gamma(t_n)).
+$
+Thus, the expectation value could be computed with:
+$
+  angle.l A^(a_1)(z(t_1), t_1) ... A^(a_(2n))(z(t_(2n)), t_(2n))angle.r = (frac(1, i k))^(n) tr_(rho) sum_(P) wedge.big_(l in P) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) delta(t_(l_1) - t_(l_2)),
+$
+where $P$ is a pairing of the set ${1, ..., 2n}$, and each pair $l in P$ consists of two elements $(l_1, l_2)$.
+After integrating out the delta functions, the linked vertex would live at a same time slice along the $RR$ direction.
+Thus, the expectation value of the Wilson loop could be expressed as:
+$
+  angle.l W_(K)(rho) angle.r = sum_(n=0)^(oo) frac(1, k^(n)) tr_(rho)Phi_(n)(K),
+$
+where $Phi_(n)(K)$ is called the _Kontsevich integral_ of the knot $K$, which could be expressed as:
+$
+  Phi_(n)(K) = sum_(P) wedge.big_(l in P) integral_(0 <= t_1 <= ... <= t_(n) <= 1) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) Omega_(l).
+$
+where $Omega_(l) = rho(t_(l_1)) times.circle rho(t_(l_2))$ is an double insertion of Lie algebra elements at the points $gamma(t_(l_1))$ and $gamma(t_(l_2))$ on the knot, which could be read from "linking" the knot at these two points with weight $Omega_(l)$.
+Such construction is called a _chord diagram_.
+
+== Example: $R$-matrix from Kontsevich Integral
+
+We consider a simple braiding configuration of two strands, which is a simple Morse knot embedded in $RR times CC$.
+
+The intersection of two strands at a time slice would become two distinct points $z_1, z_2$ in $CC$.
+Using the Kontsevich integral construction, the only nontrivial contribution comes from the $n$-th copy of the gauge connection over these two points, which yields:
+$
+  angle.l W_(K)(rho) angle.r = tr_(rho) sum_(n=0)^(oo) frac(1, k^(n)) frac(1, n!) (Phi_(1)(K))^(n) ,
+$
+where $Phi_1(K)$ could be computed as:
+$
+  Phi_1(K) = integral.cont frac(d z, z) Omega = 2 pi i Omega,
+$
+thus, the expectation value could be expressed as:
+$
+  angle.l W_(K)(rho) angle.r = tr_(rho) exp(frac(2 pi i, k) Omega),
+$
+which is exactly (before taking the trace) the quantum _R-matrix_ acting on the tensor product representation $rho^(times.circle 2): frak(g) times.circle frak(g) -> GL(V times.circle V)$.
 
 // Axial Gauge -> Kont. integral -> KZ connection
 
 = Knizhnik Zamolodchikov Connection and Yang-Baxter Equation
+
+Now we consider the physical interpretation of the expectation value we constructed above.
+To achieve this goal, let us consider a (seemly) independent problem arise from conformal field theory.
+
+== Knizhnik-Zamolodchikov Connection
+
+In the studying of conformal field theory with gauge symmetry, Knizhnik and Zamolodchikov discovered a remarkable differential equation satisfied by the correlation functions of primary fields in the Wess-Zumino-Witten (WZW) model.
+
+Consider $n$ distinct points ${z_1, ..., z_n}$ in the complex plane $CC$, and associate to each point $z_i$ a representation $rho_i: frak(g) -> GL(V_i)$ of the Lie algebra $frak(g)$.
+The Knizhnik-Zamolodchikov (KZ) equation is a system of first-order differential equations for a function $F: Conf_(n)(CC) -> V_1 times.circle ... times.circle V_n$, where $Conf_(n)(CC) = {(z_1, ..., z_n) in CC^(n) | z_i != z_j, forall i != j}$ is the configuration space of $n$ distinct points in $CC$:
+$
+  (diff F) / (diff z_i ) - 1 / (k + h^(or)) sum_(i > j) Omega_(i j) / (z_i - z_j) F = 0, thin forall i = 1, ..., n,
+$
+where $h^(or)$ is the dual Coxeter number of the Lie algebra $frak(g)$, and $Omega_(i j)$ is the _Casimir element_ acting on the $i$-th and $j$-th factors of the tensor product $V_1 times.circle ... times.circle V_n$, defined as:
+$
+  Omega_(i j) = sum_(a) rho_i (t_(a)) times.circle rho_j (t_(a)).
+$
+
+By definition, the KZ equation describes a local system over the configuration space $Conf_(n)(CC)$, which could be interpreted as a flat connection $nabla_("KZ")$.
+
+A natural question is: what is the monodromy of this local system?
+We shell consider the case $n=2$ first, which could be reduced to a single ordinary differential equation:
+$
+  frac(diff F, diff z) - frac(1, planck.reduce) Omega/z F = 0.
+$
+The solution could be expressed as $F(z) = z^(frac(1, planck.reduce) Omega) C$.
+After winding $z$ around the origin once, i.e., $z |-> e^(2 pi i) z$, the solution would transform as:
+$
+  F(z) |-> e^(2 pi i frac(1, planck.reduce) Omega) F(z),
+$
+thus, the monodromy matrix is given by $M = e^(2 pi i frac(1, planck.reduce) Omega)$.
+Which is exactly the R-matrix we found from the perturbative Chern-Simons theory!#footnote([Well, you may argue that there is a (slight) difference of a factor $h^(or)$ in the definition of $planck.reduce$ at the case of CS and KZ respectively. However, since the perturbative expansion is done at large $k$ limit (small $planck.reduce$), this difference could be ignored. Also, it is quite interesting to restore this factor $h^(or)$ from the perturbative CS theory point of view, which I don't know how to do so.])
+
+In fact, this is not a coincidence.
+Due to the work of Drinfeld and Kohno, the monodromy representation of the KZ connection is equivalent to the representation of the braid group obtained from the R-matrix of the corresponding quantum group.
+
+Another natural question is: what about the general case with $n$ points?
+Since the KZ connection is flat, the monodromy is equivalent to the holonomy of this connection, and such holonomy could be rephrased as:
+$
+  Hol_(nabla_("KZ"))(gamma) = cal(P) exp(integral_(gamma) A_("KZ")),
+$
+where $A_("KZ") = 1 / (k + h^(or)) sum_(i < j) Omega_(i j) d log(z_i - z_j)$.
+Such a holonomy could be expanded and computed
+
+== Yang-Baxter Equation
+
 
 // KZ equation <-> YBE by Drinfeld and Kohno
 
