@@ -216,6 +216,7 @@ Moreover, we can conclude that, the expectation value of Wilson loops in perturb
 
 == Yang-Baxter Equation
 
+Now we come back to the topological implication of the KZ connection.
 
 // KZ equation <-> YBE by Drinfeld and Kohno
 
