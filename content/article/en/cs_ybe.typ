@@ -6,11 +6,10 @@
 #show: main.with(
   title: title,
   desc: [The Kontsevich integral could be found in perturbative Chern-Simons theory, which could be associated with the Yang-Baxter equation and R matrix.],
-  date: "2025-10-28",
+  date: "2025-11-01",
   tags: (
     blog-tags.math,
     blog-tags.physics,
-    blog-tags.algebra,
     blog-tags.topology,
   ),
   lang: "en",
@@ -176,6 +175,11 @@ $
 
 By definition, the KZ equation describes a local system over the configuration space $Conf_(n)(CC)$, which could be interpreted as a flat connection $nabla_("KZ")$.
 
+The proof of flatness is a direct computation.
+However, there are some VERY important consequences of this flatness, so I highly recommend you to read it.
+
+#proof([], title: "Proof of Flatness", collapsed: false)
+
 A natural question is: what is the monodromy of this local system?
 We shell consider the case $n=2$ first, which could be reduced to a single ordinary differential equation:
 $
@@ -198,7 +202,17 @@ $
   Hol_(nabla_("KZ"))(gamma) = cal(P) exp(integral_(gamma) A_("KZ")),
 $
 where $A_("KZ") = 1 / (k + h^(or)) sum_(i < j) Omega_(i j) d log(z_i - z_j)$.
-Such a holonomy could be expanded and computed
+Such a holonomy could be expanded and computed directly:
+$
+  Hol_(nabla_("KZ"))(gamma) = sum_(m=0)^(oo) frac(1, m!) integral_(0 <= t_1 <= ... <= t_m <= 1) A_("KZ")(gamma(t_1)) ... A_("KZ")(gamma(t_m)).
+$
+After plugging in the expression of $A_("KZ")$, the holonomy could be expressed as:
+$
+  Hol_(nabla_("KZ"))(gamma) = sum_(m=0)^(oo) frac(1, (k + h^(or))^(m)) sum_(P) wedge.big_(l in P) integral_(0 <= t_1 <= ... <= t_m <= 1) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) Omega_(l),
+$
+while interpreting $t$ as the time direction, this is exactly the Kontsevich integral we constructed from perturbative Chern-Simons theory (after taking $k >> h^(or)$ limit).
+
+Moreover, we can conclude that, the expectation value of Wilson loops in perturbative Chern-Simons theory is the (formal) Dyson series expansion of the KZ connection.
 
 == Yang-Baxter Equation
 
