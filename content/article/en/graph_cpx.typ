@@ -43,7 +43,8 @@ Before going into details, let's summarize some key points.
 = BV Formalism for Chern-Simons Theory
 
 Let us briefly review the BV formalism for Chern-Simons theory.
-The original Chern-Simons action is given by gauge connection $X -> Omega^(1)_(frak(g))(X)$.
+
+The original Chern-Simons action is constructed by gauge connection $X -> Omega^(1)_(frak(g))(X)$.
 BV formalism lead us to consider the fattened space:
 - Spacetime $X$ $-->$ topological space $X$ with structure sheaf $Omega^(bullet)(X)$.
 - Lie algebra $frak(g)$ $-->$ differential graded Lie algebra (DGLA) $frak(g)_(bullet) = frak(g) times.circle frak(g)[1]$.
@@ -52,7 +53,6 @@ $
   S_(BV) = integral_(X) tr_(frak(g)) (1/2 cal(A) wedge d cal(A) + 1/6 cal(A) wedge [cal(A), cal(A)]),
 $
 where $cal(A) in Omega^(bullet)(X) times.circle frak(g)$ is the BV gauge field.
-We can simply verify that $S_(BV)$ satisfies the classical master equation ${S_(BV), S_(BV)} = 0$ with respect to the BV anti-bracket induced by the odd symplectic structure.
 
 = Graph Complex
 
