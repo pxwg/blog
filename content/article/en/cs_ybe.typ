@@ -118,9 +118,10 @@ $
 $
 Thus, the expectation value could be computed with:
 $
-  angle.l A^(a_1)(z(t_1), t_1) ... A^(a_(2n))(z(t_(2n)), t_(2n))angle.r = (frac(1, i k))^(n) tr_(rho) sum_(P) wedge.big_(l in P) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) delta(t_(l_1) - t_(l_2)),
+  angle.l A^(a_1)(z(t_1), t_1) ... A^(a_(2n))(z(t_(2n)), t_(2n))angle.r = (frac(1, i k))^(n) tr_(rho) sum_(P) (-1)^(\# arrow.b P) wedge.big_(l in P) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) delta(t_(l_1) - t_(l_2)),
 $
-where $P$ is a pairing of the set ${1, ..., 2n}$, and each pair $l in P$ consists of two elements $(l_1, l_2)$.
+where $P$ is a pairing of the set ${1, ..., 2n}$, each pair $l in P$ consists of two elements $(l_1, l_2)$, and $\# arrow.b P$ denotes the number of arcs that are oriented downwards when equipped with the inherited orientation from $K$.
+
 After integrating out the delta functions, the linked vertex would live at a same time slice along the $RR$ direction.
 Thus, the expectation value of the Wilson loop could be expressed as:
 $
@@ -221,5 +222,9 @@ Now we come back to the topological implication of the KZ connection.
 // KZ equation <-> YBE by Drinfeld and Kohno
 
 = Yang-Baxter Equation from Chern-Simons Theory
+
+== Invariance of Kontsevich Integral
+
+== Yang-Baxter Equation Revisited
 
 // R-matrix from perturbative CS theory
