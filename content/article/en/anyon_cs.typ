@@ -88,11 +88,6 @@ $
 $
 where $P$ is a pairing of the set ${1, ..., n}$, each pair $l in P$ consists of two elements $(l_1, l_2)$, and $Omega_(l) = q_(l_1) q_(l_2)$ is an double insertion of charges at the points $z(t_(l_1))$ and $z(t_(l_2))$ on the world line, could be written as $Omega_(i j) := q_(i) q_(j)$, which in fact, labels the $U(1)$ representation.
 
-= Particle Braiding and Yang-Baxter Equation
-
-The three-particle configuration is the simplest nontrivial case that could exhibit braiding behavior.
-Consider three anyons located at positions $z_1, z_2, z_3 in CC$ respectively.
-
 = Abelian Chern-Simons Theory
 
 Now we consider the field theory description of such anyon system.
