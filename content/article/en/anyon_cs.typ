@@ -63,14 +63,14 @@ Thus, the statistic phase $theta$ is quantized as $theta = 2 pi / k$, where $k i
 $
   psi(z_1, z_2) = C (z_1 - z_2)^(1 / k).
 $
-Such a equation is exactly the famous _Knizhnik-Zamolodchikov equation_ arise from conformal field theory!
+Such a equation is exactly the famous (Abelian, two bodies) _Knizhnik-Zamolodchikov equation_ arise from conformal field theory!
 And the associated KZ connection could be interpreted as the gauge connection $A$ we introduced above, which describes the statistics interaction between anyons.
 
 While generalizing to $n$ anyons, the gauge connection could be expressed as:
 $
   A_(z)^(i) = frac(1, k) sum_(j != i) Omega_(i j) / (z_i - z_j),
 $
-where $Omega_(i j) = q_(i) q_(j)$, and above recipe could be repeated straightforwardly.
+where $Omega_(i j) = q_(i) q_(j)$, and above recipe could be repeated straightforwardly, and finally yield the _Knizhnik-Zamolodchikov equation_ for $n$ bodies.
 
 = Time Evaluation
 
