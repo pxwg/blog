@@ -140,3 +140,4 @@ $
   Psi_(CS)[X, {K_(i), rho_(i)}] <--> angle.l product_(i) V_(K_(i))(rho_(i)) angle.r_("WZW", partial X),
 $
 where $V_(K)(rho)$ denotes the vertex operator insertion at the point where the line $K$ intersects the boundary $partial X$ in the WZW model, and ${K, rho}$ denotes a Wilson line $K$ colored by the representation $rho$ of the gauge group.
+Here $rho$ plays the role of the charge $q$ we introduced above.
