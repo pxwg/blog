@@ -114,7 +114,7 @@ $
 由于陈 - 西蒙斯作用量是 $A$ 的二次型，这样的积分可以精确执行。
 注意，在全纯规范下，规范场 $A$ 的关联函数（传播子）可以计算为：
 $
-  angle.l A_(i)(z_1, t_1) A_(j)(z_2, t_2) angle.r = frac(1, i k) frac(d z_1 - d z_2, z_1 - z_2) delta(t_1 - t_2).
+  angle.l A(z_1, t_1) A(z_2, t_2) angle.r = frac(1, i k) frac(d z_1 - d z_2, z_1 - z_2) delta(t_1 - t_2).
 $
 执行高斯积分后，有效作用量可以表示为：
 $

@@ -113,7 +113,7 @@ In order to obtain the effective action of this theory, we need to integrate out
 Since the Chern-Simons action is quadratic in $A$, such integration could be performed exactly.
 Note that, under the holomorphic gauge, correlation function (propagator) of the gauge field $A$ could be computed as:
 $
-  angle.l A_(i)(z_1, t_1) A_(j)(z_2, t_2) angle.r = frac(1, i k) frac(d z_1 - d z_2, z_1 - z_2) delta(t_1 - t_2).
+  angle.l A(z_1, t_1) A(z_2, t_2) angle.r = frac(1, i k) frac(d z_1 - d z_2, z_1 - z_2) delta(t_1 - t_2).
 $
 After performing the Gaussian integration, the effective action could be expressed as:
 $
