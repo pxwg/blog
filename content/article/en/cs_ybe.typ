@@ -370,7 +370,6 @@ To achieve this goal, we note that:
 - Coordinates ${t_(i)}$ denotes some points on $SS^(1)$ (or $RR^(1)$)
 - Pairing $P$ could be interpreted as a set of _chords_ connecting these points on $SS^(1)$ (or $RR^(1)$)
 The first observation introduces the vertices in the Feynman diagram, while the second observation introduces the edges (propagators) in the Feynman diagram.
-Thus, the diagram above could be reinterpreted as a _chord diagram_ with $n$ chords.
 
 #image_viewer(
   path: "../assets/cs_ybe_1.png",
