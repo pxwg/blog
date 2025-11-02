@@ -5,7 +5,7 @@
 #let title = "Chern Simons Theory From Anyons"
 #show: main.with(
   title: title,
-  desc: [An intuitive introduction to Chern-Simons theory through the study of anyons with fractional statistics in two-dimensional space.],
+  desc: [An introduction to Chern-Simons theory through the study of anyons in two-dimensional space, whose Schrödinger equation is Knizhnik-Zamolodchikov equation.],
   date: "2025-11-02",
   tags: (
     blog-tags.math,
@@ -119,8 +119,6 @@ $
 $
 which is exactly the anyon Lagrangian we constructed above!
 Thus, we can conclude that, the Chern-Simons theory provides a natural field theory description of anyons with fractional statistics we constructed above.
-
-
 
 = Some Words about CS-WZW Correspondence
 
