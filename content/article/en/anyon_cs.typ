@@ -105,7 +105,7 @@ $
 where $overline(diff)_(t) := d t overline(partial)$.
 And the anyon Lagrangian would be introduced into this action with minimal coupling, which could be expressed as:
 $
-  S_("anyon")[A, z] = integral_(RR) A_z (z(t)) dot(z)(t) thin d t.
+  S_("anyon")[A, z] = integral_(RR) [A_z (z(t)) dot(z)(t) + A_(0) (z(t)) ] thin d t,
 $
 which is essentially the Wilson line observable in Chern-Simons theory, where the time is a natural parameter along the world line of the anyon.
 
