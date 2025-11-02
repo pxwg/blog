@@ -88,7 +88,7 @@ $
 $
 where $P$ is a pairing of the set ${1, ..., n}$, each pair $l in P$ consists of two elements $(l_1, l_2)$, and $Omega_(l) = q_(l_1) q_(l_2)$ is an double insertion of charges at the points $z(t_(l_1))$ and $z(t_(l_2))$ on the world line, could be written as $Omega_(i j) := q_(i) q_(j)$, which in fact, labels the $U(1)$ representation.
 
-Such expression (in non-Abelian case with some proper regularization) is Kontsevich's integral formula for the _link invariant_, which is the Taylor coefficient of some link polynomial (for example, the Jones polynomial), called the _universal Vassiliev invariant_.
+Such expression (in non-Abelian case with some proper regularization) is #link("https://ncatlab.org/nlab/show/Kontsevich+integral")[Kontsevich's integral formula] for the _link invariant_, which is the Taylor coefficient of some link polynomial (for example, the Jones polynomial), called the #link("https://ncatlab.org/nlab/show/universal+Vassiliev+invariant")[_universal Vassiliev invariant_].
 
 = Abelian Chern-Simons Theory
 
