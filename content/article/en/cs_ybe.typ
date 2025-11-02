@@ -87,7 +87,11 @@ $
 $
 where $P$ is a pairing of the set ${1, ..., n}$, each pair $l in P$ consists of two elements $(l_1, l_2)$, and $Omega_(l) = q_(l_1) q_(l_2)$ is an double insertion of charges at the points $z(t_(l_1))$ and $z(t_(l_2))$ on the world line, could be written as $Omega_(i j) := q_(i) q_(j)$, which in fact, labels the $U(1)$ representation.
 
-== Chern-Simons Theory
+== Particle Braiding and Yang-Baxter Equation
+
+The three-particle configuration is the simplest nontrivial case that could exhibit braiding behavior.
+
+== Abelian Chern-Simons Theory
 
 Now we consider the field theory description of such anyon system.
 The effective field theory that describes the low-energy behavior of anyons is the _Chern-Simons theory_, which is a topological quantum field theory defined in three-dimensional spacetime.
@@ -119,7 +123,7 @@ $
 which is exactly the anyon Lagrangian we constructed above!
 Thus, we can conclude that, the Chern-Simons theory provides a natural field theory description of anyons with fractional statistics we constructed above.
 
-=== Non-Abelian Generalization
+= Chern-Simons Theory
 
 Since the Abelian Chern-Simons theory describes only $U(1)$ gauge group, a natural generalization of this construction is to consider non-Abelian gauge group $G$.
 In this case, the gauge connection $A$ takes values in the Lie algebra $frak(g)$ of the gauge group $G$, and the Chern-Simons action is given by:
@@ -180,7 +184,11 @@ We've already know that, the wave function of the anyon system satisfies the Kni
 Such equation arises naturally in the Wess-Zumino-Witten (WZW) model, which is the equation for the conformal blocks (which could be interpreted as local correlation functions) of the WZW model.
 
 On the other hand, the wave function of Chern-Simons theory could be interpreted as the anyon wave function we constructed above.
-Thus, the CS-WZW correspondence could be interpreted as the equivalence between the wave function of Chern-Simons theory in the bulk (three dimensional spacetime), and the conformal blocks of the WZW model on the boundary (boundary of the spacetime).
+Thus, the CS-WZW correspondence could be interpreted as
+$
+  Psi_(CS)[X, {K_(i), rho_(i)}] <--> angle.l product_(i) V_(K_(i))(rho_(i)) angle.r_("WZW", partial X),
+$
+where $V_(K)(rho)$ denotes the vertex operator insertion at the point where the knot $K$ intersects the boundary $partial X$ in the WZW model.
 
 = Kontsevich Integral from Chern-Simons Theory
 
@@ -345,12 +353,6 @@ $
 while interpreting $t$ as the time direction, this is exactly the Kontsevich integral we constructed from perturbative Chern-Simons theory (after taking $k >> h^(or)$ limit).
 
 Moreover, we can conclude that, the expectation value of Wilson loops in perturbative Chern-Simons theory is the (formal) Dyson series expansion of the KZ connection.
-
-== Yang-Baxter Equation
-
-Now we come back to the topological implication of the KZ connection.
-
-// KZ equation <-> YBE by Drinfeld and Kohno
 
 = Yang-Baxter Equation from Chern-Simons Theory
 
