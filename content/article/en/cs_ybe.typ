@@ -175,21 +175,6 @@ A natural question is: can we recover these knot invariants using perturbative m
 At this level, an natural expectation is, the result would (at least formally) correspond to the Taylor coefficients of some knot polynomial invariants, and each coefficient could be a new knot invariant.
 In this blog, we would see that this is indeed the case.
 
-
-== Some Words about CS-WZW Correspondence
-
-Though we won't discuss the non-perturbative Chern-Simons theory in detail, it is still worth mentioning some important results from Witten's work.
-
-We've already know that, the wave function of the anyon system satisfies the Knizhnik-Zamolodchikov equation.
-Such equation arises naturally in the Wess-Zumino-Witten (WZW) model, which is the equation for the conformal blocks (which could be interpreted as local correlation functions) of the WZW model.
-
-On the other hand, the wave function of Chern-Simons theory could be interpreted as the anyon wave function we constructed above.
-Thus, the CS-WZW correspondence could be interpreted as
-$
-  Psi_(CS)[X, {K_(i), rho_(i)}] <--> angle.l product_(i) V_(K_(i))(rho_(i)) angle.r_("WZW", partial X),
-$
-where $V_(K)(rho)$ denotes the vertex operator insertion at the point where the knot $K$ intersects the boundary $partial X$ in the WZW model.
-
 = Kontsevich Integral from Chern-Simons Theory
 
 From now on, we assume $X = RR times Sigma$, where $Sigma$ is a Riemann surface and $RR$ denotes the time direction.
