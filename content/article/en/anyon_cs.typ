@@ -1,8 +1,34 @@
-Instead of rush to Chern Simons field theory directly, let us first consider a more physical picture.
-The discussion below is intuitive and informal.
-However, since this theory is quite simple, it is easy to make everything rigorous and precise.
+#import "../../../typ/templates/blog.typ": *
+#import "../../../typ/packages/typst-fletcher.typ": *
+#import "../../../typ/packages/physica.typ": *
 
-== Anyons with Fractional Statistics
+#let title = "Chern Simons Theory From Anyons"
+#show: main.with(
+  title: title,
+  desc: [An intuitive introduction to Chern-Simons theory through the study of anyons with fractional statistics in two-dimensional space.],
+  date: "2025-11-02",
+  tags: (
+    blog-tags.math,
+    blog-tags.physics,
+    blog-tags.topology,
+  ),
+  lang: "en",
+  translationKey: "anyon_cs",
+)
+#let CS = math.upright("CS")
+#let wedge = math.and
+#let GL = math.upright("GL")
+#let Conf = math.upright("Conf")
+#let Hol = math.upright("Hol")
+
+
+We could derive the Chern-Simons theory naturally from the study of anyons with fractional statistics in two-dimensional space.
+The time evolution of such anyon system could be expressed as a Berry phase, which is closely related to the Knizhnik-Zamolodchikov connection arise from conformal field theory.
+
+As an introduction, the discussion below is intuitive and informal.
+However, since this story is quite simple (but deep), it is easy to make everything rigorous and precise.
+
+= Anyons with Fractional Statistics
 
 It is well-known that in three (or higher) dimensional space, there are two types of fundamental particles: bosons and fermions, which differ by their exchange statistics.
 However, in two-dimensional space, there exists a more exotic type of particles called _anyons_, which exhibit fractional statistics that interpolate between bosonic and fermionic behavior.
@@ -46,7 +72,7 @@ $
 $
 where $Omega_(i j) = q_(i) q_(j)$, and above recipe could be repeated straightforwardly.
 
-== Time Evaluation
+= Time Evaluation
 
 Now we consider the time evolution of such anyon system.
 Note that the Hamiltonian of this system is trivial $H = 0$, thus, the time evolution would be fully determined by the Berry phase arise from the gauge connection $A$.
@@ -62,11 +88,12 @@ $
 $
 where $P$ is a pairing of the set ${1, ..., n}$, each pair $l in P$ consists of two elements $(l_1, l_2)$, and $Omega_(l) = q_(l_1) q_(l_2)$ is an double insertion of charges at the points $z(t_(l_1))$ and $z(t_(l_2))$ on the world line, could be written as $Omega_(i j) := q_(i) q_(j)$, which in fact, labels the $U(1)$ representation.
 
-== Particle Braiding and Yang-Baxter Equation
+= Particle Braiding and Yang-Baxter Equation
 
 The three-particle configuration is the simplest nontrivial case that could exhibit braiding behavior.
+Consider three anyons located at positions $z_1, z_2, z_3 in CC$ respectively.
 
-== Abelian Chern-Simons Theory
+= Abelian Chern-Simons Theory
 
 Now we consider the field theory description of such anyon system.
 The effective field theory that describes the low-energy behavior of anyons is the _Chern-Simons theory_, which is a topological quantum field theory defined in three-dimensional spacetime.
