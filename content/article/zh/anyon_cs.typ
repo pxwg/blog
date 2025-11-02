@@ -106,7 +106,7 @@ $
 其中 $overline(diff)_(t) := d t overline(partial)$。
 并且任意子拉格朗日量将通过最小耦合引入到该作用量中，可以表示为：
 $
-  S_("anyon")[A, z] = integral_(RR) A_z (z(t)) dot(z)(t) thin d t.
+  S_("anyon")[A, z] = integral_(RR) [A_z (z(t)) dot(z)(t) + A_(0) (z(t)) ] thin d t,
 $
 这本质上是陈 - 西蒙斯理论中的威尔逊线 (Wilson line) 可观测量，其中时间是沿着任意子世界线的自然参数。
 
