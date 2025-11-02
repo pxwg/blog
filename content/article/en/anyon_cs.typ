@@ -124,3 +124,19 @@ $
 $
 which is exactly the anyon Lagrangian we constructed above!
 Thus, we can conclude that, the Chern-Simons theory provides a natural field theory description of anyons with fractional statistics we constructed above.
+
+
+
+= Some Words about CS-WZW Correspondence
+
+Though we won't discuss the non-perturbative Chern-Simons theory in detail, it is still worth mentioning some important results from Witten's work.
+
+We've already know that, the wave function of the anyon system satisfies the Knizhnik-Zamolodchikov equation.
+Such equation arises naturally in the Wess-Zumino-Witten (WZW) model, which is the equation for the conformal blocks (which could be interpreted as local correlation functions) of the WZW model.
+
+On the other hand, the wave function of Chern-Simons theory could be interpreted as the anyon wave function we constructed above.
+Thus, the CS-WZW correspondence could be interpreted as
+$
+  Psi_(CS)[X, {K_(i), rho_(i)}] <--> angle.l product_(i) V_(K_(i))(rho_(i)) angle.r_("WZW", partial X),
+$
+where $V_(K)(rho)$ denotes the vertex operator insertion at the point where the line $K$ intersects the boundary $partial X$ in the WZW model, and ${K, rho}$ denotes a Wilson line $K$ colored by the representation $rho$ of the gauge group.
