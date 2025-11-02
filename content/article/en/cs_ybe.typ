@@ -50,7 +50,7 @@ $
 $
 where $cal(P) exp$ denotes the path-ordered exponential along the knot $K$.
 
-In our discussion of anyons, such Wilson loop observable could be interpreted as the world line of a particle moving in $X$ and carrying some charge under the gauge group $G$.
+In our previous blog about #link("../anyon_cs/")[anyons], such Wilson loop observable could be interpreted as the world line of a particle moving in $X$ and carrying some charge under the gauge group $G$.
 Where the charge of this particle is labeled by the representation $rho$.
 
 #remark(
@@ -129,7 +129,7 @@ $
 $
 where $Omega_(l) = rho(t_(l_1)) times.circle rho(t_(l_2))$ is an double insertion of Lie algebra elements at the points $gamma(t_(l_1))$ and $gamma(t_(l_2))$ on the knot, which could be read from "linking" the knot at these two points with weight $Omega_(l)$.
 
-It is not hard to see that, the definition of $Phi_(n)(K)$ is (the non-abelian generalization of) the time evolution operator we constructed in the anyon system above.
+It is not hard to see that, the definition of $Phi_(n)(K)$ is (the non-abelian generalization of) the time evolution operator we constructed in the anyon system discussed in #link("../anyon_cs")[previous blog].
 So, you may think that the Kontsevich integral could be interpreted as the time evolution operator of some anyon system moving along the world line $K$ in the presence of statistics interaction.
 
 #remark(
