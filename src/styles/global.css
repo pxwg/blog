@@ -257,21 +257,26 @@ figcaption {
   height: fit-content;
 }
 .inline-equation {
-  display: inline-flex;
-  align-items: baseline;
-  width: fit-content;
-  margin: 0 0.15em;
+  display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
+  vertical-align: baseline;
+  
+  line-height: 0;
+  
+  margin: 0 0.15em;
+}
+.inline-equation > svg {
+  max-width: none;
+  vertical-align: baseline; 
 }
 .block-equation {
   display: grid;
   place-items: center;
   overflow-x: auto;
 }
-.inline-equation svg,
-.block-equation svg {
-  stroke: none;
-  stroke-width: 0;
-  font-weight: normal;
+.block-equation > svg {
+  max-width: none;
 }
 .block-list,
 .block-list li {
