@@ -47,6 +47,11 @@ body {
   color: var(--main-color);
   line-height: 1.5;
 }
+@media (max-width: 600) {
+  body {
+    font-weight: 400;
+  }
+}
 main,
 .search {
   max-width: min(56rem, calc(100% - 2em));
@@ -259,8 +264,15 @@ figcaption {
 .inline-equation {
   display: inline-flex;
   align-items: baseline;
-  width: fit-content;
-  margin: 0 0.15em;
+  width: fit-content;
+  margin: 0 0.15em;
+  line-height: normal;
+}
+.inline-equation svg {
+  height: 0.65em;
+  width: auto;
+  vertical-align: -0.2em;
+  display: inline-block;
 }
 .block-equation {
   display: grid;
