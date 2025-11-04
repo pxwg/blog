@@ -280,3 +280,8 @@ figcaption {
 .block-list.accent > li {
   border-left: 2.5px solid var(--accent);
 }
+.inline-equation svg path,
+.block-equation svg path {
+  stroke: none !important;
+  stroke-width: 0 !important;
+}
