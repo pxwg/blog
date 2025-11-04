@@ -261,20 +261,20 @@ The first observation introduces the vertices in the Feynman diagram, while the 
   adapt-mode: "invert-no-hue",
 )
 
-The integration region $Delta = {(t_1, ..., t_n) : t_1 <= ... <= t_n}$ is an $n$-simplex over $SS^(1)$ (or $RR^(1)$), which can naturally be extended to the standard configuration space of $n$ distinct points on $SS^(1)$ (or $RR^(1)$), with the only cost being the inclusion of a permutation factor $n!$:
-$
-  Phi_(n)(K) = frac(1, n!) sum_(P) wedge.big_(l in P) integral_(Conf_(n)(SS^(1))) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) Omega_(l) := frac(1, n!) integral_(Conf_(n)(SS^(1))) omega_(l),
-$
-which could be canonically compactified to the Fulton-MacPherson compactification $overline(Conf)_(n)(SS^(1))$.
-In the case of one-dimensional manifold, such compactification would only add boundary strata characterized by $ZZ_2$, which corresponds to the possibility of two points colliding together.
-
-Now we consider the variation of the Kontsevich integral under isotopy of the knot $K$.
-Such an infinitesimal variation could be realized as some vector field $v$ over the configuration space $Conf_(n)(SS^(1))$.
-Using the Cartan's magic formula, the variation could be computed as:
-$
-  delta Phi_(n)(K) = frac(1, n!) integral_(overline(Conf)_(n)(SS^(1))) L_v omega = frac(1, n!) integral_(overline(Conf)_(n)(SS^(1))) d i_v omega = frac(1, n!) integral_(partial overline(Conf)_(n)(SS^(1))) i_v omega,
-$
-where we used the fact that $omega$ is closed under $d$.
+// The integration region $Delta = {(t_1, ..., t_n) : t_1 <= ... <= t_n}$ is an $n$-simplex over $SS^(1)$ (or $RR^(1)$), which can naturally be extended to the standard configuration space of $n$ distinct points on $SS^(1)$ (or $RR^(1)$), with the only cost being the inclusion of a permutation factor $n!$:
+// $
+//   Phi_(n)(K) = frac(1, n!) sum_(P) wedge.big_(l in P) integral_(Conf_(n)(SS^(1))) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) Omega_(l) := frac(1, n!) integral_(Conf_(n)(SS^(1))) omega_(l),
+// $
+// which could be canonically compactified to the Fulton-MacPherson compactification $overline(Conf)_(n)(SS^(1))$.
+// In the case of one-dimensional manifold, such compactification would only add boundary strata characterized by $ZZ_2$, which corresponds to the possibility of two points colliding together.
+//
+// Now we consider the variation of the Kontsevich integral under isotopy of the knot $K$.
+// Such an infinitesimal variation could be realized as some vector field $v$ over the configuration space $Conf_(n)(SS^(1))$.
+// Using the Cartan's magic formula, the variation could be computed as:
+// $
+//   delta Phi_(n)(K) = frac(1, n!) integral_(overline(Conf)_(n)(SS^(1))) L_v omega = frac(1, n!) integral_(overline(Conf)_(n)(SS^(1))) d i_v omega = frac(1, n!) integral_(partial overline(Conf)_(n)(SS^(1))) i_v omega,
+// $
+// where we used the fact that $omega$ is closed under $d$.
 
 
 == Yang-Baxter Equation Revisited
