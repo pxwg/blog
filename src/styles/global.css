@@ -257,18 +257,17 @@ figcaption {
   height: fit-content;
 }
 .inline-equation {
-  display: inline-block;
+  display: inline;
+  align-items: center;
+  vertical-align: middle;
   max-width: 100%;
   overflow-x: auto;
-  vertical-align: baseline;
-  
-  line-height: 0;
-  
   margin: 0 0.15em;
 }
 .inline-equation > svg {
   max-width: none;
-  vertical-align: baseline; 
+  position: relative;
+  top: -0.15em;
 }
 .block-equation {
   display: grid;
