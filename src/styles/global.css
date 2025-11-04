@@ -267,6 +267,12 @@ figcaption {
   place-items: center;
   overflow-x: auto;
 }
+.inline-equation svg,
+.block-equation svg {
+  stroke: none;
+  stroke-width: 0;
+  font-weight: normal;
+}
 .block-list,
 .block-list li {
   margin: 0;
