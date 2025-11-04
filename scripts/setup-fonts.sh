@@ -10,6 +10,8 @@ sudo mkdir -p /usr/share/fonts/truetype/stix
 
 # Copy STIX font from assets/fonts to system location
 sudo cp assets/fonts/STIXTwoMath-Regular.otf /usr/share/fonts/truetype/stix/
+# Copy Libertinus Math font to system location
+sudo cp assets/fonts/LibertinusMath-Regular.otf /usr/share/fonts/truetype/stix/
 
 # Update font cache
 sudo fc-cache -f -v
