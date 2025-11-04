@@ -257,9 +257,10 @@ figcaption {
   height: fit-content;
 }
 .inline-equation {
-  display: inline-block;
-  width: fit-content;
-  margin: 0 0.15em;
+  display: inline-flex;
+  align-items: baseline;
+  width: fit-content;
+  margin: 0 0.15em;
 }
 .block-equation {
   display: grid;
