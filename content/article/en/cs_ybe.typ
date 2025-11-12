@@ -1,6 +1,8 @@
 #import "../../../typ/templates/blog.typ": *
 #import "../../../typ/packages/typst-fletcher.typ": *
 #import "../../../typ/packages/physica.typ": *
+#import "../../../typ/packages/ctez/src/canvas.typ": canvas
+#import "../../../typ/packages/ctez/src/draw.typ"
 
 #let title = "Chern Simons Theory and Yang-Baxter Equation"
 #show: main.with(
@@ -20,6 +22,34 @@
 #let GL = math.upright("GL")
 #let Conf = math.upright("Conf")
 #let Hol = math.upright("Hol")
+
+#let string-diagram(top-conn, bottom-conn) = {
+  let x = (0, 4, 8)
+  let y = (3, 9)
+  let height = 12
+
+  let hline(conn, y-level) = {
+    let (x1, x2) = if conn == "12" {
+      (x.at(0), x.at(1))
+    } else if conn == "13" {
+      (x.at(0), x.at(2))
+    } else {
+      (x.at(1), x.at(2))
+    }
+
+    draw.line((x1, y-level), (x2, y-level))
+    draw.circle((x1, y-level), radius: 0.6)
+    draw.circle((x2, y-level), radius: 0.6)
+  }
+
+  canvas(length: 1pt, {
+    for i in (0, 1, 2) {
+      draw.line((x.at(i), 0), (x.at(i), height))
+    }
+    hline(top-conn, y.at(1))
+    hline(bottom-conn, y.at(0))
+  })
+}
 
 = Chern-Simons Theory
 
@@ -146,7 +176,7 @@ So, you may think that the Kontsevich integral could be interpreted as the time 
 We consider a simple braiding configuration of two strands, which is a simple Morse knot embedded in $RR times CC$.
 
 The intersection of two strands at a time slice would become two distinct points $z_1, z_2$ in $CC$.
-Using the Kontsevich integral construction, the only nontrivial contribution comes from the $n$-th copy of the gauge connection over these two points, which yields:
+Using the Kontsevich integral construction, the only nontrivial contribution comes from the $n$-th copy of the gauge connection over these two points, which yields #footnote([This is the simplest case of the so-called connected diagram expansion in quantum field theory.]):
 $
   angle.l W_(K)(rho) angle.r = tr_(rho) sum_(n=0)^(oo) frac(1, k^(n)) frac(1, n!) (Phi_(1)(K))^(n) ,
 $
@@ -253,6 +283,12 @@ To achieve this goal, we note that:
 - Coordinates ${t_(i)}$ denotes some points on $SS^(1)$ (or $RR^(1)$)
 - Pairing $P$ could be interpreted as a set of _chords_ connecting these points on $SS^(1)$ (or $RR^(1)$)
 The first observation introduces the vertices in the Feynman diagram, while the second observation introduces the edges (propagators) in the Feynman diagram.
+Thus, the chord diagram could be naturally embedded with Feynman rules.
+
+#remark(
+  [In the world of chord diagrams, the vertices in Feynman diagram are called _string_, while the edges are called _chords_.
+  ],
+)
 
 #image_viewer(
   path: "../assets/cs_ybe_1.png",
@@ -260,6 +296,75 @@ The first observation introduces the vertices in the Feynman diagram, while the 
   dark-adapt: true,
   adapt-mode: "invert-no-hue",
 )
+
+It is not hard to imagine that, since the Kontsevich integral is constructed from the perturbative expansion of Chern-Simons theory, it should be invariant under isotopy of the knot $K$.
+
+However, such naive expectation is not true under an arbitrary isotopy of the knot $K$.
+For example, consider a isotopy which would create or annihilate a pair of critical points in the height function along the knot $K$, the Kontsevich integral would not be invariant under such isotopy.
+
+If we restrict to isotopies that preserve the Morse nature of the knot $K$, the Kontsevich integral would be invariant under such isotopies.
+
+Any deformation of a knot within the class of Morse knots can be approximated by a sequence of deformations of three types:
+- Orientation- preserving reparametrizations, which is trivial to check the invariance of the Kontsevich integral.
+- Horizontal deformations: preserves all horizontal planes ${t = "const"}$ and leaves all the critical points (together with some small neighbourhoods) fixed.
+- Movements of critical points.
+
+Now we focus on last two types of deformations.
+
+=== Horizontal Deformations
+
+The horizontal deformations could be viewed as an isotopy of a tangle which fixes the boundary points.
+Consider two tangles $T_(0)$ and $T_(1)$, which are related by a horizontal deformation $T_(lambda)$, $lambda in [0, 1]$.
+
+The Kontsevich integral over $T_1$ and $T_0$ could be related with the integration over the boundary of the parameter space $Delta = Delta_(0) times [0, 1]$, where $Delta_(lambda) := {0<t_1<...<t_(n)<1} times {lambda}$ is the standard $n$-simplex over $[0,1]$ at fixed $lambda$.
+By Stokes theorem, we have:
+$
+  integral_(partial Delta) omega = integral_(Delta) d omega -->^(d omega = 0) 0,
+$
+where $partial Delta = Delta_(1) - Delta_(0) + ...$, and $...$ denotes the contributions from the (codimension $1$) boundary strata characterized by some two points collapsing configuration.
+
+There are four types of such collapsing configurations:
+- Time plane hits a critical point.
+- Two chords end at two same points.
+- Two chords' endpoints belong to four different strings.
+- Two chords' endpoints belong to three different strings.
+
+The first type of boundary strata would not contribute to the integral, since the integrand form would vanish at such boundary.
+
+The second type of boundary strata would also not contribute to the integral, since the integrand form would vanish at such boundary due to the antisymmetry of the wedge product:
+$
+  (d z_(k) - d z'_(k)) wedge (d z_(k) - d z'_(k)) = 0,
+$
+while $z_(k) = z_(k+1)$ and $z'_(k) = z'_(k+1)$.
+
+The third type of boundary strata would not be naively zero.
+We denote the four different strings as $1, 2, 3, 4$, and the two collapsing chords, for example $(1, 3)$ and $(2, 4)$, denoted by their end-strings.
+
+The possible collapsing configurations could be constructed by the following two ways:
+- $k$ chord is $(1,3)$ and $k+1$ chord is $(2,4)$.
+- $k$ chord is $(2,4)$ and $k+1$ chord is $(1,3)$.
+And there are two additional chord connecting $(1,2)$ and $(3,4)$ respectively.
+Thus, the contributions from these two collapsing configurations could be expressed as:
+$
+  (1,2) wedge (3,4) wedge (d z_(k) - d z'_(k)) / (z_(k) - z'_(k)) wedge (d z_(k+1) - d z'_(k+1)) / (z_(k+1) - z'_(k+1)) + (1,2) wedge (3,4) wedge (d z_(k+1) - d z'_(k+1)) / (z_(k+1) - z'_(k+1)) wedge (d z_(k) - d z'_(k)) / (z_(k) - z'_(k)) = 0,
+$
+(where $D_(p)$ for such configuration is same) thus, the third type of boundary strata would also not contribute to the integral.
+
+The last type of boundary strata is the most interesting one.
+We could construct such collapsing configurations by the following $6$ ways by traversing all linking situations:
+$
+  mat(
+    (-1)^↓ #string-diagram("12", "23") " " omega_12 wedge omega_23,
+    + (-1)^↓ #string-diagram("12", "13") " " omega_12 wedge omega_13;
+    + (-1)^↓ #string-diagram("13", "12") " " omega_13 wedge omega_12,
+    + (-1)^↓ #string-diagram("13", "23") " " omega_13 wedge omega_23;
+    + (-1)^↓ #string-diagram("23", "12") " " omega_23 wedge omega_12,
+    + (-1)^↓ #string-diagram("23", "13") " " omega_23 wedge omega_13;
+    delim: #none
+  ) "."
+$
+
+=== Movements of Critical Points
 
 // The integration region $Delta = {(t_1, ..., t_n) : t_1 <= ... <= t_n}$ is an $n$-simplex over $SS^(1)$ (or $RR^(1)$), which can naturally be extended to the standard configuration space of $n$ distinct points on $SS^(1)$ (or $RR^(1)$), with the only cost being the inclusion of a permutation factor $n!$:
 // $
