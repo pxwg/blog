@@ -23,7 +23,7 @@
 #let Conf = math.upright("Conf")
 #let Hol = math.upright("Hol")
 
-#let string-diagram(top-conn, bottom-conn) = {
+#let string-diagram(top-conn, bottom-conn, color) = {
   let x = (0, 4, 8)
   let y = (3, 9)
   let height = 12
@@ -37,14 +37,14 @@
       (x.at(1), x.at(2))
     }
 
-    draw.line((x1, y-level), (x2, y-level))
-    draw.circle((x1, y-level), radius: 0.6)
-    draw.circle((x2, y-level), radius: 0.6)
+    draw.line((x1, y-level), (x2, y-level), stroke: color)
+    draw.circle((x1, y-level), radius: 0.6, stroke: color)
+    draw.circle((x2, y-level), radius: 0.6, stroke: color)
   }
 
   canvas(length: 1pt, {
     for i in (0, 1, 2) {
-      draw.line((x.at(i), 0), (x.at(i), height))
+      draw.line((x.at(i), 0), (x.at(i), height), stroke: color)
     }
     hline(top-conn, y.at(1))
     hline(bottom-conn, y.at(0))
@@ -354,12 +354,12 @@ The last type of boundary strata is the most interesting one.
 We could construct such collapsing configurations by the following $6$ ways by traversing all linking situations:
 $
   mat(
-    (-1)^↓ #string-diagram("12", "23") " " omega_12 wedge omega_23,
-    + (-1)^↓ #string-diagram("12", "13") " " omega_12 wedge omega_13;
-    + (-1)^↓ #string-diagram("13", "12") " " omega_13 wedge omega_12,
-    + (-1)^↓ #string-diagram("13", "23") " " omega_13 wedge omega_23;
-    + (-1)^↓ #string-diagram("23", "12") " " omega_23 wedge omega_12,
-    + (-1)^↓ #string-diagram("23", "13") " " omega_23 wedge omega_13;
+    (-1)^↓ #string-diagram("12", "23", white) " " omega_12 wedge omega_23,
+    + (-1)^↓ #string-diagram("12", "13", white) " " omega_12 wedge omega_13;
+    + (-1)^↓ #string-diagram("13", "12", white) " " omega_13 wedge omega_12,
+    + (-1)^↓ #string-diagram("13", "23", white) " " omega_13 wedge omega_23;
+    + (-1)^↓ #string-diagram("23", "12", white) " " omega_23 wedge omega_12,
+    + (-1)^↓ #string-diagram("23", "13", white) " " omega_23 wedge omega_13;
     delim: #none
   ) "."
 $
