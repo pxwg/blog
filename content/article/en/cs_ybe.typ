@@ -410,9 +410,13 @@ Therefore, we conclude that:
 === Movements of Critical Points
 
 Kontsevich integral is not an invariant under movements of critical points.
-
-
-
+Under such deformation, the Kontsevich integral would change by $Phi(oo)^(1/2)$, which is the Kontsevich integral of the unknot (for further discussion, check #link("https://arxiv.org/pdf/1103.5628")[this]).
+Thus, the normalized Kontsevich integral defined as:
+$
+  hat(Phi)_(n,c)(K) = frac(Phi_(n)(K), (Phi(oo))^(c/2)),
+$
+where $c$ is the number of critical points of the Morse knot $K$.
+This is called the _universal Vassiliev invariant_.
 
 == Application: Quantum Yang-Baxter Equation
 
