@@ -96,7 +96,7 @@ $
 $
 i.e., integrating over the quotient space of the space of all connections in $G$-bundles over $X$ modulo gauge transformations.
 
-At the perturbative level, one can expand the partition function around flat connections $A_0$ satisfying $F_(A_0) = 0$, which is the classical equation of motion derived from the Chern-Simons action.
+At the perturbative level, the partition function is expanded around flat connections $A_0$ satisfying $F_(A_0) = 0$, which is the classical equation of motion derived from the Chern-Simons action.
 
 == Wilson Loops
 
@@ -106,14 +106,14 @@ $
 $
 where $cal(P) exp$ denotes the path-ordered exponential along the knot $K$.
 
-In our previous blog about #link("../anyon_cs/")[anyons], such Wilson loop observable could be interpreted as the world line of a particle moving in $X$ and carrying some charge under the gauge group $G$.
+In our previous blog about #link("../anyon_cs/")[anyons], such Wilson loop observable can be interpreted as the world line of a particle moving in $X$ and carrying some charge under the gauge group $G$.
 Where the charge of this particle is labeled by the representation $rho$.
 
 #remark(
-  [In physical point of view, the Wilson loop could be interpreted as following:
-    - $K$ with some proper restriction (Morse knot) $<=>$ world line of a particle moving in $X$.
+  [Physically speaking, the Wilson loop can be interpreted as following:
+    - $K$ in a generic position (a Morse knot) $<=>$ world line of a particle moving in $X$.
     - $rho$ $<=>$ charge of this particle under the gauge group $G$.
-    Where Morse knot means the height function (w.r.t. some fixed direction, which is time direction in physics) restricted to the knot is a Morse function.
+    Where Morse knot means the height function (w.r.t. some fixed direction, which is the time direction in a physical context) restricted to the knot is a Morse function.
   ],
 )
 
@@ -121,12 +121,12 @@ The quantum expectation value of a Wilson loop could be formally defined as:
 $
   angle.l W_(K_1)(rho_1) ... W_(K_(n))(rho_(n)) angle.r = frac(1, Z_(CS)(X)) integral d mu_(X)[A] thin e^(i S_(CS)[A]) W_(K_1)(rho_1) ... W_(K_(n))(rho_(n)).
 $
-As a remarkable fact, due to the work of #link("https://link.springer.com/article/10.1007/BF01217730")[Witten], these expectation values yield topological invariants (Jones polynomial) of the knots and links in $X = SS^(3)$.
+Remarkably, due to the work of #link("https://link.springer.com/article/10.1007/BF01217730")[Witten], these expectation values yield topological invariants (Jones polynomial) of the knots and links in $X = SS^(3)$.
 
 Witten's approach uses non-perturbative methods, relating Chern-Simons theory to conformal field theory (Wess-Zumino-Witten theory) on the boundary of $X$, and employing surgery techniques to compute these invariants.
 
 A natural question is: can we recover these knot invariants using perturbative methods?
-At this level, an natural expectation is, the result would (at least formally) correspond to the Taylor coefficients of some knot polynomial invariants, and each coefficient could be a new knot invariant.
+At this level, a natural expectation is, the result would (at least formally) correspond to the Taylor coefficients of some knot polynomial invariants, and each coefficient could be a new knot invariant.
 In this blog, we would see that this is indeed the case.
 
 = Kontsevich Integral from Chern-Simons Theory
@@ -139,12 +139,12 @@ Then the gauge connection $A$ could be expressed as $A = A^(a) t_(a)$, where $A^
 
 To perform perturbative expansion, we need to fix a gauge.
 In this case, a natural gauge fixing condition could be realized following.
-First, using the complex structure on $Sigma$, we could introduce complex coordinates $(z, overline(z))$ on $Sigma$.
+First, given a complex structure on $Sigma$, we could introduce complex coordinates $(z, overline(z))$ on $Sigma$.
 Then the gauge connection $A$ could be decomposed as:
 $
   A(z, overline(z), t) = A_t d t + A_z d z + A_(overline(z)) d overline(z).
 $
-We shell impose the _axial gauge_ condition (a.k.a _holomorphic gauge_) $A_(overline(z)) = 0$.
+We shall impose the _axial gauge_ condition (a.k.a _holomorphic gauge_) $A_(overline(z)) = 0$.
 Thus, the gauge connection reduces to $A(z, t) = A_(0) d t + A_(z) d z$, and the Chern-Simons action simplifies to:
 $
   CS_(X)[A] := integral_(X) A overline(diff)_(t) A,
@@ -214,7 +214,7 @@ thus, the expectation value could be expressed as:
 $
   angle.l W_(K)(rho) angle.r = tr_(rho) exp(frac(2 pi i, k) Omega),
 $
-which is exactly (before taking the trace) the quantum _R-matrix_ acting on the tensor product representation $rho^(times.circle 2): frak(g) times.circle frak(g) -> GL(V times.circle V)$.
+which is exactly (before taking the trace) related to the quantum _R-matrix_ acting on the tensor product representation $rho^(times.circle 2): frak(g) times.circle frak(g) -> GL(V times.circle V)$.
 
 // Axial Gauge -> Kont. integral -> KZ connection
 
@@ -329,7 +329,7 @@ For example, consider a isotopy which would create or annihilate a pair of criti
 If we restrict to isotopies that preserve the Morse nature of the knot $K$, the Kontsevich integral would be invariant under such isotopies.
 
 Any deformation of a knot within the class of Morse knots can be approximated by a sequence of deformations of three types:
-- Orientation- preserving reparametrizations, which is trivial to check the invariance of the Kontsevich integral.
+- Orientation- preserving reparametrizations, which is trivial to verify the invariance of the Kontsevich integral.
 - Horizontal deformations: preserves all horizontal planes ${t = "const"}$ and leaves all the critical points (together with some small neighbourhoods) fixed.
 - Movements of critical points.
 
@@ -409,13 +409,14 @@ Therefore, we conclude that:
 
 === Movements of Critical Points
 
-Kontsevich integral is not an invariant under movements of critical points.
+Kontsevich integral is not an invariant under movement of critical points.
 Under such deformation, the Kontsevich integral would change by $Phi(oo)^(1/2)$, which is the Kontsevich integral of the unknot (for further discussion, check #link("https://arxiv.org/pdf/1103.5628")[this]).
 Thus, the normalized Kontsevich integral defined as:
 $
   hat(Phi)_(n,c)(K) = frac(Phi_(n)(K), (Phi(oo))^(c/2)),
 $
 where $c$ is the number of critical points of the Morse knot $K$.
+This normalization factor would cancel the framing anomaly in Chern-Simons theory as well.
 This is called the _universal Vassiliev invariant_.
 
 == Application: Quantum Yang-Baxter Equation
