@@ -378,7 +378,7 @@ $
 $
 (where $D_(p)$ for such configuration is same) thus, the third type of boundary strata would also not contribute to the integral.
 
-The last type of boundary strata is the most interesting one.
+*The last type* of boundary strata is the most interesting one.
 We could construct such collapsing configurations by the following $6$ ways by traversing all linking situations:
 #equation-frame(
   diagram => {
