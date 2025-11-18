@@ -410,7 +410,7 @@ Therefore, we conclude that:
 === Movements of Critical Points
 
 
-== Yang-Baxter Equation Revisited
+== Yang-Baxter Equation
 
 Yang-Baxter equation is
 
