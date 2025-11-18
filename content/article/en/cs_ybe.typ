@@ -8,7 +8,7 @@
 #show: main.with(
   title: title,
   desc: [The Kontsevich integral could be found in perturbative Chern-Simons theory, which could be associated with the Yang-Baxter equation and R matrix.],
-  date: "2025-11-01",
+  date: "2025-11-18",
   tags: (
     blog-tags.math,
     blog-tags.physics,
