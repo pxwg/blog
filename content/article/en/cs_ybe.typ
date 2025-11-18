@@ -23,7 +23,8 @@
 #let Conf = math.upright("Conf")
 #let Hol = math.upright("Hol")
 
-#let string-diagram(top-conn, bottom-conn, color) = {
+
+#let string-diagram(top-conn, bottom-conn, color: color) = {
   let x = (0, 4, 8)
   let y = (3, 9)
   let height = 12
@@ -49,6 +50,31 @@
     hline(top-conn, y.at(1))
     hline(bottom-conn, y.at(0))
   })
+}
+
+#let equation-frame(content) = {
+  let target = get-target()
+  if target == "web" or target == "html" {
+    theme-frame(
+      tag: "div",
+      theme => {
+        let edge = edge.with(stroke: theme.main-color)
+        let diagram = string-diagram.with(color: theme.main-color)
+
+        let it = [$
+            #{ if type(content) == function { content(diagram) } else { content } }
+          $]
+        set text(fill: theme.main-color, size: math-size, font: math-font)
+        span-frame(attrs: (class: "block-equation"), it)
+      },
+    )
+  } else {
+    if type(content) == function {
+      content(string-diagram.with(color: white))
+    } else {
+      content
+    }
+  }
 }
 
 = Chern-Simons Theory
@@ -192,12 +218,10 @@ which is exactly (before taking the trace) the quantum _R-matrix_ acting on the 
 
 // Axial Gauge -> Kont. integral -> KZ connection
 
-= Knizhnik Zamolodchikov Connection and Yang-Baxter Equation
+= Knizhnik Zamolodchikov Connection
 
 Now we consider the physical interpretation of the expectation value we constructed above.
 To achieve this goal, let us consider a (seemly) independent problem arise from conformal field theory.
-
-== Knizhnik-Zamolodchikov Connection
 
 In the studying of conformal field theory with gauge symmetry, Knizhnik and Zamolodchikov discovered a remarkable differential equation satisfied by the correlation functions of primary fields in the Wess-Zumino-Witten (WZW) model.
 
@@ -321,7 +345,11 @@ By Stokes theorem, we have:
 $
   integral_(partial Delta) omega = integral_(Delta) d omega -->^(d omega = 0) 0,
 $
-where $partial Delta = Delta_(1) - Delta_(0) + ...$, and $...$ denotes the contributions from the (codimension $1$) boundary strata characterized by some two points collapsing configuration.
+where $partial Delta = Delta_(1) - Delta_(0) + ...$, and $...$ denotes the contributions from the (codimension $1$) boundary strata characterized by some two points collapsing configuration, i.e.:
+$
+  integral_(Delta_(1)) omega - integral_(Delta_(0)) omega + integral_(diff Delta times [0,1]) omega = 0.
+$
+Using the Fubini's theorem, we only need to check the contributions from $diff Delta$ to verify the invariance of the Kontsevich integral under horizontal deformations, i.e., we need to check that the contributions from $diff Delta$ would vanish.
 
 There are four types of such collapsing configurations:
 - Time plane hits a critical point.
@@ -329,15 +357,15 @@ There are four types of such collapsing configurations:
 - Two chords' endpoints belong to four different strings.
 - Two chords' endpoints belong to three different strings.
 
-The first type of boundary strata would not contribute to the integral, since the integrand form would vanish at such boundary.
+*The first type* of boundary strata would not contribute to the integral, since the integrand form would vanish at such boundary.
 
-The second type of boundary strata would also not contribute to the integral, since the integrand form would vanish at such boundary due to the antisymmetry of the wedge product:
+*The second type* of boundary strata would also not contribute to the integral, since the integrand form would vanish at such boundary due to the antisymmetry of the wedge product:
 $
   (d z_(k) - d z'_(k)) wedge (d z_(k) - d z'_(k)) = 0,
 $
 while $z_(k) = z_(k+1)$ and $z'_(k) = z'_(k+1)$.
 
-The third type of boundary strata would not be naively zero.
+*The third type* of boundary strata would not be naively zero.
 We denote the four different strings as $1, 2, 3, 4$, and the two collapsing chords, for example $(1, 3)$ and $(2, 4)$, denoted by their end-strings.
 
 The possible collapsing configurations could be constructed by the following two ways:
@@ -352,36 +380,38 @@ $
 
 The last type of boundary strata is the most interesting one.
 We could construct such collapsing configurations by the following $6$ ways by traversing all linking situations:
+#equation-frame(
+  diagram => {
+    [$
+        mat(
+          (-1)^↓ #diagram("12", "23") " " omega_12 wedge omega_23,
+          + (-1)^↓ #diagram("12", "13") " " omega_12 wedge omega_13;
+          + (-1)^↓ #diagram("13", "12") " " omega_13 wedge omega_12,
+          + (-1)^↓ #diagram("13", "23") " " omega_13 wedge omega_23;
+          + (-1)^↓ #diagram("23", "12") " " omega_23 wedge omega_12,
+          + (-1)^↓ #diagram("23", "13") " " omega_23 wedge omega_13;
+          delim: #none
+        ) "."
+      $
+    ]
+  },
+)
+
+using the fact that $omega_(i j) = omega_(j i)$, the equation above is identified with Anord's identity:
 $
-  mat(
-    (-1)^↓ #string-diagram("12", "23", white) " " omega_12 wedge omega_23,
-    + (-1)^↓ #string-diagram("12", "13", white) " " omega_12 wedge omega_13;
-    + (-1)^↓ #string-diagram("13", "12", white) " " omega_13 wedge omega_12,
-    + (-1)^↓ #string-diagram("13", "23", white) " " omega_13 wedge omega_23;
-    + (-1)^↓ #string-diagram("23", "12", white) " " omega_23 wedge omega_12,
-    + (-1)^↓ #string-diagram("23", "13", white) " " omega_23 wedge omega_13;
-    delim: #none
-  ) "."
+  omega_(12) wedge omega_(23) + omega_(23) wedge omega_(13) + omega_(13) wedge omega_(12) = 0,
 $
+thus, the last type of boundary strata would also not contribute to the integral.
+Therefore, we conclude that:
+#theorem(
+  [the Kontsevich integral is invariant under horizontal deformations of the Morse knot $K$.],
+)
 
 === Movements of Critical Points
 
-// The integration region $Delta = {(t_1, ..., t_n) : t_1 <= ... <= t_n}$ is an $n$-simplex over $SS^(1)$ (or $RR^(1)$), which can naturally be extended to the standard configuration space of $n$ distinct points on $SS^(1)$ (or $RR^(1)$), with the only cost being the inclusion of a permutation factor $n!$:
-// $
-//   Phi_(n)(K) = frac(1, n!) sum_(P) wedge.big_(l in P) integral_(Conf_(n)(SS^(1))) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) Omega_(l) := frac(1, n!) integral_(Conf_(n)(SS^(1))) omega_(l),
-// $
-// which could be canonically compactified to the Fulton-MacPherson compactification $overline(Conf)_(n)(SS^(1))$.
-// In the case of one-dimensional manifold, such compactification would only add boundary strata characterized by $ZZ_2$, which corresponds to the possibility of two points colliding together.
-//
-// Now we consider the variation of the Kontsevich integral under isotopy of the knot $K$.
-// Such an infinitesimal variation could be realized as some vector field $v$ over the configuration space $Conf_(n)(SS^(1))$.
-// Using the Cartan's magic formula, the variation could be computed as:
-// $
-//   delta Phi_(n)(K) = frac(1, n!) integral_(overline(Conf)_(n)(SS^(1))) L_v omega = frac(1, n!) integral_(overline(Conf)_(n)(SS^(1))) d i_v omega = frac(1, n!) integral_(partial overline(Conf)_(n)(SS^(1))) i_v omega,
-// $
-// where we used the fact that $omega$ is closed under $d$.
-
 
 == Yang-Baxter Equation Revisited
+
+Yang-Baxter equation is
 
 // R-matrix from perturbative CS theory
