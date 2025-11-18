@@ -50,11 +50,17 @@ jobs:
         with:
           node-version: 22
           cache: "pnpm"
+
       - name: Install just
         uses: extractions/setup-just@v2
         with:
           version: latest
           run_install: false
+      
+      - name: Add wasm32-unknown-unknown target
+        run: |
+          cd ./typ/packages/ctez
+          run: rustup target add wasm32-unknown-unknown
       - name: Setup ctez package
         run: |
           cd ./typ/packages/ctez
