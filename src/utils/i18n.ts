@@ -28,6 +28,10 @@ export interface TranslationStrings {
     zh: string;
     en: string;
   };
+  translationLinks: {
+    zh: string;
+    en: string;
+  }; 
 }
 
 /**
