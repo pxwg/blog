@@ -50,6 +50,15 @@ jobs:
         with:
           node-version: 22
           cache: "pnpm"
+      - name: Install just
+        uses: extractions/setup-just@v2
+        with:
+          version: latest
+          run_install: false
+      - name: Setup ctez package
+        run: |
+          cd ./typ/packages/ctez
+          just build
       - name: Download Fonts
         run: |
           mkdir -p ./assets/fonts
