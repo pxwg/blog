@@ -43,7 +43,7 @@
     draw.circle((x2, y-level), radius: 0.6, stroke: color)
   }
 
-  canvas(length: 1pt, {
+  canvas(length: 2pt, {
     for i in (0, 1, 2) {
       draw.line((x.at(i), 0), (x.at(i), height), stroke: color)
     }
@@ -397,7 +397,7 @@ We could construct such collapsing configurations by the following $6$ ways by t
   },
 )
 
-using the fact that $omega_(i j) = omega_(j i)$, the equation above is identified with Anord's identity:
+using the fact that $omega_(i j) = omega_(j i)$, the equation above is identified with Arnold's identity:
 $
   omega_(12) wedge omega_(23) + omega_(23) wedge omega_(13) + omega_(13) wedge omega_(12) = 0,
 $
@@ -409,9 +409,25 @@ Therefore, we conclude that:
 
 === Movements of Critical Points
 
+Kontsevich integral is not an invariant under movements of critical points.
 
-== Yang-Baxter Equation
 
-Yang-Baxter equation is
+
+
+== Application: Quantum Yang-Baxter Equation
+
+Yang-Baxter equation could be understood as the invariance of Kontsevich integrals under Reidemeister move of type III in knot theory.
+In the context of anyons, this could be interpreted as the consistency condition of braiding among three anyons.
+
+Thus, the integration would be modeled by a $3$-strands tangle, and the integration over the boundary of $Delta times [0,1]$ would leads to:
+$
+  Phi_(n)(T_(1)) - Phi_(n)(T_(0)) + integral_(diff Delta times [0,1]) omega = 0,
+$
+where $T_(0)$ and $T_(1)$ are two tangles related by Reidemeister move of type III.
+
+This is exactly the same situation as the horizontal deformation case discussed above.
+Thus, using the same argument as before, the contributions from the boundary strata would vanish.
+What we left is $Phi_(n)(T_1) = Phi_(n)(T_(0))$, which is the $planck.reduce^(n)$-th order (Quantum) Yang-Baxter equation.
+
 
 // R-matrix from perturbative CS theory
