@@ -17,8 +17,11 @@
   lang: "en",
   translationKey: "cs_ybe",
 )
+
+// {content: start}
+#let title = "Chern-Simons Theory and Yang-Baxter Equation"
 #let CS = math.upright("CS")
-#let wedge = math.and
+#let wedge = sym.and
 #let GL = math.upright("GL")
 #let Conf = math.upright("Conf")
 #let Hol = math.upright("Hol")

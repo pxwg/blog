@@ -2,7 +2,7 @@
  * i18n utilities for language configuration and routing
  */
 
-import { kUrlBase } from "$consts";
+import { kUrlBase } from '$consts';
 
 export type Language = 'zh' | 'en';
 
@@ -31,7 +31,7 @@ export interface TranslationStrings {
   translationLinks: {
     zh: string;
     en: string;
-  }; 
+  };
 }
 
 /**
@@ -40,70 +40,70 @@ export interface TranslationStrings {
 export const pageLanguageConfig: PageLanguageConfig = {
   about: {
     zh: {
-      htmlLang: "zh",
-      title: "关于我",
-      description: "关于pxwg",
-      tagListLang: "zh"
+      htmlLang: 'zh',
+      title: '关于我',
+      description: '关于pxwg',
+      tagListLang: 'zh',
     },
     en: {
-      htmlLang: "en",
-      title: "About me",
-      description: "Things about pxwg",
-      tagListLang: undefined
-    }
+      htmlLang: 'en',
+      title: 'About me',
+      description: 'Things about pxwg',
+      tagListLang: undefined,
+    },
   },
   friend: {
     zh: {
-      htmlLang: "zh",
-      title: "友链",
-      tagListLang: "zh"
+      htmlLang: 'zh',
+      title: '友链',
+      tagListLang: 'zh',
     },
     en: {
-      htmlLang: "en",
-      title: "Friend Links",
-      tagListLang: undefined
-    }
+      htmlLang: 'en',
+      title: 'Friend Links',
+      tagListLang: undefined,
+    },
   },
   articleIndex: {
     zh: {
-      htmlLang: "zh",
-      title: "全部文章",
-      tagListLang: "zh"
+      htmlLang: 'zh',
+      title: '全部文章',
+      tagListLang: 'zh',
     },
     en: {
-      htmlLang: "en",
-      title: "All Posts",
-      tagListLang: undefined
-    }
+      htmlLang: 'en',
+      title: 'All Posts',
+      tagListLang: undefined,
+    },
   },
   index: {
     zh: {
-      htmlLang: "zh",
-      title: "最近文章",
-      tagListLang: "zh"
+      htmlLang: 'zh',
+      title: '最近文章',
+      tagListLang: 'zh',
     },
     en: {
-      htmlLang: "en",
-      title: "Recent Posts",
-      tagListLang: undefined
-    }
-  }
+      htmlLang: 'en',
+      title: 'Recent Posts',
+      tagListLang: undefined,
+    },
+  },
 };
 
 /**
  * Centralized translation strings
  */
 export const translations: TranslationStrings = {
-  switchToChinese: "切换到中文",
-  switchToEnglish: "Switch to English",
+  switchToChinese: '切换到中文',
+  switchToEnglish: 'Switch to English',
   translationNotice: {
-    zh: "📝 翻译声明：本文由 LLM 从原文翻译而来，可能存在翻译不准确之处。建议阅读 <a href=\"{targetPath}\">原文</a> 以获得最准确的内容。",
-    en: "📝 Translation Notice: This article was translated from the original by LLM and may contain inaccuracies. Please refer to the <a href=\"{targetPath}\">original article</a> for the most accurate content."
+    zh: '📝 翻译声明：本文由 LLM 从原文翻译而来，可能存在翻译不准确之处。建议阅读 <a href="{targetPath}">原文</a> 以获得最准确的内容。',
+    en: '📝 Translation Notice: This article was translated from the original by LLM and may contain inaccuracies. Please refer to the <a href="{targetPath}">original article</a> for the most accurate content.',
   },
   translationLinks: {
-    zh: "📚 <a href=\"{targetPath}\">EN</a> | 中文",
-    en: "📚 EN | <a href=\"{targetPath}\">中文</a>"
-  }
+    zh: '📚 <a href="{targetPath}">EN</a> | 中文',
+    en: '📚 EN | <a href="{targetPath}">中文</a>',
+  },
 };
 
 /**
@@ -131,7 +131,9 @@ export function getLanguageConfig(
 ): LanguageConfig {
   const config = pageLanguageConfig[pageKey]?.[lang];
   if (!config) {
-    throw new Error(`Language configuration not found for page '${pageKey}' and language '${lang}'`);
+    throw new Error(
+      `Language configuration not found for page '${pageKey}' and language '${lang}'`
+    );
   }
   return config;
 }
@@ -206,7 +208,10 @@ export function getSafeLanguageConfig(
   try {
     return getLanguageConfig(pageKey, lang);
   } catch (error) {
-    console.warn(`Failed to get language config for ${pageKey}.${lang}:`, error);
+    console.warn(
+      `Failed to get language config for ${pageKey}.${lang}:`,
+      error
+    );
 
     // Return safe fallback
     return {
@@ -214,7 +219,7 @@ export function getSafeLanguageConfig(
       title: fallbackConfig?.title || `Page - ${lang}`,
       description: fallbackConfig?.description,
       tagListLang: fallbackConfig?.tagListLang,
-      modifiedDate: fallbackConfig?.modifiedDate
+      modifiedDate: fallbackConfig?.modifiedDate,
     };
   }
 }
