@@ -1,6 +1,6 @@
 #import "/typ/templates/mod.typ": sys-is-html-target
 
-= Beyond Conservation Laws
+==
 
 Hi there, my name is Xinyu Xiang. I'm currently an undergraduate student in the #link("https://www.phys.tsinghua.edu.cn/phyen/")[Department of Physics] at Tsinghua University.
 

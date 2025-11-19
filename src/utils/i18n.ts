@@ -41,13 +41,13 @@ export const pageLanguageConfig: PageLanguageConfig = {
   about: {
     zh: {
       htmlLang: 'zh',
-      title: '关于我',
+      title: '守恒之外',
       description: '关于pxwg',
       tagListLang: 'zh',
     },
     en: {
       htmlLang: 'en',
-      title: 'About me',
+      title: 'Beyond Conservation Laws',
       description: 'Things about pxwg',
       tagListLang: undefined,
     },
