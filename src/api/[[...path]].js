@@ -28,11 +28,21 @@ const apiProxy = createProxyMiddleware({
       proxyReq.setHeader('cookie', req.headers.cookie);
     }
   },
-  onProxyRes: (proxyRes, req, res) => {
+onProxyRes: (proxyRes, req, res) => {
     res.statusCode = proxyRes.statusCode;
+    
     Object.keys(proxyRes.headers).forEach((key) => {
-      res.setHeader(key, proxyRes.headers[key]);
+      if (key.toLowerCase() === 'set-cookie') {
+        const cookies = proxyRes.headers[key];
+        const newCookies = Array.isArray(cookies)
+          ? cookies.map(c => c.replace(/;\s*Domain=[^;]+/i, ''))
+          : cookies.replace(/;\s*Domain=[^;]+/i, '');
+        res.setHeader(key, newCookies);
+      } else {
+        res.setHeader(key, proxyRes.headers[key]);
+      }
     });
+    
     proxyRes.pipe(res);
   },
 });
