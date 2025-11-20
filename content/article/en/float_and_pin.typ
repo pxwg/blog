@@ -46,7 +46,7 @@ Since only one parameter needs to be passed, the WebSocket implementation is ver
 
 This code shows the basic logic, omitting details like error handling and signal handling.
 
-```objc
+```Objective-C
 static void *socket_server(void *arg) {
   // Acquire lock to ensure only one process listens
   lock_fd = open(LOCK_PATH, O_CREAT | O_RDWR, 0600);
@@ -97,9 +97,9 @@ static void *socket_server(void *arg) {
   // Cleanup omitted
   return NULL;
 }
+```
 The injected window pinning operation simply sets the window's level property to the specified value, exactly like the operation in lldb.
-
-objc
+```Objective-C
 static void setAllWindowsLevel(NSInteger level) {
   dispatch_async(dispatch_get_main_queue(), ^{
     NSArray *windows = [(NSApplication *)NSApp windows];
