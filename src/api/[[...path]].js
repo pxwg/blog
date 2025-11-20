@@ -28,7 +28,7 @@ const apiProxy = createProxyMiddleware({
       proxyReq.setHeader('cookie', req.headers.cookie);
     }
   },
-onProxyRes: (proxyRes, req, res) => {
+  onProxyRes: (proxyRes, req, res) => {
     res.statusCode = proxyRes.statusCode;
     
     Object.keys(proxyRes.headers).forEach((key) => {
