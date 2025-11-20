@@ -169,16 +169,29 @@ samp {
   font-weight: 300;
 }
 code {
-  padding: 2px 5px;
+  padding: 0em 0.2em;
   background-color: var(--raw-bg-color);
   border-radius: 2px;
+  border: 1px solid var(--accent);
+  font-size: 11pt;
+  line-height: inherit;
+  vertical-align: baseline;
+  display: inline;
 }
 pre {
   padding: 1.5em;
   border-radius: 8px;
+  overflow-x: auto;
 }
 pre > code {
   all: unset;
+}
+.zebraw-code-block {
+  position: relative;
+  border-radius: 8px;
+  border: 1px solid var(--accent) !important;
+  margin: 1.5em 0;
+  overflow: hidden ;
 }
 blockquote {
   border-left: 4px solid var(--accent);
