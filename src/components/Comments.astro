@@ -30,31 +30,33 @@ const dev = import.meta.env.DEV;
   <div class="comment-wrapper">
     <div class="comment" data-fill-id="id">
       <div class="comment-header">
-        <img
-          width="28"
-          height="28"
-          class="user-avatar"
-          data-fill-src="author.avatarUrl"
-          data-fill-alt="author.login"
-        />
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          class="user-name"
-          data-fill-href="author.login"
-          data-fill-text="author.login"></a>
-        <span class="comment-date" data-fill-text="createdAt"></span>
+        <div class="comment-header-left">
+          <img
+            width="28"
+            height="28"
+            class="user-avatar"
+            data-fill-src="author.avatarUrl"
+            data-fill-alt="author.login"
+          />
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            class="user-name"
+            data-fill-href="author.login"
+            data-fill-text="author.login"></a>
+          <span class="comment-date" data-fill-text="createdAt"></span>
+        </div>
+        <div class="comment-actions">
+          <button class="action-button reply-btn">Reply</button>
+          <button class="action-button edit-btn" style="display:none;"
+            >Edit</button
+          >
+          <button class="action-button delete-btn" style="display:none;"
+            >Delete</button
+          >
+        </div>
       </div>
       <div class="comment-body" data-fill-html="bodyHTML"></div>
-      <div class="comment-actions">
-        <button class="action-button reply-btn">Reply</button>
-        <button class="action-button edit-btn" style="display:none;"
-          >Edit</button
-        >
-        <button class="action-button delete-btn" style="display:none;"
-          >Delete</button
-        >
-      </div>
       <div class="reply-form-container"></div>
     </div>
     <div class="replies-container"></div>
@@ -169,10 +171,16 @@ const dev = import.meta.env.DEV;
   .comment-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 0.5em;
     padding: 0.3em 0.75em;
     font-size: 0.9em;
     border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+  }
+  .comment-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
   }
   .user-avatar {
     border-radius: 50%;
