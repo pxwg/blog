@@ -13,7 +13,7 @@ You are a single grain of sand within an inverted hourglass.
 
 At the instant of inversion, you begin your descent alongside the multitude. In the world of sand, all directions ultimately converge upon that solitary bottleneck. The deeper you go, the tighter the embrace of the crowd becomes.
 
-Gradually, you discover that freedom is an illusion, pared away layer by layer. At first, you could wander the flat expanse at the summit; later, you could only slide along the slanted glass walls; and in the end, nothing remains before you but the bottleneck. Deprived even of the hesitation between "Yes" or "No," amidst the shoving and the coercion, you are forced to choose the inevitable "Yes." And so, squeezed into a slender thread, you fall into the depths.
+At first, you could wander the flat expanse at the summit; later, you could only slide along the slanted glass walls; and in the end, nothing remains before you but the bottleneck. Deprived even of the hesitation between "Yes" or "No," amidst the shoving and the coercion, you are forced to choose the inevitable "Yes." And so, squeezed into a slender thread, you fall into the depths.
 
 Within the lifespan of the hourglass, a grain of sand will live this life many times over. The process may vary, the timing of the fall may differ, but the beginning is identical, and the ending is the same.
 
