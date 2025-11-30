@@ -1,7 +1,7 @@
 #import "../../../typ/templates/blog.typ": *
 #show: main.with(
   title: [Seeking Answers Beyond the "World"],
-  desc: [How does the sand in the hourglass know why it falls?],
+  desc: [For fresh water comes from the source.],
   date: "2025-11-30",
   tags: (blog-tags.misc, blog-tags.prose),
   lang: "en",

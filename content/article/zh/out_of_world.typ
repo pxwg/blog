@@ -1,7 +1,7 @@
 #import "../../../typ/templates/blog.typ": *
 #show: main-zh.with(
   title: "在“世界”之外找答案",
-  desc: [沙漏中的沙子如何知道自己为何沿沙漏落下？],
+  desc: [为有源头活水来。],
   date: "2025-11-30",
   tags: (blog-tags.misc, blog-tags.prose),
   lang: "zh",
