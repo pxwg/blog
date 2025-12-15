@@ -123,3 +123,7 @@ Moreover, there is a unit transformation $eta: id -> bb(M)$, where $id$ is the i
 Thus, the endofunctor $bb(M)$, together with the natural transformations $mu$ and $eta$, forms a *monad* on the category $Mod_(bb(S))$.
 
 = Multiplication Functor and Renormalization
+
+Now we consider the physical interpretation of the multiplication functor $mu: bb(M)^(2)V -> bb(M) V$.
+
+= (Co)bar Construction
