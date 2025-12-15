@@ -5,7 +5,7 @@
 #show: main.with(
   title: title,
   desc: [The definition of Feynman rules can be captured using the language of monad, and the "renormalization" procedure corresponds to the generalized (co)bar construction.],
-  date: "2025-12-11",
+  date: "2025-12-15",
   tags: (
     blog-tags.math,
     blog-tags.physics,
@@ -93,8 +93,33 @@ Now we can reformulate the Feynman rule using the language of category theory fo
 In the context of category theory, a Feynman rule can be described as given:
 - An object $V$ in $Mod_(bb(S))$.
 - An (isomorphism class) of object $[Gamma(g, n)]$ in $Gamma((g,n))$.
-Summing over all possible (isomorphism classes) of graphs $[Gamma(g, n)]$, we obtain a $Mod_(bb(S))$ functor, denoted by $bb(M)$:
+Summing over all possible (isomorphism classes) of graphs $[Gamma(g, n)]$, we obtain a $Mod_(bb(S))$ endofunctor, denoted by $bb(M)$:
 $
   bb(M) V(g,n) tilde.equiv plus.big_(Gamma in [Gamma(g, n)]) V(Gamma)_(Aut(Gamma)) := plus.big_(Gamma in [Gamma(g, n)]) V(g,n)_(Aut(Gamma)),
 $
 where $V_(G)$ is the coinvariant space of a $G$-module $V$.
+
+Since it is an endofunctor on $Mod_(bb(S))$, we can also consider the relation between $bb(M)^(2) V(g,n)$ and $bb(M) V(g,n)$.
+Moreover, we can consider $bb(M)^(k) V(g,n)$ for any positive integer $k$.
+By definition, such composition corresponds to:
+- At the level of graphs,
+  - Consider a Feynman diagram.
+  - For each vertex in the diagram, we replace it with another Feynman diagram.
+- At the level of vector spaces,
+  - For each vertex, assigning a vector space $bb(M)^(k-1)V(Gamma)$ to it.
+  - Obtaining a new vector space by applying the Feynman rule again.
+Thus, there is a natural transformation $mu: bb(M)^(2)V -> bb(M) V$, called the multiplication of the endofunctor $bb(M)$, which corresponding to the operation of
+- Substituting diagrams into vertices.
+- Flattening into a single diagram.
+- Using the Feynman rule to obtain a vector space.
+
+Consider $bb(M)^(3)V$, since there are two ways to flatten the diagrams:
+- First flatten the diagrams at the lowest level, then flatten the resulting diagrams.
+- First flatten the diagrams at the highest level, then flatten the resulting diagrams.
+And both ways should yield the same result after applying the Feynman rule, such a transformation satisfies the associativity condition.
+
+Moreover, there is a unit transformation $eta: id -> bb(M)$, where $id$ is the identity endofunctor on $Mod_(bb(S))$, which corresponds to the inclusion of the empty graph $*_(g,n)$ in $Gamma((g,n))$.
+
+Thus, the endofunctor $bb(M)$, together with the natural transformations $mu$ and $eta$, forms a *monad* on the category $Mod_(bb(S))$.
+
+= Multiplication Functor and Renormalization
