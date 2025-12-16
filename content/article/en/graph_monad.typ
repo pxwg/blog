@@ -1,10 +1,10 @@
 #import "../../../typ/templates/blog.typ": *
 #import "../../../typ/packages/typst-fletcher.typ": *
 #import "../../../typ/packages/physica.typ": *
-#let title = "Feynman Rule as a Monad"
+#let title = "Feynman Rules as a Monad"
 #show: main.with(
   title: title,
-  desc: [The definition of Feynman rules can be captured using the language of monad, and the "renormalization" procedure corresponds to the generalized (co)bar construction.],
+  desc: [The definition of Feynman rules can be captured using the language of monads, and the "renormalization" procedure corresponds to the generalized (co)bar construction.],
   date: "2025-12-16",
   tags: (
     blog-tags.math,
@@ -23,73 +23,73 @@
 
 = Feynman Rules in QFT
 
-Let's recall the Feynman rules in perturbative quantum field theory.
+Let us briefly recall the Feynman rules in perturbative quantum field theory (QFT).
 
-A field theory described by a Lagrangian could always be split into:
-- Free part: quadratic terms in the fields.
-- Interaction part: higher order terms in the fields.
+A field theory described by a Lagrangian can typically be decomposed into:
+- *Free part:* Quadratic terms in the fields.
+- *Interaction part:* Higher-order terms in the fields.
 
-While we expand the path integral perturbatively, using Wick's theorem, each term in the expansion can be represented by a Feynman diagram, constructed using the following rules:
-- Graph $Gamma(g, n)$: a genus $g$ graph with $n$ labeled external legs.
-- Edges: correspond to $angle.l phi_1(x_1) phi_2(x_2)angle.r$, derived from the free part of the Lagrangian.
-- Vertices: correspond to interaction terms in the Lagrangian.
+When expanding the path integral perturbatively using Wick's theorem, each term in the expansion can be represented by a Feynman diagram, constructed via the following rules:
+- *Graph* $Gamma(g, n)$: A graph of genus $g$ with $n$ labeled external legs.
+- *Edges:* Correspond to the propagator $angle.l phi_1(x_1) phi_2(x_2)angle.r$, derived from the free part of the Lagrangian.
+- *Vertices:* Correspond to interaction terms in the Lagrangian.
 The valence of each vertex is determined by the order of the interaction term.
 
 Finally, after integrating over all internal vertices and summing over all possible graphs, we obtain the perturbative expansion of the correlation functions.
 
-Such a procedure of assigning data to each edge and vertex, is called the *Feynman rule*.
+This procedure of assigning algebraic data to each edge and vertex constitutes the *Feynman rules*.
 
 The free part is crucial for calculating the Feynman integrals and we will not discuss it here.
-In this blog, we will focus on the graphs and the procedure of assigning data to their vertices.
+In this post, we will focus on the combinatorial structure of the graphs and the procedure of assigning data to their vertices.
 
-Now we try to formulate the idea above.
+Let us now formulate these ideas rigorously.
 
-= Vertex
+= The Vertex
 
-First, the possible contributions for a vertex can be organized into #footnote([If there are some additional structures input form the theory, such as grading, we should replace the vector space by the corresponding object, e.g., graded vector space, etc.]):
-- Vector space graded by the valence of the vertex.
-- Permutation action of the symmetric group $bb(S)_n$ on the degree $n$ part, by permuting the labels of the legs.
-Thus, such contributions form an $bb(S)$-module, where $bb(S)_(n)="Aut"({1,...,n})$ and a $bb(S)$-module is a sequence of vector spaces $V = {V(n), n>0}$, each equipped with an action of the symmetric group $bb(S)_n$.
+First, the possible contributions for a vertex can be organized into a specific structure #footnote([If there are additional structures input from the theory, such as grading, we should replace the vector space with the corresponding object, e.g., a graded vector space.]):
+- A vector space graded by the valence of the vertex.
+- A permutation action of the symmetric group $bb(S)_n$ on the degree $n$ part, representing the permutation of leg labels.
 
-We can also form the category of $bb(S)$-modules, denoted by $Mod_(bb(S)_(n))$, whose objects are $bb(S)$-modules and morphisms are $bb(S)_(n)$ equivariant linear maps.
+Thus, such contributions form an $bb(S)$-module (or symmetric sequence), where $bb(S)_(n)="Aut"({1,...,n})$. An $bb(S)$-module is a sequence of vector spaces $V = {V(n), n>0}$, each equipped with an action of $bb(S)_n$.
 
-Such vector space may correspond to some additional data.
-In our context, it would be natural to consider the genus grading, i.e., each $V(n)$ could be further decomposed as:
+We can form the category of $bb(S)$-modules, denoted by $Mod_(bb(S))$, whose objects are $bb(S)$-modules and morphisms are $bb(S)$-equivariant linear maps.
+
+This vector space may correspond to additional data.
+In our context, it is natural to consider the genus grading. That is, each $V(n)$ can be further decomposed as:
 $
   V(n) = plus.big_(g >= 0) V(g, n),
 $
-where $g$ is a non-negative integer representing the genus, satisfying stable condition $2g - 2 + n >= 0$.
-If we only consider tree level contributions, we can set $g = 0$ and have $n >= 2$, corresponding to ignore all tadpole diagrams.
-Since such condition corresponds to the stable condition in the theory of modular operads, we can denote the category of such $bb(S)$-modules as $Mod^(stable)_(bb(S))$, i.e., stable $bb(S)$-modules.
+where $g$ is a non-negative integer representing the genus, satisfying the *stability condition* $2g - 2 + n > 0$.
+If we restrict ourselves to tree-level contributions, we set $g = 0$ and require $n >= 3$ (or $n>=2$ for propagators), effectively ignoring unstable tadpole diagrams.
+Since this condition corresponds to stability in the theory of modular operads, we denote the category of such $bb(S)$-modules as $Mod^(stable)_(bb(S))$, i.e., stable $bb(S)$-modules.
 
-= Graph
+= The Graph
 
 Next, we consider the graphs.
-"Understanding" a graph is seemingly easy, but deciding "under" which axioms it should "stand" is subtle.
-A natural way to describe them is:
-- Collecting all vertices, which forms a set $V(Gamma)$.
-- Given a vertex $v in V(Gamma)$, we have a set of half-edges $H(v)$ attached to it. Its cardinality is called the valence of the vertex $n(v)$.
-- Identifying a half-edge from two vertices, which forms an edge. The set of edges is denoted by $E(Gamma)$.
-- The remaining half-edges are called (external) legs, denoted by $L(Gamma)$, whose cardinality is $n$.
+Defining a graph intuitively is easy, but establishing the precise axiomatic framework is subtle.
+A natural way to describe a graph is by:
+- Collecting all vertices into a set $V(Gamma)$.
+- Assigning a set of half-edges $H(v)$ to each vertex $v in V(Gamma)$. The cardinality of this set is the valence $n(v)$.
+- Pairing half-edges to form edges. The set of edges is denoted by $E(Gamma)$.
+- The remaining unpaired half-edges are called (external) legs, denoted by $L(Gamma)$, with cardinality $n$.
 
-Moreover, a labeled graph could assign a non-negative integer $g(v)$ to each vertex $v$, called the genus of the vertex.
-Thus, the genus of the graph $Gamma$ is defined as:
+Moreover, a labeled graph assigns a non-negative integer $g(v)$ to each vertex $v$, called the genus of the vertex.
+The genus of the graph $Gamma$ is defined as:
 $
   g(Gamma) = sum_(v in V(Gamma)) g(v) + b_1(Gamma),
 $
-where $b_1(Gamma)$ is the first Betti number of the graph #footnote([Well, this definition of genus is a bit odd. Usually, we define the genus of a graph as its first Betti number. Here we add some "inner" data to each vertex, which is useful in the study of the monad structure.]).
-And such diagram could be denoted as $Gamma_(g)$
+where $b_1(Gamma)$ is the first Betti number of the graph #footnote([This definition of genus is standard in the context of modular operads. Unlike the usual graph genus (Betti number), we decorate each vertex with "inner" genus data, which is essential for the monad structure.]).
+Such a diagram is denoted as $Gamma_(g)$.
 
-Thus, we can also define the labeled graph $Gamma(g, n)$ as a pair $(Gamma_(g), rho)$, where $rho: {1,...,n} -> L(Gamma)$ is a labeling of the legs, which is a bijection.
+We define a labeled graph $Gamma(g, n)$ as a pair $(Gamma_(g), rho)$, where $rho: {1,...,n} -> L(Gamma)$ is a bijection labeling the legs.
 
-The category of labeled graphs with genus $g$ and $n$ labeled legs, denoted as $Gamma((g,n))$, can be defined, whose objects are labeled graphs $Gamma(g, n)$ and morphisms are morphisms of graphs preserving the labeling of legs.
+The category of labeled graphs with genus $g$ and $n$ labeled legs, denoted as $Gamma((g,n))$, has objects as labeled graphs $Gamma(g, n)$ and morphisms as graph morphisms preserving the leg labeling.
 
-Well, I think we should also define what a morphism of graphs is, but I will skip it here.
-Roughly speaking, a morphism of graphs is a map between two graphs that preserves the structure of vertices, edges, and legs.
+We omit the technical definition of graph morphisms here. Roughly speaking, a morphism is a map between two graphs that preserves the connectivity structure of vertices, edges, and legs.
 
-There is a terminal object in the category $Gamma((g,n))$, which is the empty graph $*_(g,n)$, with no edges, one vertex of genus $g$ and $n$ legs.
+There exists a terminal object in $Gamma((g,n))$: the single-vertex graph $*_(g,n)$ with no edges, one vertex of genus $g$, and $n$ legs.
 
-= Feynman Rule Revisited
+= Feynman Rules Revisited
 
 Now we can reformulate the Feynman rule using the language of category theory for $sMod_(bb(S))$ and $Gamma((g,n))$.
 
