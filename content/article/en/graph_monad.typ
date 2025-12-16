@@ -134,8 +134,8 @@ After we have defined the monad $bb(M)$, we can also consider its algebras.
 Since this monad is defined using graphs with genus, its algebras would become a generalization of operad, called *modular operad*.
 
 To be precise, a modular operad $cal(A)$ is an algebra over the monad $bb(M)$, which equipped with a structure map $rho: bb(M)cal(A) -> cal(A)$ satisfying:
-- Associativity: $rho dot mu_(cal(A)) = rho dot bb(M)(rho)$.
-- Unit: $rho dot eta_(cal(A)) = id_(cal(A))$.
+- Associativity: $rho compose mu_(cal(A)) = rho compose bb(M)(rho)$.
+- Unit: $rho compose eta_(cal(A)) = id_(cal(A))$.
 
 We would denote a modular operad as a pair $(cal(A), rho)$.
 
@@ -152,7 +152,7 @@ Roughly speaking, Wilson's renormalization group (RG) approach suggests that, to
 
 Thus, the multiplication functor $mu$ describes the first step of the RG procedure.
 
-== (Co)bar Construction
+== Bar Construction
 
 Given a modular operad $cal(A)$ constructed from monad $bb(M)$, the renormalization procedure described above could be naturally captured by:
 $
@@ -165,9 +165,9 @@ After repeating the procedure, we obtain a sequence of maps:
 #diagram-frame(edge => [$
     #diagram(
       node((0, 0), $dots.c$),
-      node((1, 0), $bb(M)^(2) A$),
-      node((2, 0), $bb(M) A$),
-      node((3, 0), $A,$),
+      node((1, 0), $bb(M)^(2) cal(A)$),
+      node((2, 0), $bb(M) cal(A)$),
+      node((3, 0), $cal(A),$),
 
       edge((0, 0), (1, 0), "->", shift: -5pt),
       edge((0, 0), (1, 0), "->", shift: 0pt),
@@ -180,3 +180,27 @@ After repeating the procedure, we obtain a sequence of maps:
     )
   $])
 which is a simplicial object in the category of $sMod_(bb(S))$, forming a *bar construction* of the modular operad $cal(A)$.
+
+Simplicial objects encodes some surface maps ${diff_(i)}$ and degeneracy maps ${sigma_(i)}$, which leads to some homological structures, and the "master equation" $diff^(2) = 0$ would encode some consistency conditions of the theory, such as the associativity and unit in the monad structure.
+
+Now we consider the specific structure of boundary operator $diff$.
+First, we note that the face map of this theory is essentially flatten $i$-th and $i+1$-th graph, thus, the expression of such map could be written as:
+$
+  diff_(i) = cases(
+    bb(M)^(i) compose mu compose bb(M)^(n-1-i)\, thin & 0<=i<n,
+    bb(M)^(n) compose rho\, & thin i=n\,
+  )
+$
+Such sequences of maps are indeed desired face map, since due to the associativity of $mu$ and the definition of $rho$, we have $diff_(i) diff_(j) = diff_(j-1) diff_(i)$, which is called *simplicial identity*.
+
+Consider $diff_((n)): bb(M)^(n+1)cal(A) -> bb(M)^(n) cal(A)$, using the face map above, such boundary map could be written as:
+$
+  diff_((n)) = sum_(i=0)^(n) (-1)^(n) diff_(i),
+$
+where the master equation $diff^(2)_((n)) = 0$ is satisfied since the simplicial identity.
+
+#remark([
+  Such a bar-construction is just a natural generalization of the original bar-construction we see in homological algebra, where the chain complex could be viewed as a one-dimensional tree, and the face maps are just "split" of vertices, which is one-dimensional version of our composition functor $mu$.
+
+  Also, if we restrict our diagram into tree-level, we would obtain the bar-construction for cyclic operad, whose composition map is well-known as linking two legs for two trees respectively.
+])
