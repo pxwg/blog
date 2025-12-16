@@ -18,6 +18,8 @@
 
 #let Mod = math.bold("Mod")
 #let Aut = math.text("Aut")
+#let stable = math.text("stable")
+#let sMod = [$#Mod^#stable$]
 
 = Feynman Rules in QFT
 
@@ -58,6 +60,7 @@ $
 $
 where $g$ is a non-negative integer representing the genus, satisfying stable condition $2g - 2 + n >= 0$.
 If we only consider tree level contributions, we can set $g = 0$ and have $n >= 2$, corresponding to ignore all tadpole diagrams.
+Since such condition corresponds to the stable condition in the theory of modular operads, we can denote the category of such $bb(S)$-modules as $Mod^(stable)_(bb(S))$, i.e., stable $bb(S)$-modules.
 
 = Graph
 
@@ -88,12 +91,12 @@ There is a terminal object in the category $Gamma((g,n))$, which is the empty gr
 
 = Feynman Rule Revisited
 
-Now we can reformulate the Feynman rule using the language of category theory for $Mod_(bb(S))$ and $Gamma((g,n))$.
+Now we can reformulate the Feynman rule using the language of category theory for $sMod_(bb(S))$ and $Gamma((g,n))$.
 
 In the context of category theory, a Feynman rule can be described as given:
-- An object $V$ in $Mod_(bb(S))$.
+- An object $V$ in $sMod_(bb(S))$.
 - An (isomorphism class) of object $[Gamma(g, n)]$ in $Gamma((g,n))$.
-Summing over all possible (isomorphism classes) of graphs $[Gamma(g, n)]$, we obtain a $Mod_(bb(S))$ endofunctor, denoted by $bb(M)$:
+Summing over all possible (isomorphism classes) of graphs $[Gamma(g, n)]$, we obtain a $sMod_(bb(S))$ endofunctor, denoted by $bb(M)$:
 $
   bb(M) V(g,n) tilde.equiv plus.big_(Gamma in [Gamma(g, n)]) V(Gamma)_(Aut(Gamma)) := plus.big_(Gamma in [Gamma(g, n)]) V(g,n)_(Aut(Gamma)),
 $
@@ -118,12 +121,28 @@ Consider $bb(M)^(3)V$, since there are two ways to flatten the diagrams:
 - First flatten the diagrams at the highest level, then flatten the resulting diagrams.
 And both ways should yield the same result after applying the Feynman rule, such a transformation satisfies the associativity condition.
 
-Moreover, there is a unit transformation $eta: id -> bb(M)$, where $id$ is the identity endofunctor on $Mod_(bb(S))$, which corresponds to the inclusion of the empty graph $*_(g,n)$ in $Gamma((g,n))$.
+Moreover, there is a unit transformation $eta: id -> bb(M)$, where $id$ is the identity endofunctor on $sMod_(bb(S))$, which corresponds to the inclusion of the empty graph $*_(g,n)$ in $Gamma((g,n))$.
 
-Thus, the endofunctor $bb(M)$, together with the natural transformations $mu$ and $eta$, forms a *monad* on the category $Mod_(bb(S))$.
+Thus, the endofunctor $bb(M)$, together with the natural transformations $mu$ and $eta$, forms a *monad* on the category $sMod_(bb(S))$.
 Which states that, the Feynman rule can be captured using the language of monad.
 
+= Modular Operad
+
+Remember the definition of a (cyclic) operad, which is just a algebra over a certain monad corresponding to trees.
+
+After we have defined the monad $bb(M)$, we can also consider its algebras.
+Since this monad is defined using graphs with genus, its algebras would become a generalization of operad, called *modular operad*.
+
+To be precise, a modular operad is an algebra over the monad $bb(M)$ on the category $sMod_(bb(S))$, which consists of:
+// TODO: finish this part
+-
+-
+
 = Multiplication Functor and Renormalization
+
+After defining Feynman rules with monads, we can consider some other important procedures in quantum field theory, which is crucial in perturbative QFT, such as *renormalization*.
+
+== Idea
 
 Roughly speaking, Wilson's renormalization group (RG) approach suggests that, to obtain the effective theory at a lower energy scale, we need to:
 + Integrating out the high-energy modes, which let the original interaction terms "shrink" into effective interaction terms.
@@ -131,3 +150,5 @@ Roughly speaking, Wilson's renormalization group (RG) approach suggests that, to
 + Only the relevant and marginal interaction terms survive at low energy.
 
 Thus, the multiplication functor $mu$ describes the first step of the RG procedure.
+
+== (Co)bar Construction
