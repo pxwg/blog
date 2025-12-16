@@ -121,9 +121,13 @@ And both ways should yield the same result after applying the Feynman rule, such
 Moreover, there is a unit transformation $eta: id -> bb(M)$, where $id$ is the identity endofunctor on $Mod_(bb(S))$, which corresponds to the inclusion of the empty graph $*_(g,n)$ in $Gamma((g,n))$.
 
 Thus, the endofunctor $bb(M)$, together with the natural transformations $mu$ and $eta$, forms a *monad* on the category $Mod_(bb(S))$.
+Which states that, the Feynman rule can be captured using the language of monad.
 
 = Multiplication Functor and Renormalization
 
-Now we consider the physical interpretation of the multiplication functor $mu: bb(M)^(2)V -> bb(M) V$.
+Roughly speaking, Wilson's renormalization group (RG) approach suggests that, to obtain the effective theory at a lower energy scale, we need to:
++ Integrating out the high-energy modes, which let the original interaction terms "shrink" into effective interaction terms.
++ Rescaling the fields and coupling constants accordingly.
++ Only the relevant and marginal interaction terms survive at low energy.
 
-= (Co)bar Construction
+Thus, the multiplication functor $mu$ describes the first step of the RG procedure.
