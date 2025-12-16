@@ -91,18 +91,19 @@ There exists a terminal object in $Gamma((g,n))$: the single-vertex graph $*_(g,
 
 = Feynman Rules Revisited
 
-Now we can reformulate the Feynman rule using the language of category theory for $sMod_(bb(S))$ and $Gamma((g,n))$.
+We can now reformulate the Feynman rules using the language of category theory for $sMod_(bb(S))$ and $Gamma((g,n))$.
 
-In the context of category theory, a Feynman rule can be described as given:
+In this context, a Feynman rule is specified by:
 - An object $V$ in $sMod_(bb(S))$.
-- An (isomorphism class) of object $[Gamma(g, n)]$ in $Gamma((g,n))$.
-Summing over all possible (isomorphism classes) of graphs $[Gamma(g, n)]$, we obtain a $sMod_(bb(S))$ endofunctor, denoted by $bb(M)$:
+- An isomorphism class of graphs $[Gamma(g, n)]$ in $Gamma((g,n))$.
+Summing over all possible isomorphism classes of graphs $[Gamma(g, n)]$, we obtain an endofunctor on $sMod_(bb(S))$, denoted by $bb(M)$:
 $
   bb(M) V(g,n) tilde.equiv plus.big_(Gamma in [Gamma(g, n)]) V(Gamma)_(Aut(Gamma)) := plus.big_(Gamma in [Gamma(g, n)]) V(g,n)_(Aut(Gamma)),
 $
 where $V_(G)$ is the coinvariant space of a $G$-module $V$.
 
-Since it is an endofunctor on $Mod_(bb(S))$, we can also consider the relation between $bb(M)^(2) V(g,n)$ and $bb(M) V(g,n)$.
+Since $bb(M)$ is an endofunctor on $Mod_(bb(S))$, we can consider the relationship between $bb(M)^(2) V$ and $bb(M) V$.
+
 Moreover, we can consider $bb(M)^(k) V(g,n)$ for any positive integer $k$.
 By definition, such composition corresponds to:
 - At the level of graphs,
@@ -111,31 +112,30 @@ By definition, such composition corresponds to:
 - At the level of vector spaces,
   - For each vertex, assigning a vector space $bb(M)^(k-1)V(Gamma)$ to it.
   - Obtaining a new vector space by applying the Feynman rule again.
-Thus, there is a natural transformation $mu: bb(M)^(2)V -> bb(M) V$, called the multiplication of the endofunctor $bb(M)$, which corresponding to the operation of
+There exists a natural transformation $mu: bb(M)^(2)V -> bb(M) V$, called the *multiplication* of the endofunctor $bb(M)$. This corresponds to the operation of:
 - Substituting diagrams into vertices.
 - Flattening into a single diagram.
 - Using the Feynman rule to obtain a vector space.
 
-Consider $bb(M)^(3)V$, since there are two ways to flatten the diagrams:
-- First flatten the diagrams at the lowest level, then flatten the resulting diagrams.
-- First flatten the diagrams at the highest level, then flatten the resulting diagrams.
-And both ways should yield the same result after applying the Feynman rule, such a transformation satisfies the associativity condition.
+For $bb(M)^(3)V$, there are two ways to flatten the nested diagrams (associativity):
+- Flatten the lowest level first, then the resulting diagrams.
+- Flatten the highest level first, then the resulting diagrams.
+Both procedures yield the same result, satisfying the associativity condition.
 
-Moreover, there is a unit transformation $eta: id -> bb(M)$, where $id$ is the identity endofunctor on $sMod_(bb(S))$, which corresponds to the inclusion of the empty graph $*_(g,n)$ in $Gamma((g,n))$.
+Moreover, there is a unit transformation $eta: id -> bb(M)$, where $id$ is the identity endofunctor. This corresponds to the inclusion of the single-vertex graph $*_(g,n)$.
 
-Thus, the endofunctor $bb(M)$, together with the natural transformations $mu$ and $eta$, forms a *monad* on the category $sMod_(bb(S))$.
-Which states that, the Feynman rule can be captured using the language of monad.
+Thus, the endofunctor $bb(M)$, together with $mu$ and $eta$, forms a *monad* on the category $sMod_(bb(S))$.
+This demonstrates that the combinatorial structure of Feynman rules is perfectly captured by the language of monads.
 
-= Modular Operad
+= Modular Operads
 
-Remember the definition of a (cyclic) operad, which is just a algebra over a certain monad corresponding to trees.
+Recall that a (cyclic) operad is simply an algebra over a specific monad corresponding to trees.
 
-After we have defined the monad $bb(M)$, we can also consider its algebras.
-Since this monad is defined using graphs with genus, its algebras would become a generalization of operad, called *modular operad*.
+Since our monad $bb(M)$ is defined using graphs with genus loops, its algebras generalize operads to what are known as *modular operads*.
 
-To be precise, a modular operad $cal(A)$ is an algebra over the monad $bb(M)$, which equipped with a structure map $rho: bb(M)cal(A) -> cal(A)$ satisfying:
-- Associativity: $rho compose mu_(cal(A)) = rho compose bb(M)(rho)$.
-- Unit: $rho compose eta_(cal(A)) = id_(cal(A))$.
+Precisely, a modular operad $cal(A)$ is an algebra over the monad $bb(M)$, equipped with a structure map $rho: bb(M)cal(A) -> cal(A)$ satisfying:
+- *Associativity:* $rho compose mu_(cal(A)) = rho compose bb(M)(rho)$.
+- *Unit:* $rho compose eta_(cal(A)) = id_(cal(A))$.
 
 We would denote a modular operad as a pair $(cal(A), rho)$.
 
