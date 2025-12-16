@@ -4,7 +4,7 @@
 #let title = "Feynman Rules as a Monad"
 #show: main.with(
   title: title,
-  desc: [The definition of Feynman rules can be captured using the language of monads, and the "renormalization" procedure corresponds to the generalized (co)bar construction.],
+  desc: [The definition of Feynman rules can be captured using the language of monads, and the "renormalization" procedure corresponds to the bar construction.],
   date: "2025-12-16",
   tags: (
     blog-tags.math,
@@ -30,7 +30,7 @@ A field theory described by a Lagrangian can typically be decomposed into:
 - *Interaction part:* Higher-order terms in the fields.
 
 When expanding the path integral perturbatively using Wick's theorem, each term in the expansion can be represented by a Feynman diagram, constructed via the following rules:
-- *Graph* $Gamma(g, n)$: A graph of genus $g$ with $n$ labeled external legs.
+- *Graph*: $Gamma(g, n)$: A graph of genus $g$ with $n$ labeled external legs.
 - *Edges:* Correspond to the propagator $angle.l phi_1(x_1) phi_2(x_2)angle.r$, derived from the free part of the Lagrangian.
 - *Vertices:* Correspond to interaction terms in the Lagrangian.
 The valence of each vertex is determined by the order of the interaction term.

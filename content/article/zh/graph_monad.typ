@@ -6,7 +6,7 @@
 
 #show: main.with(
   title: title,
-  desc: [费曼规则的定义可以通过单子（Monad）语言来捕捉，而“重整化”过程对应于广义的 (co)bar construction。],
+  desc: [费曼规则的定义可以通过单子（Monad）语言来捕捉，而“重整化”过程对应于相应的 bar construction。],
   date: "2025-12-16",
   tags: (
     blog-tags.math,
