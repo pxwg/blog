@@ -137,31 +137,31 @@ Precisely, a modular operad $cal(A)$ is an algebra over the monad $bb(M)$, equip
 - *Associativity:* $rho compose mu_(cal(A)) = rho compose bb(M)(rho)$.
 - *Unit:* $rho compose eta_(cal(A)) = id_(cal(A))$.
 
-We would denote a modular operad as a pair $(cal(A), rho)$.
+We denote a modular operad as a pair $(cal(A), rho)$.
 
 = Multiplication Functor and Renormalization
 
-After defining Feynman rules with monads, we can consider some other important procedures in quantum field theory, which is crucial in perturbative QFT, such as *renormalization*.
+Having defined Feynman rules via monads, we turn to *renormalization*, a crucial procedure in perturbative QFT.
 
-== Idea
+== The Idea
 
-Roughly speaking, Wilson's renormalization group (RG) approach suggests that, to obtain the effective theory at a lower energy scale, we need to:
-+ Integrating out the high-energy modes, which let the original interaction terms "shrink" into effective interaction terms.
-+ Rescaling the fields and coupling constants accordingly.
-+ Only the relevant and marginal interaction terms survive at low energy.
+Wilson's Renormalization Group (RG) approach suggests that to obtain an effective theory at a lower energy scale, we must:
++ Integrate out high-energy modes, causing original interaction terms to "flow" into effective interactions.
++ Rescale fields and coupling constants.
++ Retain only relevant and marginal interaction terms at low energy.
 
-Thus, the multiplication functor $mu$ describes the first step of the RG procedure.
+The multiplication functor $mu$ naturally describes the combinatorial aspect of the first step: the contraction of internal edges corresponds to the integration of propagators.
 
 == Bar Construction
 
-Given a modular operad $cal(A)$ constructed from monad $bb(M)$, the renormalization procedure described above could be naturally captured by:
+Given a modular operad $cal(A)$ constructed from a monad $bb(M)$, the renormalization procedure can be captured by the map:
 $
   bb(M) cal(A) ->^rho cal(A),
 $
 where $rho$ is the structure map of the modular operad $cal(A)$.
 
-Consider we apply the multiplication functor $bb(M)$ again, which corresponds to integrating out more high-energy modes.
-After repeating the procedure, we obtain a sequence of maps:
+Consider applying the functor $bb(M)$ iteratively. This corresponds to a hierarchy of nested contractions (or scales).
+We obtain a sequence of maps:
 #diagram-frame(edge => [$
     #diagram(
       node((0, 0), $dots.c$),
@@ -179,38 +179,39 @@ After repeating the procedure, we obtain a sequence of maps:
       edge((2, 0), (3, 0), "->", label: $rho$),
     )
   $])
-which is a simplicial object in the category of $sMod_(bb(S))$, forming a *bar construction* of the modular operad $cal(A)$.
+This is a simplicial object in the category $sMod_(bb(S))$, forming the *bar construction* of the modular operad $cal(A)$.
 
-Simplicial objects encodes some surface maps ${diff_(i)}$ and degeneracy maps ${sigma_(i)}$, which leads to some homological structures, and the "master equation" $diff^(2) = 0$ would encode some consistency conditions of the theory, such as the associativity and unit in the monad structure.
+Simplicial objects encode face maps ${diff_(i)}$ and degeneracy maps ${sigma_(i)}$, giving rise to homological structures. The "master equation" $diff^(2) = 0$ encodes the consistency conditions of the theory, specifically the associativity and unit axioms of the monad.
 
-Now we consider the specific structure of boundary operator $diff$.
-First, we note that the face map of this theory is essentially flatten $i$-th and $i+1$-th graph, thus, the expression of such map could be written as:
+Consider the specific structure of the boundary operator $diff$.
+The face map $diff_i$ essentially corresponds to contracting the graph at the $i$-th level of nesting. The expression for such a map is:
 $
   diff_(i) = cases(
     bb(M)^(i) compose mu compose bb(M)^(n-1-i)\, thin & 0<=i<n,
     bb(M)^(n) compose rho\, & thin i=n\,
   )
 $
-Such sequences of maps are indeed desired face map, since due to the associativity of $mu$ and the definition of $rho$, we have $diff_(i) diff_(j) = diff_(j-1) diff_(i)$, which is called *simplicial identity*.
+These maps satisfy the simplicial identity $diff_(i) diff_(j) = diff_(j-1) diff_(i)$.
 
-Consider $diff_((n)): bb(M)^(n+1)cal(A) -> bb(M)^(n) cal(A)$, using the face map above, such boundary map could be written as:
+Using these face maps, we define the total boundary map $diff_((n)): bb(M)^(n+1)cal(A) -> bb(M)^(n) cal(A)$ as:
 $
-  diff_((n)) = sum_(i=0)^(n) (-1)^(n) diff_(i),
+  diff_((n)) = sum_(i=0)^(n) (-1)^(i) diff_(i),
 $
 where the master equation $diff^(2)_((n)) = 0$ is satisfied since the simplicial identity.
 
 #remark([
-  Such a bar-construction is just a natural generalization of the original bar-construction we see in homological algebra, where the chain complex could be viewed as a one-dimensional tree, and the face maps are just "split" of vertices, which is one-dimensional version of our composition functor $mu$.
+  This bar construction is a natural generalization of the classical bar construction in homological algebra. There, a chain complex can be viewed as a 1-dimensional tree, and the face maps correspond to the "splitting" of vertices.
 
-  Also, if we restrict our diagram into tree-level, we would obtain the bar-construction for cyclic operad, whose composition map is well-known as linking two legs for two trees respectively.
+  Restricting our diagrams to trees (genus 0) yields the bar construction for cyclic operads, where the composition map corresponds to linking the legs of two trees.
 ])
 
-= Ending is A New Beginning
+= Outlook
 
-It seems that we've already built a "categorical description" for Feynman diagram, at least in the level of vertices.
-However, there are some important data have not been captured for now.
-Consider, for example, perturbative Chern-Simons theory, whose correlation function is (at $bb(R)^(3)$ equipped with Euclidean metric) Gaussian linking form, which is highly related with the orientation with edges in our Feynman diagram.
-Thus, if one want to develop a full categorical description of Feynman rule, taking orientation data into account properly is crucial.
-Such an idea leads people consider so-called "twisted modular operad", which would highly related with Kontsevich's graph complex, the "true" description of Chern-Simons perturbation theory.
+We have built a "categorical description" of Feynman diagrams, primarily at the level of vertices and their composition.
 
-However, it is already too long for a blog, so let's see it in the future.
+However, essential data remains uncaptured.
+For example, in perturbative Chern-Simons theory, the correlation function (on $bb(R)^(3)$) involves the Gaussian linking number, which is sensitive to the *orientation* of edges.
+Thus, to develop a full categorical description, one must account for orientation data.
+This leads to the concept of "twisted modular operads," which is intimately related to Kontsevich's graph complex—the "true" home of Chern-Simons perturbation theory.
+
+But that is a story for another time.
