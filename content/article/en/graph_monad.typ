@@ -133,10 +133,11 @@ Remember the definition of a (cyclic) operad, which is just a algebra over a cer
 After we have defined the monad $bb(M)$, we can also consider its algebras.
 Since this monad is defined using graphs with genus, its algebras would become a generalization of operad, called *modular operad*.
 
-To be precise, a modular operad is an algebra over the monad $bb(M)$ on the category $sMod_(bb(S))$, which consists of:
-// TODO: finish this part
--
--
+To be precise, a modular operad $cal(A)$ is an algebra over the monad $bb(M)$, which equipped with a structure map $rho: bb(M)cal(A) -> cal(A)$ satisfying:
+- Associativity: $rho dot mu_(cal(A)) = rho dot bb(M)(rho)$.
+- Unit: $rho dot eta_(cal(A)) = id_(cal(A))$.
+
+We would denote a modular operad as a pair $(cal(A), rho)$.
 
 = Multiplication Functor and Renormalization
 
@@ -152,3 +153,30 @@ Roughly speaking, Wilson's renormalization group (RG) approach suggests that, to
 Thus, the multiplication functor $mu$ describes the first step of the RG procedure.
 
 == (Co)bar Construction
+
+Given a modular operad $cal(A)$ constructed from monad $bb(M)$, the renormalization procedure described above could be naturally captured by:
+$
+  bb(M) cal(A) ->^rho cal(A),
+$
+where $rho$ is the structure map of the modular operad $cal(A)$.
+
+Consider we apply the multiplication functor $bb(M)$ again, which corresponds to integrating out more high-energy modes.
+After repeating the procedure, we obtain a sequence of maps:
+#diagram-frame(edge => [$
+    #diagram(
+      node((0, 0), $dots.c$),
+      node((1, 0), $bb(M)^(2) A$),
+      node((2, 0), $bb(M) A$),
+      node((3, 0), $A,$),
+
+      edge((0, 0), (1, 0), "->", shift: -5pt),
+      edge((0, 0), (1, 0), "->", shift: 0pt),
+      edge((0, 0), (1, 0), "->", shift: 5pt),
+
+      edge((1, 0), (2, 0), "->", shift: -3pt, label: $mu dot id_cal(A)$, label-side: left),
+      edge((1, 0), (2, 0), "->", shift: 3pt, label: $bb(M) dot rho$, label-side: right),
+
+      edge((2, 0), (3, 0), "->", label: $rho$),
+    )
+  $])
+which is a simplicial object in the category of $sMod_(bb(S))$, forming a *bar construction* of the modular operad $cal(A)$.
