@@ -204,3 +204,13 @@ where the master equation $diff^(2)_((n)) = 0$ is satisfied since the simplicial
 
   Also, if we restrict our diagram into tree-level, we would obtain the bar-construction for cyclic operad, whose composition map is well-known as linking two legs for two trees respectively.
 ])
+
+= Ending is A New Beginning
+
+It seems that we've already built a "categorical description" for Feynman diagram, at least in the level of vertices.
+However, there are some important data have not been captured for now.
+Consider, for example, perturbative Chern-Simons theory, whose correlation function is (at $bb(R)^(3)$ equipped with Euclidean metric) Gaussian linking form, which is highly related with the orientation with edges in our Feynman diagram.
+Thus, if one want to develop a full categorical description of Feynman rule, taking orientation data into account properly is crucial.
+Such an idea leads people consider so-called "twisted modular operad", which would highly related with Kontsevich's graph complex, the "true" description of Chern-Simons perturbation theory.
+
+However, it is already too long for a blog, so let's see it in the future.
