@@ -5,7 +5,7 @@
 #show: main.with(
   title: title,
   desc: [The definition of Feynman rules can be captured using the language of monad, and the "renormalization" procedure corresponds to the generalized (co)bar construction.],
-  date: "2025-12-15",
+  date: "2025-12-16",
   tags: (
     blog-tags.math,
     blog-tags.physics,
