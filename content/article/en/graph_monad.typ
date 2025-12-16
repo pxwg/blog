@@ -9,7 +9,7 @@
   tags: (
     blog-tags.math,
     blog-tags.physics,
-    blog-tags.topology,
+    blog-tags.algebra,
     blog-tags.abstract-nonsense,
   ),
   lang: "en",
