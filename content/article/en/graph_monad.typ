@@ -209,7 +209,7 @@ where the master equation $diff^(2)_((n)) = 0$ is satisfied since the simplicial
 
 We have built a "categorical description" of Feynman diagrams, primarily at the level of vertices and their composition.
 
-However, essential data remains uncaptured.
+However, some essential data remains uncaptured.
 For example, in perturbative Chern-Simons theory, the correlation function (on $bb(R)^(3)$) involves the Gaussian linking number, which is sensitive to the *orientation* of edges.
 Thus, to develop a full categorical description, one must account for orientation data.
 This leads to the concept of "twisted modular operads," which is intimately related to Kontsevich's graph complex—the "true" home of Chern-Simons perturbation theory.
