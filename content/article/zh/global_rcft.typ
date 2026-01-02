@@ -4,7 +4,7 @@
 
 //----------------------basic info ----------------------//
 
-#let title = "缝合手征有理共形场论 (Sewing Chiral RCFTs)"
+#let title = "缝合手征有理共形场论"
 #let desc = "通过缝合程序从局部有理共形场论构造高亏格有理共形场论。"
 #let author = "Xinyu Xiang"
 #let date = "2026-01-02"
