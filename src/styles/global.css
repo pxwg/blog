@@ -20,9 +20,9 @@
   --main-color: #dfdfd6;
   --main-hover-color: #fff;
   --gray-color: #939da3;
-  --raw-bg-color: #65758529;
-  --main-bg-color: #212737;
-  --nav-bg-color: #212737;
+  --raw-bg-color: rgba(255, 255, 255, 0.05);
+  --main-bg-color: #242424;
+  --nav-bg-color: #242424;
   --accent: #cf829e;
   --accent-dark: #cf829eb3;
 }
@@ -189,6 +189,7 @@ pre > code {
 .zebraw-code-block {
   position: relative;
   border-radius: 8px;
+  background-color: var(--raw-bg-color);
   border: 1px solid var(--accent) !important;
   margin: 1.5em 0;
   overflow: hidden ;
