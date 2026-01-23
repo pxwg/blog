@@ -97,12 +97,12 @@ export const translations: TranslationStrings = {
   switchToChinese: '切换到中文',
   switchToEnglish: 'Switch to English',
   translationNotice: {
-    zh: '📝 翻译声明：本文由 LLM 从原文翻译而来，可能存在翻译不准确之处。建议阅读 <a href="{targetPath}">原文</a> 以获得最准确的内容。',
-    en: '📝 Translation Notice: This article was translated from the original by LLM and may contain inaccuracies. Please refer to the <a href="{targetPath}">original article</a> for the most accurate content.',
+    zh: '翻译声明：本文由 LLM 从原文翻译而来，可能存在翻译不准确之处。建议阅读 <a href="{targetPath}">原文</a> 以获得最准确的内容。',
+    en: 'Translation Notice: This article was translated from the original by LLM and may contain inaccuracies. Please refer to the <a href="{targetPath}">original article</a> for the most accurate content.',
   },
   translationLinks: {
-    zh: '📚 <a href="{targetPath}">EN</a> | 中文',
-    en: '📚 EN | <a href="{targetPath}">中文</a>',
+    zh: '<a href="{targetPath}">EN</a> | 中文',
+    en: 'EN | <a href="{targetPath}">中文</a>',
   },
 };
 
