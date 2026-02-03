@@ -3,7 +3,7 @@
 #show: main-zh.with(
   title: title,
   desc: [“误导”亦可成“悟道”。],
-  date: "2026-02-02",
+  date: "2026-02-03",
   tags: (
     blog-tags.software-engineering,
     blog-tags.programming,

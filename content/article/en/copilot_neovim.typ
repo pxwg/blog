@@ -3,7 +3,7 @@
 #show: main-zh.with(
   title: title,
   desc: ["Misleading" can also lead to "Enlightenment".],
-  date: "2026-02-02",
+  date: "2026-02-03",
   tags: (
     blog-tags.software-engineering,
     blog-tags.programming,
