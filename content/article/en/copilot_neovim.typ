@@ -108,7 +108,7 @@ Through packet analysis, we see the workflow (excluding daemon requests):
   ```
 - The server returns the AI's response, including any tool calls.
 
-By replicating this sequence—requesting `/models/session` during initialization and caching the `selected_model`—we can support dynamic selection in Neovim. I have submitted this modification as a #link("https://github.com/CopilotC-Nvim/CopilotChat.nvim/pull/1518")[Pull Request] to CopilotChat.nvim.
+By replicating this sequence—requesting `/models/session` during initialization and caching the `selected_model`—we can support dynamic selection in Neovim. I have submitted this modification as a #link("https://github.com/CopilotC-Nvim/CopilotChat.nvim/pull/1518")[Pull Request] to CopilotChat.nvim, which has been merged.
 
 == Tool Calling
 

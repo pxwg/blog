@@ -125,7 +125,7 @@ VSCode 的抓包非常简单，只需要设置 `Http: Proxy` 为逆向工具 (�
 
 通过分析这个请求过程，我们可以在 Neovim 插件的后端实现中添加对“动态模型选择”的支持。具体来说，我们需要在会话初始化时发送 `/models/session` 请求，并保存返回的 `selected_model`，然后在后续的消息发送请求中使用该模型。这在一定程度上模拟了 VSCode Copilot Chat 插件的行为，从而实现了“动态模型选择”的支持。
 
-目前这个修改已经作为 #link("https://github.com/CopilotC-Nvim/CopilotChat.nvim/pull/1518")[Pull Request] 提交到了 CopilotChat.nvim 插件中，等待合并。
+目前这个修改已经作为 #link("https://github.com/CopilotC-Nvim/CopilotChat.nvim/pull/1518")[Pull Request] 合并到了 CopilotChat.nvim 的主分支中。
 
 作为一个开源项目，我们也可以分析 VSCode Copilot Chat 插件的源码来理解这一功能的实现。但既然我们已经抓包出来了，分析“巨硬”的源码就显得没有必要了 (类型体操看得有点累)。
 
