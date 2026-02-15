@@ -12,6 +12,8 @@
   translationKey: "copilot_neovim",
 )
 
+// {content: start}
+
 利用 AI 辅助程序设计应该已经不是一个非常新鲜的话题了。从去年年初的 GitHub Copilot，再到后面的 Cursor 以及 Claude Code 等更接近 Agent 架构的 AI 辅助甚至自动化编程工具，AI 与 vibe coding 在程序设计中已经变得越来越普遍。
 
 = 需求
