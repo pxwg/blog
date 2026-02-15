@@ -17,7 +17,7 @@
 市面上有很多基于 Markdown 的 Zettelkasten 笔记系统，最著名的莫过于 Obsidian。
 然而：
 - 我不想使用 Markdown。
-  - 正如我在#link("./typst_md_tex")[这篇文章中]讨论的那样，Typst 是一个加强版 Markdown 和 LaTeX 的混合体，具有更强的表达能力和更好的可读性。
+  - 正如我在#link("../typst_md_tex")[这篇文章中]讨论的那样，Typst 是一个加强版 Markdown 和 LaTeX 的混合体，具有更强的表达能力和更好的可读性。
     我希望我的 Zettelkasten 笔记系统能够直接使用 Typst 来编写笔记。
   - 由于我的博客、专题笔记是用 Typst 编写的，如果能够保持相同的技术栈，整理笔记和撰写博客就可以无缝衔接，效率更高。
 - 我想要一个基于我个人编辑环境的 Zettelkasten 笔记系统。
