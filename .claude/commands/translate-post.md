@@ -1,4 +1,4 @@
-Translate a Chinese Typst blog post to English.
+Translate a Chinese Typst blog post to English, or vice versa
 
 **Usage:** `/translate-post <source-path>`
 
@@ -8,7 +8,7 @@ Translate a Chinese Typst blog post to English.
 
 ## Instructions
 
-You are translating a Chinese `.typ` blog post to English. The blog uses Astro + Typst; posts live in `content/article/zh/` (Chinese) and `content/article/en/` (English).
+You are translating a Chinese (English) `.typ` blog post to English (Chinese). The blog uses Astro + Typst; posts live in `content/article/zh/` (Chinese) and `content/article/en/` (English).
 
 **Argument:** `$ARGUMENTS` — the path to the source `.typ` file.
 
