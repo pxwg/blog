@@ -34,3 +34,6 @@ CLAUDE.md
 
 # Https certificates
 .cert/
+
+# Harper dictionary
+.harper-dictionary.txt
