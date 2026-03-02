@@ -37,21 +37,21 @@ For implementation, I wrote a `zk_delete_by_tag.py` script supporting three mode
 
 = Streaming: iPad Secondary Display Approach
 
-With privacy solved, the next step was how to stream. Initially, I researched various macOS screen recording/livestreaming tools (OBS, Bilibili client, etc.), only to find that they either introduced too much latency or interfered too much with my coding environment. My core requirement for a streaming tool was: it must not affect the coding experience; performance on macOS must be prioritized.
+With privacy solved, the next step was how to stream. Initially, I researched various macOS screen recording/livestreaming tools (#link("https://obsproject.com/")[OBS], #link("https://www.bilibili.com/")[Bilibili] client, etc.), only to find that they either introduced too much latency or interfered too much with my coding environment. My core requirement for a streaming tool was: it must not affect the coding experience; performance on macOS must be prioritized.
 
 After several rounds of testing, I switched to a completely different approach—don't stream from the Mac at all, but use the iPad. This involves mirroring the Mac's screen content and system audio to the iPad, letting the iPad handle the streaming. The advantage of this scheme is: the Mac only needs to focus on coding; the performance burden of streaming is entirely shifted to the iPad, minimizing interference from streaming tools on the Mac.
 
 == HDMI + Orion/Genki Studio: Poor Performance and Display Quality
 
-The earliest hardware capture approach I investigated was: Mac connected via HDMI to a Genki Studio capture card, the capture card plugged into the iPad's Type-C port, iPad recognizing the capture card as a camera via iPadOS 17's native UVC protocol, then using #link("https://orion.tube/")[Orion] to bring up the Mac's screen on the iPad, and finally the Bilibili client screen‑records the iPad screen for streaming. In theory, Mac performance overhead is zero.
+The earliest hardware capture approach I investigated was: Mac connected via HDMI to a #link("https://www.genkithings.com/")[Genki Studio] capture card, the capture card plugged into the iPad's Type-C port, iPad recognizing the capture card as a camera via iPadOS 17's native UVC protocol, then using #link("https://orion.tube/")[Orion] to bring up the Mac's screen on the iPad, and finally the Bilibili client screen‑records the iPad screen for streaming. In theory, Mac performance overhead is zero.
 
 Hardware connected, Orion opened, picture appears. But the terminal colors are all wrong. The reason lies in the YUV color‑range mapping deviation of USB video capture: the capture card defaults to MPEG limited range rather than Full range, causing the carefully tuned terminal color scheme to be compressed and darkened, whites turn gray, overall contrast collapses. This issue isn't at the software level; it's an inherent flaw of the hardware capture chain, adjusting Orion's display parameters only treats symptoms. For a livestream where I stare at the terminal writing code all day, if what the audience sees is completely different from what I actually use, that's simply unacceptable. This scheme was thus abandoned.
 
 == SideCar + Bilibili Client: Final Solution
 
-The final effective solution is straightforward: use SideCar to turn the iPad into a secondary display for the Mac, then stream directly with the Bilibili client on the iPad. This way, the Mac only needs to handle coding; the streaming load is entirely shifted to the iPad. The video part is solved.
+The final effective solution is straightforward: use #link("https://support.apple.com/en-us/102597")[SideCar] to turn the iPad into a secondary display for the Mac, then stream directly with the Bilibili client on the iPad. This way, the Mac only needs to handle coding; the streaming load is entirely shifted to the iPad. The video part is solved.
 
-Incidentally, during streaming I need to show currently playing music, but can't add overlays on the coding screen that would interfere with writing code (the client also can't add overlays while streaming). I simply used Simple‑Bar's Now Playing feature to display song information in the status bar at the top of the secondary display—visible to the audience, no interference with my coding.
+Incidentally, during streaming I need to show currently playing music, but can't add overlays on the coding screen that would interfere with writing code (the client also can't add overlays while streaming). I simply used #link("https://github.com/Jean-Tinland/simple-bar")[Simple‑Bar]'s Now Playing feature to display song information in the status bar at the top of the secondary display—visible to the audience, no interference with my coding.
 
 Another small detail: all notification pop‑ups must be disabled during streaming. macOS's built‑in "Focus Mode" can do this; just set up a custom mode that automatically activates when streaming.
 
@@ -65,7 +65,7 @@ Essentially, there are two approaches:
 
 == Last.fm: Copyright Wall
 
-The first attempt was to play music on the iPad, poll the Last.fm Scrobble API, and display the currently playing song on Simple‑Bar on the Mac side. This idea is intuitive and not hard to implement. However, when streaming on the iPad, the Bilibili client restricts audio sources—copyright limitations prevent the music from being audible at all. Although this scheme is theoretically the most elegant, it ultimately couldn't be realized (I don't think I have the skills to hack Apple's screen‑recording restrictions). Regretfully dropped.
+The first attempt was to play music on the iPad, poll the #link("https://www.last.fm/")[Last.fm] Scrobble API, and display the currently playing song on Simple‑Bar on the Mac side. This idea is intuitive and not hard to implement. However, when streaming on the iPad, the Bilibili client restricts audio sources—copyright limitations prevent the music from being audible at all. Although this scheme is theoretically the most elegant, it ultimately couldn't be realized (I don't think I have the skills to hack Apple's screen‑recording restrictions). Regretfully dropped.
 
 == NetEase Cloud Music: API Latency
 
@@ -79,13 +79,13 @@ Since music couldn't be played on the iPad, reverse it: play on the Mac, use #li
 
 == FFmpeg + RTP: Performance and Stability Woes
 
-AirFoil's failure proved that GUI tools don't work in this scenario. As a terminal enthusiast, the next natural thought—bring in FFmpeg. The idea: use BlackHole to capture the Mac's system audio, then have FFmpeg read BlackHole's output and directly push via RTP protocol to the iPad's IP address, with the iPad side using #link("https://www.videolan.org/vlc/")[VLC] to receive and play. Pure command‑line, zero GUI overhead, leveraging the M3 chip's hardware audio encoder, theoretically elegant.
+AirFoil's failure proved that GUI tools don't work in this scenario. As a terminal enthusiast, the next natural thought—bring in FFmpeg. The idea: use #link("https://existential.audio/blackhole/")[BlackHole] to capture the Mac's system audio, then have #link("https://ffmpeg.org/")[FFmpeg] read BlackHole's output and directly push via RTP protocol to the iPad's IP address, with the iPad side using #link("https://www.videolan.org/vlc/")[VLC] to receive and play. Pure command‑line, zero GUI overhead, leveraging the M3 chip's hardware audio encoder, theoretically elegant.
 
-Spent an afternoon tuning FFmpeg parameters, solved the `avfoundation` input sample‑rate negotiation issue, manually adjusted RTP packet size and VLC's jitter buffer. But reality is harsh: RTP over UDP is inherently unstable over Wi‑Fi and wired LAN setups; network jitter directly leads to buffer underruns, crackling, dropouts—worse than AirFoil. Switching to a local MediaMTX relay for RTMP before forwarding to the iPad added another layer of complexity, increasing latency and dropouts. No matter how cool the CLI is, if it can't stay stable, it's a no‑go. Reluctantly abandoned this scheme that I most wanted to succeed.
+Spent an afternoon tuning FFmpeg parameters, solved the `avfoundation` input sample‑rate negotiation issue, manually adjusted RTP packet size and VLC's jitter buffer. But reality is harsh: RTP over UDP is inherently unstable over Wi‑Fi and wired LAN setups; network jitter directly leads to buffer underruns, crackling, dropouts—worse than AirFoil. Switching to a local #link("https://github.com/bluenviron/mediamtx")[MediaMTX] relay for RTMP before forwarding to the iPad added another layer of complexity, increasing latency and dropouts. No matter how cool the CLI is, if it can't stay stable, it's a no‑go. Reluctantly abandoned this scheme that I most wanted to succeed.
 
 == SonoBus + BlackHole: Final Solution
 
-Finally found SonoBus—an open‑source low‑latency audio transmission tool. Architecture as follows:
+Finally found #link("https://www.sonobus.net/")[SonoBus]—an open‑source low‑latency audio transmission tool. Architecture as follows:
 
 - Use BlackHole (virtual audio device) to route the Mac's system audio to SonoBus
 - SonoBus synchronizes audio between Mac and iPad

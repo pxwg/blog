@@ -36,11 +36,11 @@
 
 = 推流：iPad 副屏方案
 
-解决了隐私问题，下一步是怎么推流。一开始我调研了各种 macOS 上的录屏/直播工具 (OBS，哔哩哔哩客户端等)，结果发现要么延迟太高，要么对我的编码环境干扰太大。我对直播工具的核心诉求是：不能影响编码体验，MacOS 这边的性能必须优先保障。
+解决了隐私问题，下一步是怎么推流。一开始我调研了各种 macOS 上的录屏/直播工具 (#link("https://obsproject.com/")[OBS]，#link("https://www.bilibili.com/")[哔哩哔哩]客户端等)，结果发现要么延迟太高，要么对我的编码环境干扰太大。我对直播工具的核心诉求是：不能影响编码体验，MacOS 这边的性能必须优先保障。
 
 试了几轮之后换了个完全不同的思路——不在 Mac 上推流，而是用 iPad。这就涉及到将 Mac 的屏幕内容和系统音频同步到 iPad 上，让 iPad 负责推流。这个方案的好处是：Mac 只需要专注于编码，推流的性能压力完全转嫁给 iPad，直播工具对 Mac 的干扰降到最低。
 
-== HDMI + Orion/Genki Studio：性能与显示效果不佳
+== HDMI + Orion/#link("https://www.genkithings.com/")[Genki Studio]：性能与显示效果不佳
 
 最早调研的是物理采集方案：Mac 通过 HDMI 线接一块 Genki Studio 采集卡，采集卡插进 iPad 的 Type-C 口，iPad 通过 iPadOS 17 原生支持的 UVC 协议把采集卡识别成摄像头，再用 #link("https://orion.tube/")[Orion] 在 iPad 上把 Mac 的屏幕调出来，哔哩哔哩客户端对 iPad 屏幕录屏推流。理论上 Mac 性能损耗为零。
 
@@ -48,9 +48,9 @@
 
 == SideCar + 哔哩哔哩客户端：最终方案
 
-最终生效的思路方案很简单：通过 SideCar 把 iPad 变成 Mac 的副屏，然后在 iPad 上用哔哩哔哩客户端直接推流。这样 Mac 只需要负责编码，推流的压力全部转嫁给 iPad。视频部分就这么解决了。
+最终生效的思路方案很简单：通过 #link("https://support.apple.com/en-us/102597")[SideCar] 把 iPad 变成 Mac 的副屏，然后在 iPad 上用哔哩哔哩客户端直接推流。这样 Mac 只需要负责编码，推流的压力全部转嫁给 iPad。视频部分就这么解决了。
 
-顺便，直播时需要展示当前播放的音乐，但不能在编码屏幕上加 overlay 干扰写代码 (客户端也不能做到在推流时加 overlay)。我直接用 Simple-Bar 的 Now Playing 功能，在副屏顶部的状态栏里显示歌曲信息，观众看得到，我写代码不受影响。
+顺便，直播时需要展示当前播放的音乐，但不能在编码屏幕上加 overlay 干扰写代码 (客户端也不能做到在推流时加 overlay)。我直接用 #link("https://github.com/Jean-Tinland/simple-bar")[Simple-Bar] 的 Now Playing 功能，在副屏顶部的状态栏里显示歌曲信息，观众看得到，我写代码不受影响。
 
 还有一个小细节：直播过程中必须禁掉一切通知弹窗。macOS 自带的"专注模式"可以做到这一点，设置一个自定义模式，直播时自动开启就行。
 
@@ -64,7 +64,7 @@
 
 == Last.fm：版权墙
 
-第一个尝试是在 iPad 上播放音乐，通过 Last.fm Scrobble 接口轮询 API，在 Mac 端的 Simple-Bar 上显示正在播放的歌曲。这个想法很直观，做起来也不难。但 iPad 上直播时，B 站客户端会限制音频来源——版权限制导致音乐根本播不出声。虽然这个方案理论上是最为优雅的，但最终还是落不了地 (我不觉得我有本事 Hack 苹果录屏的限制)。遗憾离场。
+第一个尝试是在 iPad 上播放音乐，通过 #link("https://www.last.fm/")[Last.fm] Scrobble 接口轮询 API，在 Mac 端的 Simple-Bar 上显示正在播放的歌曲。这个想法很直观，做起来也不难。但 iPad 上直播时，B 站客户端会限制音频来源——版权限制导致音乐根本播不出声。虽然这个方案理论上是最为优雅的，但最终还是落不了地 (我不觉得我有本事 Hack 苹果录屏的限制)。遗憾离场。
 
 == 网易云音乐：API 延迟
 
@@ -78,13 +78,13 @@
 
 == FFmpeg + RTP：性能与稳定性拉胯
 
-AirFoil 的失败证明 GUI 工具在这个场景下走不通。作为一名终端玩家，下一步想法很自然——上 FFmpeg。思路是：用 BlackHole 把 Mac 的系统音频截获，再用 FFmpeg 读取 BlackHole 的输出，以 RTP 协议直接推送到 iPad 的 IP 地址，iPad 端用 #link("https://www.videolan.org/vlc/")[VLC] 接收播放。纯命令行，零 GUI 开销，M3 芯片的硬件音频编码器直接上，理论上优雅至极。
+AirFoil 的失败证明 GUI 工具在这个场景下走不通。作为一名终端玩家，下一步想法很自然——上 FFmpeg。思路是：用 #link("https://existential.audio/blackhole/")[BlackHole] 把 Mac 的系统音频截获，再用 #link("https://ffmpeg.org/")[FFmpeg] 读取 BlackHole 的输出，以 RTP 协议直接推送到 iPad 的 IP 地址，iPad 端用 #link("https://www.videolan.org/vlc/")[VLC] 接收播放。纯命令行，零 GUI 开销，M3 芯片的硬件音频编码器直接上，理论上优雅至极。
 
-调了一个下午 FFmpeg 参数，解决了 `avfoundation` 输入的采样率协商问题，RTP 包大小和 VLC 的抖动缓冲区也都手动调过。但现实很骨感：RTP over UDP 在 Wi-Fi 和基于数据线的局域网组网下本质不稳定，网络抖动直接导致缓冲区欠载，爆音、断续，比 AirFoil 还难听。换成走本地 MediaMTX 做 RTMP 中继再转 iPad，增加了一层复杂度，延迟和断续反而增加了。CLI 再帅，稳不住就是稳不住。最终忍痛放弃了这个我最想让它成功的方案。
+调了一个下午 FFmpeg 参数，解决了 `avfoundation` 输入的采样率协商问题，RTP 包大小和 VLC 的抖动缓冲区也都手动调过。但现实很骨感：RTP over UDP 在 Wi-Fi 和基于数据线的局域网组网下本质不稳定，网络抖动直接导致缓冲区欠载，爆音、断续，比 AirFoil 还难听。换成走本地 #link("https://github.com/bluenviron/mediamtx")[MediaMTX] 做 RTMP 中继再转 iPad，增加了一层复杂度，延迟和断续反而增加了。CLI 再帅，稳不住就是稳不住。最终忍痛放弃了这个我最想让它成功的方案。
 
 == SonoBus + BlackHole：最终方案
 
-最终找到了 SonoBus——一个开源的低延迟音频传输工具。架构如下：
+最终找到了 #link("https://www.sonobus.net/")[SonoBus]——一个开源的低延迟音频传输工具。架构如下：
 
 - 用 BlackHole（虚拟音频设备）把 Mac 的系统音频路由到 SonoBus
 - SonoBus 在 Mac 和 iPad 之间同步音频
