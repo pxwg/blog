@@ -40,7 +40,7 @@
 
 试了几轮之后换了个完全不同的思路——不在 Mac 上推流，而是用 iPad。这就涉及到将 Mac 的屏幕内容和系统音频同步到 iPad 上，让 iPad 负责推流。这个方案的好处是：Mac 只需要专注于编码，推流的性能压力完全转嫁给 iPad，直播工具对 Mac 的干扰降到最低。
 
-== HDMI + Orion/#link("https://www.genkithings.com/")[Genki Studio]：性能与显示效果不佳
+== HDMI + Orion/Genki Studio：性能与显示效果不佳
 
 最早调研的是物理采集方案：Mac 通过 HDMI 线接一块 Genki Studio 采集卡，采集卡插进 iPad 的 Type-C 口，iPad 通过 iPadOS 17 原生支持的 UVC 协议把采集卡识别成摄像头，再用 #link("https://orion.tube/")[Orion] 在 iPad 上把 Mac 的屏幕调出来，哔哩哔哩客户端对 iPad 屏幕录屏推流。理论上 Mac 性能损耗为零。
 
