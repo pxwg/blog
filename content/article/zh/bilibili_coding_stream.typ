@@ -1,8 +1,8 @@
 #import "../../../typ/templates/blog.typ": *
-#let title = "用 iPad 副屏在 B 站直播写代码"
+#let title = "搭建云上自修室"
 #show: main-zh.with(
   title: title,
-  desc: [记录搭建 B 站编码直播间的全过程：从隐私保护到音频同步，踩了不少坑，最终用 SideCar + SonoBus + BlackHole 搭出了一套稳定的方案。],
+  desc: [使用 iPad + SideCar + SonoBus 搭建云上自修室，直播写代码的日常工作流。],
   date: "2026-03-02",
   tags: (
     blog-tags.software-engineering,

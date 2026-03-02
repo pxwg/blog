@@ -1,8 +1,8 @@
 #import "../../../typ/templates/blog.typ": *
-#let title = "Live Coding on Bilibili Using iPad as a Secondary Display"
-#show: main.with(
+#let title = "Building a Cloud Study Room"
+#show: main-zh.with(
   title: title,
-  desc: [Documenting the entire process of setting up a Bilibili coding live stream: from privacy protection to audio synchronization, encountering many pitfalls, and finally building a stable solution using SideCar + SonoBus + BlackHole.],
+  desc: [Using iPad + SideCar + SonoBus to build a cloud-based study room and stream my daily coding workflow.],
   date: "2026-03-02",
   tags: (
     blog-tags.software-engineering,
