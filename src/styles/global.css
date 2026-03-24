@@ -294,6 +294,13 @@ figcaption {
   vertical-align: -0.2em;
   display: inline-block;
 }
+.typst-inline-math {
+  display: inline-block;
+  line-height: 0;
+}
+.typst-inline-math > svg {
+  display: block;
+}
 .block-equation {
   display: grid;
   place-items: center;
