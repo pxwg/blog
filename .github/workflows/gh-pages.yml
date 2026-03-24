@@ -69,7 +69,7 @@ jobs:
         run: |
           mkdir -p ./assets/fonts
           curl -L https://github.com/Myriad-Dreamin/shiroa/releases/download/v0.1.5/source-han-serif-font-assets.tar.gz | tar -xvz -C assets/fonts
-          curl -L https://raw.githubusercontent.com/stipub/stixfonts/master/zipfiles/static_otf.zip -o assets/fonts/static_otf.zip
+          curl -L https://github.com/stipub/stixfonts/archive/refs/tags/v2.13b171.zip -o assets/fonts/static_otf.zip
           unzip -o -j assets/fonts/static_otf.zip -d assets/fonts
           rm assets/fonts/static_otf.zip
           ls ./assets/fonts
