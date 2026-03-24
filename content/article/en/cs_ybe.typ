@@ -21,7 +21,7 @@
 // {content: start}
 #let title = "Chern-Simons Theory and Yang-Baxter Equation"
 #let CS = math.upright("CS")
-#let wedge = sym.and
+#let wedge = math.and
 #let GL = math.upright("GL")
 #let Conf = math.upright("Conf")
 #let Hol = math.upright("Hol")
@@ -65,8 +65,8 @@
         let diagram = string-diagram.with(color: theme.main-color)
 
         let it = [$
-            #{ if type(content) == function { content(diagram) } else { content } }
-          $]
+          #{ if type(content) == function { content(diagram) } else { content } }
+        $]
         set text(fill: theme.main-color, size: math-size, font: math-font)
         span-frame(attrs: (class: "block-equation"), it)
       },
@@ -387,12 +387,9 @@ We could construct such collapsing configurations by the following $6$ ways by t
   diagram => {
     [$
         mat(
-          (-1)^↓ #diagram("12", "23") " " omega_12 wedge omega_23,
-          + (-1)^↓ #diagram("12", "13") " " omega_12 wedge omega_13;
-          + (-1)^↓ #diagram("13", "12") " " omega_13 wedge omega_12,
-          + (-1)^↓ #diagram("13", "23") " " omega_13 wedge omega_23;
-          + (-1)^↓ #diagram("23", "12") " " omega_23 wedge omega_12,
-          + (-1)^↓ #diagram("23", "13") " " omega_23 wedge omega_13;
+          (-1)^↓ #diagram("12", "23") " " omega_12 wedge omega_23, + (-1)^↓ #diagram("12", "13") " " omega_12 wedge omega_13;
+          + (-1)^↓ #diagram("13", "12") " " omega_13 wedge omega_12, + (-1)^↓ #diagram("13", "23") " " omega_13 wedge omega_23;
+          + (-1)^↓ #diagram("23", "12") " " omega_23 wedge omega_12, + (-1)^↓ #diagram("23", "13") " " omega_23 wedge omega_13;
           delim: #none
         ) "."
       $

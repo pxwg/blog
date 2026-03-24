@@ -116,13 +116,13 @@ which could be rewritten as:
     theme => {
       let edge = edge.with(stroke: theme.main-color)
       let it = [$
-          #align(center, diagram(
-            cell-size: (1mm, 1mm),
-            $J_(i) edge(delta, ->) & delta J_(i j)\
-            & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j),$,
-          ))\
-          quad
-        $]
+        #align(center, diagram(
+          cell-size: (1mm, 1mm),
+          $J_(i) edge(delta, ->) & delta J_(i j)\
+          & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j),$,
+        ))\
+        quad
+      $]
       set text(fill: theme.main-color, size: math-size, font: math-font)
       span-frame(attrs: (class: "block-equation"), it)
     },
@@ -141,14 +141,14 @@ we have:
     theme => {
       let edge = edge.with(stroke: theme.main-color)
       let it = [$
-          #align(center, diagram(
-            cell-size: (1mm, 1mm),
-            $J_(i) edge(delta, ->) & delta J_(i j) \
-            & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j) edge(delta, ->) & (1-2 lambda) i pi n_(i j k) \
-            & & edge("u", dif, ->) (1-2 lambda) i pi n edge(delta, ->) & 0,$,
-          ))\
-          quad
-        $]
+        #align(center, diagram(
+          cell-size: (1mm, 1mm),
+          $J_(i) edge(delta, ->) & delta J_(i j) \
+          & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j) edge(delta, ->) & (1-2 lambda) i pi n_(i j k) \
+          & & edge("u", dif, ->) (1-2 lambda) i pi n edge(delta, ->) & 0,$,
+        ))\
+        quad
+      $]
       set text(fill: theme.main-color, size: math-size, font: math-font)
       span-frame(attrs: (class: "block-equation"), it)
     },
@@ -163,16 +163,16 @@ Note that our integration is over $X$ for $overline(diff) J$, then we need to in
     theme => {
       let edge = edge.with(stroke: theme.main-color)
       let it = [$
-          #align(center, diagram(
-            cell-size: (1mm, 1mm),
-            $0 \
-            edge("u", dif, ->) omega edge(delta, ->) & dif J_(i) \
-            & edge("u", dif, ->) J_(i) edge(delta, ->) & delta J_(i j) \
-            & & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j) edge(delta, ->) & (1-2 lambda) i pi n_(i j k) \
-            & & & edge("u", dif, ->) (1-2 lambda) i pi n edge(delta, ->) & 0,$,
-          ))\
-          quad
-        $]
+        #align(center, diagram(
+          cell-size: (1mm, 1mm),
+          $0 \
+          edge("u", dif, ->) omega edge(delta, ->) & dif J_(i) \
+          & edge("u", dif, ->) J_(i) edge(delta, ->) & delta J_(i j) \
+          & & edge("u", dif, ->) frac(1-2 lambda, 2) ln diff_(z_(j)) f_(i j) edge(delta, ->) & (1-2 lambda) i pi n_(i j k) \
+          & & & edge("u", dif, ->) (1-2 lambda) i pi n edge(delta, ->) & 0,$,
+        ))\
+        quad
+      $]
       set text(fill: theme.main-color, size: math-size, font: math-font)
       span-frame(attrs: (class: "block-equation"), it)
     },
