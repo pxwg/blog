@@ -49,9 +49,9 @@ $
 $
   (p_(z)^(i) + A_(z)^(i)) psi(z_1, z_2) = 0, quad p_(overline(z))^(i) psi(z_1, z_2) = 0, thin forall i = 1, 2.
 $
-执行正则量子化 $p_(z)^(i) = - i diff_(z_(i))$，并切换到新坐标 $z = z_1-z_2$，这样的方程可以写为：
+执行正则量子化 $p_(z)^(i) = - i partial_(z_(i))$，并切换到新坐标 $z = z_1-z_2$，这样的方程可以写为：
 $
-  (diff_(z) - frac(theta, 2 pi) frac(1, z)) psi(z, overline(z)) = 0, quad diff_(overline(z)) psi(z, overline(z)) = 0.
+  (partial_(z) - frac(theta, 2 pi) frac(1, z)) psi(z, overline(z)) = 0, quad partial_(overline(z)) psi(z, overline(z)) = 0.
 $
 第二个方程意味着 $psi$ 在 $z$ 中是全纯的，第一个方程可以直接求解，得到：
 $
@@ -101,9 +101,9 @@ $
 $
 在全纯规范 $A = A_t d t + A_z d z$ 下，陈 - 西蒙斯作用量简化为：
 $
-  CS_(X)[A] := frac(k, 4 pi) integral_(X) A overline(diff)_(t) A,
+  CS_(X)[A] := frac(k, 4 pi) integral_(X) A overline(partial)_(t) A,
 $
-其中 $overline(diff)_(t) := d t overline(partial)$。
+其中 $overline(partial)_(t) := d t overline(partial)$。
 并且任意子拉格朗日量将通过最小耦合引入到该作用量中，可以表示为：
 $
   S_("anyon")[A, z] = integral_(RR) [A_z (z(t)) dot(z)(t) + A_(0) (z(t)) ] thin d t,
@@ -114,7 +114,7 @@ $
 由于陈 - 西蒙斯作用量是 $A$ 的二次型，这样的积分可以精确执行。
 注意，在全纯规范下，规范场 $A$ 的关联函数（传播子）可以计算为：
 $
-  angle.l A(z_1, t_1) A(z_2, t_2) angle.r = frac(1, i k) frac(d z_1 - d z_2, z_1 - z_2) delta(t_1 - t_2) d t_1.
+  chevron.l A(z_1, t_1) A(z_2, t_2) chevron.r = frac(1, i k) frac(d z_1 - d z_2, z_1 - z_2) delta(t_1 - t_2) d t_1.
 $
 执行高斯积分后，有效作用量可以表示为：
 $
@@ -133,7 +133,7 @@ $
 另一方面，陈 - 西蒙斯理论的波函数可以被解释为我们上面构造的任意子波函数。
 因此，CS-WZW 对应关系可以被解释为
 $
-  Psi_(CS)[X, {K_(i), rho_(i)}] <--> angle.l product_(i) V_(K_(i))(rho_(i)) angle.r_("WZW", partial X),
+  Psi_(CS)[X, {K_(i), rho_(i)}] <--> chevron.l product_(i) V_(K_(i))(rho_(i)) chevron.r_("WZW", partial X),
 $
 其中 $V_(K)(rho)$ 表示在 WZW 模型中，线 $K$ 与边界 $partial X$ 相交点处的顶点算符插入，而 ${K, rho}$ 表示一个由规范群的表示 $rho$ 着色的威尔逊线 $K$。
 在这里，$rho$ 扮演了我们上面介绍的电荷 $q$ 的角色。

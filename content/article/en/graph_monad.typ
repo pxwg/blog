@@ -31,7 +31,7 @@ A field theory described by a Lagrangian can typically be decomposed into:
 
 When expanding the path integral perturbatively using Wick's theorem, each term in the expansion can be represented by a Feynman diagram, constructed via the following rules:
 - *Graph*: $Gamma(g, n)$: A graph of genus $g$ with $n$ labeled external legs.
-- *Edges:* Correspond to the propagator $angle.l phi_1(x_1) phi_2(x_2)angle.r$, derived from the free part of the Lagrangian.
+- *Edges:* Correspond to the propagator $chevron.l phi_1(x_1) phi_2(x_2)chevron.r$, derived from the free part of the Lagrangian.
 - *Vertices:* Correspond to interaction terms in the Lagrangian.
 The valence of each vertex is determined by the order of the interaction term.
 
@@ -181,23 +181,23 @@ We obtain a sequence of maps:
   $])
 This is a simplicial object in the category $sMod_(bb(S))$, forming the *bar construction* of the modular operad $cal(A)$.
 
-Simplicial objects encode face maps ${diff_(i)}$ and degeneracy maps ${sigma_(i)}$, giving rise to homological structures. The "master equation" $diff^(2) = 0$ encodes the consistency conditions of the theory, specifically the associativity and unit axioms of the monad.
+Simplicial objects encode face maps ${partial_(i)}$ and degeneracy maps ${sigma_(i)}$, giving rise to homological structures. The "master equation" $partial^(2) = 0$ encodes the consistency conditions of the theory, specifically the associativity and unit axioms of the monad.
 
-Consider the specific structure of the boundary operator $diff$.
-The face map $diff_i$ essentially corresponds to contracting the graph at the $i$-th level of nesting. The expression for such a map is:
+Consider the specific structure of the boundary operator $partial$.
+The face map $partial_i$ essentially corresponds to contracting the graph at the $i$-th level of nesting. The expression for such a map is:
 $
-  diff_(i) = cases(
+  partial_(i) = cases(
     bb(M)^(i) compose mu compose bb(M)^(n-1-i)\, thin & 0<=i<n,
     bb(M)^(n) compose rho\, & thin i=n\,
   )
 $
-These maps satisfy the simplicial identity $diff_(i) diff_(j) = diff_(j-1) diff_(i)$.
+These maps satisfy the simplicial identity $partial_(i) partial_(j) = partial_(j-1) partial_(i)$.
 
-Using these face maps, we define the total boundary map $diff_((n)): bb(M)^(n+1)cal(A) -> bb(M)^(n) cal(A)$ as:
+Using these face maps, we define the total boundary map $partial_((n)): bb(M)^(n+1)cal(A) -> bb(M)^(n) cal(A)$ as:
 $
-  diff_((n)) = sum_(i=0)^(n) (-1)^(i) diff_(i),
+  partial_((n)) = sum_(i=0)^(n) (-1)^(i) partial_(i),
 $
-where the master equation $diff^(2)_((n)) = 0$ is satisfied since the simplicial identity.
+where the master equation $partial^(2)_((n)) = 0$ is satisfied since the simplicial identity.
 
 #remark([
   This bar construction is a natural generalization of the classical bar construction in homological algebra. There, a chain complex can be viewed as a 1-dimensional tree, and the face maps correspond to the "splitting" of vertices.

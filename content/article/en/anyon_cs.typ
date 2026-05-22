@@ -48,9 +48,9 @@ Thus, the associated Schrödinger equation could arise from the constraint equat
 $
   (p_(z)^(i) + A_(z)^(i)) psi(z_1, z_2) = 0, quad p_(overline(z))^(i) psi(z_1, z_2) = 0, thin forall i = 1, 2.
 $
-Performing the canonical quantization $p_(z)^(i) = - i diff_(z_(i))$, and switch to a new coordinate $z = z_1-z_2$, such equations could be written as:
+Performing the canonical quantization $p_(z)^(i) = - i partial_(z_(i))$, and switch to a new coordinate $z = z_1-z_2$, such equations could be written as:
 $
-  (diff_(z) - frac(theta, 2 pi) frac(1, z)) psi(z, overline(z)) = 0, quad diff_(overline(z)) psi(z, overline(z)) = 0.
+  (partial_(z) - frac(theta, 2 pi) frac(1, z)) psi(z, overline(z)) = 0, quad partial_(overline(z)) psi(z, overline(z)) = 0.
 $
 The second equation implies that $psi$ is holomorphic in $z$, and the first equation could be solved directly, yielding:
 $
@@ -100,9 +100,9 @@ $
 $
 under the holomorphic gauge $A = A_t d t + A_z d z$, the Chern-Simons action reduces to:
 $
-  CS_(X)[A] := frac(k, 4 pi) integral_(X) A overline(diff)_(t) A,
+  CS_(X)[A] := frac(k, 4 pi) integral_(X) A overline(partial)_(t) A,
 $
-where $overline(diff)_(t) := d t overline(partial)$.
+where $overline(partial)_(t) := d t overline(partial)$.
 And the anyon Lagrangian would be introduced into this action with minimal coupling, which could be expressed as:
 $
   S_("anyon")[A, z] = integral_(RR) [A_z (z(t)) dot(z)(t) + A_(0) (z(t)) ] thin d t,
@@ -113,7 +113,7 @@ In order to obtain the effective action of this theory, we need to integrate out
 Since the Chern-Simons action is quadratic in $A$, such integration could be performed exactly.
 Note that, under the holomorphic gauge, correlation function (propagator) of the gauge field $A$ could be computed as:
 $
-  angle.l A(z_1, t_1) A(z_2, t_2) angle.r = frac(1, i k) frac(d z_1 - d z_2, z_1 - z_2) delta(t_1 - t_2) d t_1.
+  chevron.l A(z_1, t_1) A(z_2, t_2) chevron.r = frac(1, i k) frac(d z_1 - d z_2, z_1 - z_2) delta(t_1 - t_2) d t_1.
 $
 After performing the Gaussian integration, the effective action could be expressed as:
 $
@@ -132,7 +132,7 @@ Such equation arises naturally in the Wess-Zumino-Witten (WZW) model, which is t
 On the other hand, the wave function of Chern-Simons theory could be interpreted as the anyon wave function we constructed above.
 Thus, the CS-WZW correspondence could be interpreted as
 $
-  Psi_(CS)[X, {K_(i), rho_(i)}] <--> angle.l product_(i) V_(K_(i))(rho_(i)) angle.r_("WZW", partial X),
+  Psi_(CS)[X, {K_(i), rho_(i)}] <--> chevron.l product_(i) V_(K_(i))(rho_(i)) chevron.r_("WZW", partial X),
 $
 where $V_(K)(rho)$ denotes the vertex operator insertion at the point where the line $K$ intersects the boundary $partial X$ in the WZW model, and ${K, rho}$ denotes a Wilson line $K$ colored by the representation $rho$ of the gauge group.
 Here $rho$ plays the role of the charge $q$ we introduced above.

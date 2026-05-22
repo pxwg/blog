@@ -1,0 +1,205 @@
+diff --git a/dist/lib/typst.js b/dist/lib/typst.js
+index 638576ce064235b8f8e91fc0ddcb743228931b22..c468e83dad7d963e75c0a2ee4dc2075908dcfe04 100644
+--- a/dist/lib/typst.js
++++ b/dist/lib/typst.js
+@@ -54,6 +54,60 @@ export function getFrontmatter($typst, source) {
+     }
+     return frontmatter;
+ }
++const INLINE_MATH_BASELINE_STROKE = "#ff00ff";
++const inlineMathBaselineMarkerRegex = new RegExp(`<g transform="translate\\(([-+\\d.]+) ([-+\\d.]+)\\)">\\s*<path\\b(?=[^>]*stroke="${INLINE_MATH_BASELINE_STROKE}")(?=[^>]*d="M 0 0")[^>]*\\/>\\s*<\\/g>`, "g");
++function getSvgHeightEm(svgAttrs) {
++    const style = svgAttrs.match(/\bstyle="([^"]*)"/)?.[1];
++    const height = style?.match(/(?:^|;)\s*height:\s*([-+\d.]+)em\b/)?.[1];
++    return height === undefined ? undefined : Number(height);
++}
++function getSvgViewBoxHeight(svgAttrs) {
++    const viewBox = svgAttrs.match(/\bviewBox="[-+\d.]+ [-+\d.]+ [-+\d.]+ ([-+\d.]+)"/)?.[1];
++    return viewBox === undefined ? undefined : Number(viewBox);
++}
++function getInlineMathBaselineShift(fragment) {
++    const marker = new RegExp(`<svg\\b([^>]*)>[\\s\\S]*?<g transform="translate\\(([-+\\d.]+) ([-+\\d.]+)\\)">\\s*<path\\b(?=[^>]*stroke="${INLINE_MATH_BASELINE_STROKE}")(?=[^>]*d="M 0 0")`, "").exec(fragment);
++    if (!marker) {
++        return undefined;
++    }
++    const svgAttrs = marker[1];
++    const baselineY = Number(marker[3]);
++    const heightEm = getSvgHeightEm(svgAttrs);
++    const viewBoxHeight = getSvgViewBoxHeight(svgAttrs);
++    if (!Number.isFinite(baselineY) || !heightEm || !viewBoxHeight) {
++        return undefined;
++    }
++    const emInSvgUnits = viewBoxHeight / heightEm;
++    const shift = (viewBoxHeight - baselineY) / emInSvgUnits;
++    return Number.isFinite(shift) ? Math.max(0, shift) : undefined;
++}
++function replaceVerticalAlign(style, shift) {
++    const value = `vertical-align: -${shift.toFixed(2)}em;`;
++    if (/\bvertical-align\s*:/.test(style)) {
++        return style.replace(/\bvertical-align\s*:\s*[^;]+;?/, value);
++    }
++    return `${style}${style.endsWith(";") || style.length === 0 ? "" : ";"}${value}`;
++}
++function fixInlineMathBaselines(output) {
++    const fixWrapper = (all, style, inner, prefix) => {
++        const shift = getInlineMathBaselineShift(inner);
++        const nextInner = inner.replace(inlineMathBaselineMarkerRegex, "");
++        if (shift === undefined) {
++            return `${prefix}${style}">${nextInner}</span>`;
++        }
++        return `${prefix}${replaceVerticalAlign(style, shift)}">${nextInner}</span>`;
++    };
++    output = output.replace(/(<span class="code-image themed typst-inline-math-wrapper" style=")([^"]*)">([\s\S]*?<mjx-assistive-mml class="assistive-mathml">[\s\S]*?<\/mjx-assistive-mml>)<\/span>/g, (all, prefix, style, inner) => fixWrapper(all, style, inner, prefix));
++    output = output.replace(/(<span style=")([^"]*)" class="typst-inline-math">([\s\S]*?<mjx-assistive-mml class="assistive-mathml">[\s\S]*?<\/mjx-assistive-mml>)<\/span>/g, (all, prefix, style, inner) => {
++        const shift = getInlineMathBaselineShift(inner);
++        const nextInner = inner.replace(inlineMathBaselineMarkerRegex, "");
++        if (shift === undefined) {
++            return `${prefix}${style}" class="typst-inline-math">${nextInner}</span>`;
++        }
++        return `${prefix}${replaceVerticalAlign(style, shift)}" class="typst-inline-math">${nextInner}</span>`;
++    });
++    return output.replace(inlineMathBaselineMarkerRegex, "");
++}
+ /**
+  * @param source The source code of the .typ file.
+  * @param options Options for rendering the SVG.
+@@ -136,13 +190,13 @@ export async function renderToHTML(source, options) {
+     if (!docRes.result) {
+         logger.error("Error compiling typst to HTML");
+         docRes.printDiagnostics();
+-        return { html: "" };
++        throw new Error("Failed to compile Typst HTML output.");
+     }
+     const doc = docRes.result;
+     const html = $typst.tryHtml(doc);
+     if (!html.result) {
+         html.printDiagnostics();
+-        return { html: "" };
++        throw new Error("Failed to export Typst HTML output.");
+     }
+     var output;
+     if (onlyBody === "hast") {
+@@ -152,6 +206,7 @@ export async function renderToHTML(source, options) {
+         catch (error) {
+             console.error(error);
+             logger.error("Please check if your peer dependencies (@myriaddreamin/typst-ts*) is >= 0.6.1-rc2.");
++            throw error;
+         }
+     }
+     else {
+@@ -159,6 +214,10 @@ export async function renderToHTML(source, options) {
+             html.result.body() :
+             html.result.html();
+     }
++    if (typeof output === "string") {
++        output = output.replaceAll('<math display="block"', '<math display="block" displaystyle="true"');
++        output = fixInlineMathBaselines(output);
++    }
+     return {
+         html: output,
+         frontmatter: () => getFrontmatter($typst, doc),
+diff --git a/src/lib/typst.ts b/src/lib/typst.ts
+index e4156c8934ba2c1f7e57228197233c848b2abe8e..eb016cca749f1f1a006f998d73c5e600265619e4 100644
+--- a/src/lib/typst.ts
++++ b/src/lib/typst.ts
+@@ -66,6 +66,66 @@ export function getFrontmatter($typst: NodeCompiler, source: NodeTypstDocument |
+     return frontmatter;
+ }
+ 
++const INLINE_MATH_BASELINE_STROKE = "#ff00ff";
++const inlineMathBaselineMarkerRegex = new RegExp(`<g transform="translate\\(([-+\\d.]+) ([-+\\d.]+)\\)">\\s*<path\\b(?=[^>]*stroke="${INLINE_MATH_BASELINE_STROKE}")(?=[^>]*d="M 0 0")[^>]*\\/>\\s*<\\/g>`, "g");
++
++function getSvgHeightEm(svgAttrs: string) {
++    const style = svgAttrs.match(/\bstyle="([^"]*)"/)?.[1];
++    const height = style?.match(/(?:^|;)\s*height:\s*([-+\d.]+)em\b/)?.[1];
++    return height === undefined ? undefined : Number(height);
++}
++
++function getSvgViewBoxHeight(svgAttrs: string) {
++    const viewBox = svgAttrs.match(/\bviewBox="[-+\d.]+ [-+\d.]+ [-+\d.]+ ([-+\d.]+)"/)?.[1];
++    return viewBox === undefined ? undefined : Number(viewBox);
++}
++
++function getInlineMathBaselineShift(fragment: string) {
++    const marker = new RegExp(`<svg\\b([^>]*)>[\\s\\S]*?<g transform="translate\\(([-+\\d.]+) ([-+\\d.]+)\\)">\\s*<path\\b(?=[^>]*stroke="${INLINE_MATH_BASELINE_STROKE}")(?=[^>]*d="M 0 0")`, "").exec(fragment);
++    if (!marker) {
++        return undefined;
++    }
++    const svgAttrs = marker[1];
++    const baselineY = Number(marker[3]);
++    const heightEm = getSvgHeightEm(svgAttrs);
++    const viewBoxHeight = getSvgViewBoxHeight(svgAttrs);
++    if (!Number.isFinite(baselineY) || !heightEm || !viewBoxHeight) {
++        return undefined;
++    }
++    const emInSvgUnits = viewBoxHeight / heightEm;
++    const shift = (viewBoxHeight - baselineY) / emInSvgUnits;
++    return Number.isFinite(shift) ? Math.max(0, shift) : undefined;
++}
++
++function replaceVerticalAlign(style: string, shift: number) {
++    const value = `vertical-align: -${shift.toFixed(2)}em;`;
++    if (/\bvertical-align\s*:/.test(style)) {
++        return style.replace(/\bvertical-align\s*:\s*[^;]+;?/, value);
++    }
++    return `${style}${style.endsWith(";") || style.length === 0 ? "" : ";"}${value}`;
++}
++
++function fixInlineMathBaselines(output: string) {
++    const fixWrapper = (_all: string, style: string, inner: string, prefix: string) => {
++        const shift = getInlineMathBaselineShift(inner);
++        const nextInner = inner.replace(inlineMathBaselineMarkerRegex, "");
++        if (shift === undefined) {
++            return `${prefix}${style}">${nextInner}</span>`;
++        }
++        return `${prefix}${replaceVerticalAlign(style, shift)}">${nextInner}</span>`;
++    };
++    output = output.replace(/(<span class="code-image themed typst-inline-math-wrapper" style=")([^"]*)">([\s\S]*?<mjx-assistive-mml class="assistive-mathml">[\s\S]*?<\/mjx-assistive-mml>)<\/span>/g, (all, prefix, style, inner) => fixWrapper(all, style, inner, prefix));
++    output = output.replace(/(<span style=")([^"]*)" class="typst-inline-math">([\s\S]*?<mjx-assistive-mml class="assistive-mathml">[\s\S]*?<\/mjx-assistive-mml>)<\/span>/g, (_all, prefix, style, inner) => {
++        const shift = getInlineMathBaselineShift(inner);
++        const nextInner = inner.replace(inlineMathBaselineMarkerRegex, "");
++        if (shift === undefined) {
++            return `${prefix}${style}" class="typst-inline-math">${nextInner}</span>`;
++        }
++        return `${prefix}${replaceVerticalAlign(style, shift)}" class="typst-inline-math">${nextInner}</span>`;
++    });
++    return output.replace(inlineMathBaselineMarkerRegex, "");
++}
++
+ /**
+  * @param source The source code of the .typ file.
+  * @param options Options for rendering the SVG.
+@@ -163,13 +223,13 @@ export async function renderToHTML(
+     if (!docRes.result) {
+         logger.error("Error compiling typst to HTML");
+         docRes.printDiagnostics();
+-        return { html: "" };
++        throw new Error("Failed to compile Typst HTML output.");
+     }
+     const doc = docRes.result;
+     const html = $typst.tryHtml(doc);
+     if (!html.result) {
+         html.printDiagnostics();
+-        return { html: "" };
++        throw new Error("Failed to export Typst HTML output.");
+     }
+     var output;
+     if (onlyBody === "hast") {
+@@ -178,12 +238,17 @@ export async function renderToHTML(
+         } catch (error) {
+             console.error(error);
+             logger.error("Please check if your peer dependencies (@myriaddreamin/typst-ts*) is >= 0.6.1-rc2.");
++            throw error;
+         }
+     } else {
+         output = onlyBody !== false ?
+             html.result.body() :
+             html.result.html();
+     }
++    if (typeof output === "string") {
++        output = output.replaceAll('<math display="block"', '<math display="block" displaystyle="true"');
++        output = fixInlineMathBaselines(output);
++    }
+     return {
+         html: output,
+         frontmatter: () => getFrontmatter($typst, doc),

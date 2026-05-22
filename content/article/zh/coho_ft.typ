@@ -17,7 +17,7 @@
 = $L_oo$ BV 构造
 在局部上，我们可以将 BV 代数与带有循环结构 $omega$ 的 $L_oo$ 代数 $( V , {mu_i}_n )$ 进行识别，其次数为 $0$ 的形式可视为物理场，$mu_1$ 可解释为自由场运动方程产生的线性算子，更高阶的括号 $mu_n$ 需要满足同伦雅可比恒等式，并使经典运动方程成为 MC 方程。
 
-循环结构可视为局部移位 $-1$ 辛结构，即非退化配对 $omega : V times.circle V arrow.r bb(R)$，其在 Koszul 符号规则下满足循环性条件
+循环结构可视为局部移位 $-1$ 辛结构，即非退化配对 $omega : V times.o V arrow.r bb(R)$，其在 Koszul 符号规则下满足循环性条件
 $
   omega ( mu_n ( a_1 , dots.h , a_n ) , a_(n + 1) ) = ( - 1 )^(lr(|a_0|) ( lr(|a_1|) + dots.h + lr(|a_n|) )) omega ( a_(n + 1) , mu_n ( a_1 , dots.h , a_n ) ) ,
 $
@@ -29,7 +29,7 @@ $B$ 的作用如下理解：考虑投影 $pi_n : S^c V arrow.r V^(and n)$，则 
 
 利用超场 $Phi$ 和局部移位 $-1$ 辛配对 $omega$，BV 作用量可定义为
 $
-  S = omega (pi_1 B times.circle I) : S^c V times.circle S^c V arrow.r bb(R) ,
+  S = omega (pi_1 B times.o I) : S^c V times.o S^c V arrow.r bb(R) ,
 $
 $
   Phi mapsto sum_i frac(1, ( i + 1 ) !) omega (Phi , mu_i ( Phi , dots.h.c , Phi )) ,
@@ -55,9 +55,9 @@ $
 $
 非平凡的辛形式 $omega$ 定义为：
 $
-  omega ( A , A^(star) ) = integral_X angle.l A , A^star angle.r , quad omega ( psi , psi^(star) ) = integral_X angle.l psi , psi^(star) angle.r ,
+  omega ( A , A^(star) ) = integral_X chevron.l A , A^star chevron.r , quad omega ( psi , psi^(star) ) = integral_X chevron.l psi , psi^(star) chevron.r ,
 $
-其中 $angle.l dot.op , dot.op angle.r$ 是李代数 $frak(g)$ 上的 Killing 形式。
+其中 $chevron.l dot.op , dot.op chevron.r$ 是李代数 $frak(g)$ 上的 Killing 形式。
 
 特别地，在链级别，$mu_1$ 部分会诱导一个上链复形
 $
@@ -65,11 +65,11 @@ $
 $
 满足 $mu_1^2 = 0$，作用量可写为
 $
-  S [ A , A^(star) , psi , psi^(star) ] = integral_X [1 / 2 angle.l F , star.op F angle.r - angle.l A^(star) , dif_A psi angle.r + 1 / 2 angle.l psi^(star) , [ psi , psi ] angle.r ] ,
+  S [ A , A^(star) , psi , psi^(star) ] = integral_X [1 / 2 chevron.l F , star.op F chevron.r - chevron.l A^(star) , dif_A psi chevron.r + 1 / 2 chevron.l psi^(star) , [ psi , psi ] chevron.r ] ,
 $
 其中 $dif_A = dif + [ A , dot.op ]$ 是由规范联络 $A$ 诱导的协变导数。若记 $mu_1$ 为上同调向量场 $Q$，BV 作用量可写为
 $
-  S [ cal(A) ] = integral_X [1 / 2 angle.l cal(A) , Q cal(A) angle.r + frac(1, 3 !) angle.l cal(A) , mu_2 ( cal(A) , cal(A) ) angle.r + frac(1, 4 !) angle.l cal(A) , mu_3 ( cal(A) , cal(A) , cal(A) ) angle.r ] ,
+  S [ cal(A) ] = integral_X [1 / 2 chevron.l cal(A) , Q cal(A) chevron.r + frac(1, 3 !) chevron.l cal(A) , mu_2 ( cal(A) , cal(A) ) chevron.r + frac(1, 4 !) chevron.l cal(A) , mu_3 ( cal(A) , cal(A) , cal(A) ) chevron.r ] ,
 $
 这被称为同伦 Chern-Simons 作用量，其中 $cal(A)$ 是超场。
 
@@ -79,7 +79,7 @@ $ & mu_1 ( psi_1 ) := dif psi_1 , quad mu_1 ( A_1 ) := dif A_1 , quad mu_1 ( A_1
 & mu_2 ( psi_1 , A_2 ) := [ psi_1 , A_2^(star) ] , quad mu_2 ( psi_1 , psi_2^(star) ) := [ psi_1 , psi_2^(star) ] , \
 & mu_2 ( A_1 , A_2^(star) ) := [ A_1 , A_2^(star) ] , quad mu_2 ( A_1 , A_2 ) = [ A_1 , A_2 ] $，非平凡的辛形式 $omega$ 定义同上。作用量可写为
 $
-  "CS" [ cal(A) ] = integral_X [1 / 2 angle.l cal(A) , dif cal(A) angle.r + 1 / 6 angle.l cal(A) , [cal(A) , cal(A)] angle.r ] ,
+  "CS" [ cal(A) ] = integral_X [1 / 2 chevron.l cal(A) , dif cal(A) chevron.r + 1 / 6 chevron.l cal(A) , [cal(A) , cal(A)] chevron.r ] ,
 $
 其中 $cal(A) = A + A^(star) + psi + psi^(star)$ 是超场。可以直接看到，这个作用量就是 Chern-Simons 作用量，只是用超场 $cal(A)$ 替换了原本（无 BV）场 $A$ #footnote[实际上，如果理论关联到平坦丛，即一阶经典运动方程为 $dif A = 0$，
   总可以用同样的机制 $A arrow.r cal(A)$ 得到 BV 作用量。];。

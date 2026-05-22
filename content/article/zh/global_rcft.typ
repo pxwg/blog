@@ -183,14 +183,14 @@ $
 $
 其中系数 $A_(i\, n)$ 和 $B_(j\, m)$ 可以写为涉及相应场的一些相关函数：
 $
-  A_(i,n) = angle.l O_1...O_(K) cal(L)_(-m)phi_(i)(p) angle.r_(M), quad B_(j,m) = angle.l cal(L)_(-m) phi_(j)(q) O_(K+1)...O_(K+L) angle.r_(N),
+  A_(i,n) = chevron.l O_1...O_(K) cal(L)_(-m)phi_(i)(p) chevron.r_(M), quad B_(j,m) = chevron.l cal(L)_(-m) phi_(j)(q) O_(K+1)...O_(K+L) chevron.r_(N),
 $
 这里我们使用态 - 算符对应来联系状态与局部场，穿孔在径向量子化中被理解为无限的过去或未来。
 
 胶合过程产生了一个双穿孔球面，其端点插入了由初级场下降场生成的边界态。
 因此，该球面 $bb(S)^(2)({p, z}, {q, w})$ 上的配分函数为（此处为简单起见假设 $q=1$，若考虑一般缝合参数 $q$，则需插入因子 $q^(L_0 - c/24)$ 以处理复结构的改变）：
 $
-  delta_(i j) M_(m n)^((i)) := angle.l cal(L)_(-m) phi_(i)(z=0) cal(L)_(-n) phi_(j)(w=0) angle.r_(bb(S)^(2)({p, z}, {q, w})),
+  delta_(i j) M_(m n)^((i)) := chevron.l cal(L)_(-m) phi_(i)(z=0) cal(L)_(-n) phi_(j)(w=0) chevron.r_(bb(S)^(2)({p, z}, {q, w})),
 $
 因此，缝合 $M$ 和 $N$ 得到的振幅可以写为：
 $
@@ -198,8 +198,8 @@ $
 $
 （此处假设 $M$ 是正定的）。将其插入到 $M$ 和 $N$ 的相关函数中，我们得到缝合后的手征相关函数：
 $
-  angle.l O_1...O_(K+L) angle.r_(M oo^(p)_(q) N)
-  := sum_(i, m, n) angle.l O_1...O_(K) cal(L)_(-m)phi_(i)(p) angle.r_(M) (M^((i)))^(-1)_(m n) angle.l cal(L)_(-m) phi_(i)(q) O_(K+1)...O_(K+L) angle.r_(N)
+  chevron.l O_1...O_(K+L) chevron.r_(M oo^(p)_(q) N)
+  := sum_(i, m, n) chevron.l O_1...O_(K) cal(L)_(-m)phi_(i)(p) chevron.r_(M) (M^((i)))^(-1)_(m n) chevron.l cal(L)_(-m) phi_(i)(q) O_(K+1)...O_(K+L) chevron.r_(N)
 $
 
 #proposition[上述定义的相关函数满足手征相关函数的性质（Ward 恒等式），从而在缝合后的黎曼曲面上定义了一个局部 RCFT。]
@@ -207,13 +207,13 @@ $
 #remark[
   考虑 $K=L=2$ 且假设插入的算符是初级场 $phi_1, ..., phi_(4)$ 的情况，则缝合后的四点手征相关函数可以写为：
   $
-    angle.l phi_1 phi_2 phi_3 phi_4 angle.r_(M oo^(p)_(q) N) = sum_(i) (sum_(m,n) angle.l phi_1 phi_2 cal(L)_(-m)phi_(i)(p) angle.r_(M) (M^((i)))^(-1)_(m n) angle.l cal(L)_(-m) phi_(i)(q) phi_3 phi_4 angle.r_(N)).
+    chevron.l phi_1 phi_2 phi_3 phi_4 chevron.r_(M oo^(p)_(q) N) = sum_(i) (sum_(m,n) chevron.l phi_1 phi_2 cal(L)_(-m)phi_(i)(p) chevron.r_(M) (M^((i)))^(-1)_(m n) chevron.l cal(L)_(-m) phi_(i)(q) phi_3 phi_4 chevron.r_(N)).
   $
   利用 OPE：
   $
     phi_1(z) phi_2(w) = sum_(i) C_(12)^(i) (z-w)^(h_i - h_1 - h_2) phi_(i)(w) + ...,
   $
-  以及 Wick 收缩，我们可以将上述表达式重写为 $ angle.l phi_1 phi_2 phi_3 phi_4 angle.r_(M oo^(p)_(q) N) = sum_(i) C_(12)^(i) C_34^(i) cal(F)_(i)(q), $
+  以及 Wick 收缩，我们可以将上述表达式重写为 $ chevron.l phi_1 phi_2 phi_3 phi_4 chevron.r_(M oo^(p)_(q) N) = sum_(i) C_(12)^(i) C_34^(i) cal(F)_(i)(q), $
   这正是缝合球面上四点手征相关函数的共形块展开。
   四点球面可以理解为将两个三点球面 $bb(S)^(2)({p_1, z_1}, {p_2, z_2}, {p, z})$ 和 $bb(S)^(2)({q, w}, {p_3, z_3}, {p_4, z_4})$ 在穿孔 $p$ 和 $q$ 处缝合在一起。
 
@@ -258,11 +258,11 @@ $
 
 三点球面 $bb(S)^(2)({p_1, z_1}, {p_2, z_2}, {p_3, z_3})$ 上的共形块与附着在穿孔上的模的融合规则 (fusion rules) 相关：
 $
-  phi_(i) times phi_(j) = sum_(k) N_(i j)^(k) phi_(k) -->^"态 - 场" V_(h_(i)) times.circle V_(h_(j)) => sum_(k) N_(i j)^(k) V_(h_(k)),
+  phi_(i) times phi_(j) = sum_(k) N_(i j)^(k) phi_(k) -->^"态 - 场" V_(h_(i)) times.o V_(h_(j)) => sum_(k) N_(i j)^(k) V_(h_(k)),
 $
 这引导我们考虑模之间的交织算子 (intertwining operators)：
 $
-  Phi^(i)_(j k)(z) in Hom(V_(h_(i)) times.circle V_(h_(j)), V_(h_(k))){z}: = V^(i)_(j k){z},
+  Phi^(i)_(j k)(z) in Hom(V_(h_(i)) times.o V_(h_(j)), V_(h_(k))){z}: = V^(i)_(j k){z},
 $
 其中 $Phi^(i)_(j,k)(z)$ 具有共形权 $h_(i)$，将模 $V_(h_(j))$ 映射（交织）到 $V_(h_(k))$。
 如果存在多个同类型的交织算子，我们将其记为 $Phi^(i, alpha)_(j k)(z)$，其中 $alpha = 1, ..., N_(i j)^(k)$，因此三点球面共形块可以写为：
@@ -308,7 +308,7 @@ $
   *张成性 (Spanning)：*
   令 $F in cal(B)_(0,4)(V_1, V_2, V_3, V_4)$。沿着分离 ${1,2}$ 与 ${3,4}$ 的圆圈切割球面。根据态 - 场对应，在手征状态空间上插入单位分解：
   $
-    bold(1) = plus.circle.big_(p in cal(I)) bold(1)_(V_p),
+    bold(1) = plus.o.big_(p in cal(I)) bold(1)_(V_p),
     quad
     bold(1)_(V_p) = sum_(m,n) ket(p\,n) (M^(p))^(-1)_(m n) bra(p\, m).
   $
@@ -322,15 +322,15 @@ $
   定义一个“切割映射” (cut map)
   $
     "Cut": cal(B)_(0,4)(V_1, V_2, V_3, V_4)
-    -> plus.circle.big_(p in cal(I))
-    cal(B)_(0,3)(V_1, V_2, V_p) times.circle cal(B)_(0,3)(V_p^or, V_3, V_4)
+    -> plus.o.big_(p in cal(I))
+    cal(B)_(0,3)(V_1, V_2, V_p) times.o cal(B)_(0,3)(V_p^or, V_3, V_4)
   $
   通过沿同一圆圈切割并利用非退化两点配对 $M^(p)$ 投影到中间部门（等价地，利用逆 Gram 矩阵 $(M^(p))^(-1)$ 提取插入的下降场的系数）。直接从缝合构造中可以验证：
   $
     "Cut" circle "Glue" = "Id".
   $
   因此 $"Glue"$ 是单射。
-  由于元素 $(psi^(12)_p)_alpha times.circle (psi^34_(p))_beta$ 在直和中是线性无关的，它们的像 $cal(F)_(p, alpha, beta)$ 在 $cal(B)_(0,4)$ 中也是线性无关的。
+  由于元素 $(psi^(12)_p)_alpha times.o (psi^34_(p))_beta$ 在直和中是线性无关的，它们的像 $cal(F)_(p, alpha, beta)$ 在 $cal(B)_(0,4)$ 中也是线性无关的。
 ]
 
 因此，不同的因子化给出了同一共形块空间 $cal(B)(V_(h_1), ..., V_(h_(n)))$ 的不同基。
@@ -357,7 +357,7 @@ F-变换对应于改变将四穿孔球面切割为两个三穿孔球面方式，
 $
   Phi_(i p)^(j)(z_1) Phi_(p l)^(k)(z_2) = sum_(q) F_(p q)mat(j, k; i, l) sum_(Q in V_(h_(q))) Phi^(q)_(i l)(Q)(z_2) bra(Q) Phi^(j)_(q k)(z_(12)) ket(k).
 $
-其中矩阵 $F_(p q)mat(j, k; i, l): V^(i)_(q l) times.circle V^(q)_(j k) -> V^(i)_(j p) times.circle V^(p)_(k l)$ 被称为 _F-矩阵_，列 $[j, k]$ 表示模 $V_(h_(j))$ 和 $V_(h_(k))$ 的融合，行 $[i, l]$ 表示初始模 $V_(h_(i))$ 和外部模 $V_(h_(l))$。
+其中矩阵 $F_(p q)mat(j, k; i, l): V^(i)_(q l) times.o V^(q)_(j k) -> V^(i)_(j p) times.o V^(p)_(k l)$ 被称为 _F-矩阵_，列 $[j, k]$ 表示模 $V_(h_(j))$ 和 $V_(h_(k))$ 的融合，行 $[i, l]$ 表示初始模 $V_(h_(i))$ 和外部模 $V_(h_(l))$。
 
 #remark[
   如果我们考虑平凡模，此类 F-变换将化简为 OPE 的结合律关系。
@@ -372,7 +372,7 @@ S-变换对应于改变将单穿孔环面切割为双穿孔球面（带切口）
 _A-循环_ 切割对应于将环面切割为双穿孔球面 $bb(S)^(2)({p, z}, {q, w})$，其中穿孔 $p$ 和 $q$ 分别附着模 $V_(h_(j))$ 和 $V_(h_(j^or))$。
 因此，交织算子可以写为 $Phi^(i)_(j j)(z)$，而共形块空间可以写为：
 $
-  cal(B)_(1,1)(V_(h_(i))) = "Span"{bra(j) Phi^(i)_(j j)(z) ket(j)}_(j in cal(I)) := plus.circle.big_(j in cal(I)) V^(j)_(i j).
+  cal(B)_(1,1)(V_(h_(i))) = "Span"{bra(j) Phi^(i)_(j j)(z) ket(j)}_(j in cal(I)) := plus.o.big_(j in cal(I)) V^(j)_(i j).
 $
 环面上的配分函数可以写为：
 $
@@ -382,9 +382,9 @@ $
 
 _B-循环_ 切割对应于将环面切割为双穿孔球面 $bb(S)^(2)({p, z}, {q', w})$，其中穿孔 $p$ 和 $q'$ 分别附着模 $V_(h_(k))$ 和 $V_(h_(k^or))$。
 
-因此，尽管切割方式不同，它们都给出了同一共形块空间 $cal(B)_(1,1)(V_(h_(i))):= plus.circle.big_(j in cal(J)) V^(i)_(i j)$ 的一组基，唯一的区别是基的变换，可以写为：
+因此，尽管切割方式不同，它们都给出了同一共形块空间 $cal(B)_(1,1)(V_(h_(i))):= plus.o.big_(j in cal(J)) V^(i)_(i j)$ 的一组基，唯一的区别是基的变换，可以写为：
 $
-  S(i) : plus.circle.big_(j in cal(J)) V^(i)_(i j) -> plus.circle.big_(k in cal(K)) V^(i)_(i k).
+  S(i) : plus.o.big_(j in cal(J)) V^(i)_(i j) -> plus.o.big_(k in cal(K)) V^(i)_(i k).
 $
 
 ==== 编织变换 (Braiding Move)
@@ -399,7 +399,7 @@ $
 $
   Phi_(i q)^(j)(z_2) Phi_(q l)^(k)(z_1) = sum_(p) B_(p q)mat(j, k; i, l) Phi_(i p)^(j)(z_1) Phi_(p l)^(k)(z_2),
 $
-其中矩阵 $B_(p q)mat(j, k; i, l): V^(i)_(j p) times.circle V^(p)_(k l) -> V^(i)_(j q) times.circle V^(q)_(k l)$ 被称为 _编织矩阵_。
+其中矩阵 $B_(p q)mat(j, k; i, l): V^(i)_(j p) times.o V^(p)_(k l) -> V^(i)_(j q) times.o V^(q)_(k l)$ 被称为 _编织矩阵_。
 
 ==== 扭转变换 (Twisting Move)
 

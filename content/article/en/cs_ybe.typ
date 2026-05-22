@@ -122,7 +122,7 @@ Where the charge of this particle is labeled by the representation $rho$.
 
 The quantum expectation value of a Wilson loop could be formally defined as:
 $
-  angle.l W_(K_1)(rho_1) ... W_(K_(n))(rho_(n)) angle.r = frac(1, Z_(CS)(X)) integral d mu_(X)[A] thin e^(i S_(CS)[A]) W_(K_1)(rho_1) ... W_(K_(n))(rho_(n)).
+  chevron.l W_(K_1)(rho_1) ... W_(K_(n))(rho_(n)) chevron.r = frac(1, Z_(CS)(X)) integral d mu_(X)[A] thin e^(i S_(CS)[A]) W_(K_1)(rho_1) ... W_(K_(n))(rho_(n)).
 $
 Remarkably, due to the work of #link("https://link.springer.com/article/10.1007/BF01217730")[Witten], these expectation values yield topological invariants (Jones polynomial) of the knots and links in $X = SS^(3)$.
 
@@ -150,15 +150,15 @@ $
 We shall impose the _axial gauge_ condition (a.k.a _holomorphic gauge_) $A_(overline(z)) = 0$.
 Thus, the gauge connection reduces to $A(z, t) = A_(0) d t + A_(z) d z$, and the Chern-Simons action simplifies to:
 $
-  CS_(X)[A] := integral_(X) A overline(diff)_(t) A,
+  CS_(X)[A] := integral_(X) A overline(partial)_(t) A,
 $
-where $overline(diff)_(t) := d t overline(partial)$.
+where $overline(partial)_(t) := d t overline(partial)$.
 Under this gauge fixing, the path integral would be reduced to a purely Gaussian integral.
 
 To using the perturbative method, we need to compute the propagator (two-point correlation function) of the gauge field $A$.
 At the axial gauge, the propagator could be computed as:
 $
-  angle.l A_(i)^(a)(z_1, t_1) A_(j)^(b)(z_2, t_2) angle.r = delta^(a b) frac(1, i k) frac(d z_1 - d z_2, z_1 - z_2) delta(t_1 - t_2).
+  chevron.l A_(i)^(a)(z_1, t_1) A_(j)^(b)(z_2, t_2) chevron.r = delta^(a b) frac(1, i k) frac(d z_1 - d z_2, z_1 - z_2) delta(t_1 - t_2).
 $
 
 Thus, the expectation value of Wilson loops could be computed using Wick's theorem.
@@ -173,20 +173,20 @@ $
 $
 Thus, the expectation value could be computed with:
 $
-  angle.l A^(a_1)(z(t_1), t_1) ... A^(a_(2n))(z(t_(2n)), t_(2n))angle.r = (frac(1, i k))^(n) tr_(rho) sum_(P) (-1)^(\# arrow.b P) wedge.big_(l in P) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) delta(t_(l_1) - t_(l_2)),
+  chevron.l A^(a_1)(z(t_1), t_1) ... A^(a_(2n))(z(t_(2n)), t_(2n))chevron.r = (frac(1, i k))^(n) tr_(rho) sum_(P) (-1)^(\# arrow.b P) wedge.big_(l in P) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) delta(t_(l_1) - t_(l_2)),
 $
 where $P$ is a pairing of the set ${1, ..., 2n}$, each pair $l in P$ consists of two elements $(l_1, l_2)$, and $\# arrow.b P$ denotes the number of arcs that are oriented downwards when equipped with the inherited orientation from $K$.
 
 After integrating out the delta functions, the linked vertex would live at a same time slice along the $RR$ direction.
 Thus, the expectation value of the Wilson loop could be expressed as:
 $
-  angle.l W_(K)(rho) angle.r = sum_(n=0)^(oo) frac(1, k^(n)) tr_(rho)Phi_(n)(K),
+  chevron.l W_(K)(rho) chevron.r = sum_(n=0)^(oo) frac(1, k^(n)) tr_(rho)Phi_(n)(K),
 $
 where $Phi_(n)(K)$ is called the _Kontsevich integral_ of the knot $K$, which could be expressed as:
 $
   Phi_(n)(K) = sum_(P) wedge.big_(l in P) (-1)^(\# arrow.b P) integral_(0 <= t_1 <= ... <= t_(n) <= 1) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) Omega_(l).
 $
-where $Omega_(l) = rho(t_(l_1)) times.circle rho(t_(l_2))$ is an double insertion of Lie algebra elements at the points $gamma(t_(l_1))$ and $gamma(t_(l_2))$ on the knot, which could be read from "linking" the knot at these two points with weight $Omega_(l)$.
+where $Omega_(l) = rho(t_(l_1)) times.o rho(t_(l_2))$ is an double insertion of Lie algebra elements at the points $gamma(t_(l_1))$ and $gamma(t_(l_2))$ on the knot, which could be read from "linking" the knot at these two points with weight $Omega_(l)$.
 
 It is not hard to see that, the definition of $Phi_(n)(K)$ is (the non-abelian generalization of) the time evolution operator we constructed in the anyon system discussed in #link("../anyon_cs")[previous blog].
 So, you may think that the Kontsevich integral could be interpreted as the time evolution operator of some anyon system moving along the world line $K$ in the presence of statistics interaction.
@@ -207,7 +207,7 @@ We consider a simple braiding configuration of two strands, which is a simple Mo
 The intersection of two strands at a time slice would become two distinct points $z_1, z_2$ in $CC$.
 Using the Kontsevich integral construction, the only nontrivial contribution comes from the $n$-th copy of the gauge connection over these two points, which yields #footnote([This is the simplest case of the so-called connected diagram expansion in quantum field theory.]):
 $
-  angle.l W_(K)(rho) angle.r = tr_(rho) sum_(n=0)^(oo) frac(1, k^(n)) frac(1, n!) (Phi_(1)(K))^(n) ,
+  chevron.l W_(K)(rho) chevron.r = tr_(rho) sum_(n=0)^(oo) frac(1, k^(n)) frac(1, n!) (Phi_(1)(K))^(n) ,
 $
 where $Phi_1(K)$ could be computed as:
 $
@@ -215,9 +215,9 @@ $
 $
 thus, the expectation value could be expressed as:
 $
-  angle.l W_(K)(rho) angle.r = tr_(rho) exp(frac(2 pi i, k) Omega),
+  chevron.l W_(K)(rho) chevron.r = tr_(rho) exp(frac(2 pi i, k) Omega),
 $
-which is exactly (before taking the trace) related to the quantum _R-matrix_ acting on the tensor product representation $rho^(times.circle 2): frak(g) times.circle frak(g) -> GL(V times.circle V)$.
+which is exactly (before taking the trace) related to the quantum _R-matrix_ acting on the tensor product representation $rho^(times.o 2): frak(g) times.o frak(g) -> GL(V times.o V)$.
 
 // Axial Gauge -> Kont. integral -> KZ connection
 
@@ -229,13 +229,13 @@ To achieve this goal, let us consider a (seemly) independent problem arise from 
 In the studying of conformal field theory with gauge symmetry, Knizhnik and Zamolodchikov discovered a remarkable differential equation satisfied by the correlation functions of primary fields in the Wess-Zumino-Witten (WZW) model.
 
 Consider $n$ distinct points ${z_1, ..., z_n}$ in the complex plane $CC$, and associate to each point $z_i$ a representation $rho_i: frak(g) -> GL(V_i)$ of the Lie algebra $frak(g)$.
-The Knizhnik-Zamolodchikov (KZ) equation is a system of first-order differential equations for a function $F: Conf_(n)(CC) -> V_1 times.circle ... times.circle V_n$, where $Conf_(n)(CC) = {(z_1, ..., z_n) in CC^(n) | z_i != z_j, forall i != j}$ is the configuration space of $n$ distinct points in $CC$:
+The Knizhnik-Zamolodchikov (KZ) equation is a system of first-order differential equations for a function $F: Conf_(n)(CC) -> V_1 times.o ... times.o V_n$, where $Conf_(n)(CC) = {(z_1, ..., z_n) in CC^(n) | z_i != z_j, forall i != j}$ is the configuration space of $n$ distinct points in $CC$:
 $
-  (diff F) / (diff z_i ) - 1 / (k + h^(or)) sum_(i > j) Omega_(i j) / (z_i - z_j) F = 0, thin forall i = 1, ..., n,
+  (partial F) / (partial z_i ) - 1 / (k + h^(or)) sum_(i > j) Omega_(i j) / (z_i - z_j) F = 0, thin forall i = 1, ..., n,
 $
-where $h^(or)$ is the dual Coxeter number of the Lie algebra $frak(g)$, and $Omega_(i j)$ is the _Casimir element_ acting on the $i$-th and $j$-th factors of the tensor product $V_1 times.circle ... times.circle V_n$, defined as:
+where $h^(or)$ is the dual Coxeter number of the Lie algebra $frak(g)$, and $Omega_(i j)$ is the _Casimir element_ acting on the $i$-th and $j$-th factors of the tensor product $V_1 times.o ... times.o V_n$, defined as:
 $
-  Omega_(i j) = sum_(a) rho_i (t_(a)) times.circle rho_j (t_(a)).
+  Omega_(i j) = sum_(a) rho_i (t_(a)) times.o rho_j (t_(a)).
 $
 
 By definition, the KZ equation describes a local system over the configuration space $Conf_(n)(CC)$, which could be interpreted as a flat connection $nabla_("KZ")$.
@@ -263,15 +263,15 @@ However, there are some VERY important consequences of this flatness, so I highl
 A natural question is: what is the monodromy of this local system?
 We shell consider the case $n=2$ first, which could be reduced to a single ordinary differential equation:
 $
-  frac(diff F, diff z) - frac(1, planck.reduce) Omega/z F = 0.
+  frac(partial F, partial z) - frac(1, planck) Omega/z F = 0.
 $
-The solution could be expressed as $F(z) = z^(frac(1, planck.reduce) Omega) C$.
+The solution could be expressed as $F(z) = z^(frac(1, planck) Omega) C$.
 After winding $z$ around the origin once, i.e., $z |-> e^(2 pi i) z$, the solution would transform as:
 $
-  F(z) |-> e^(2 pi i frac(1, planck.reduce) Omega) F(z),
+  F(z) |-> e^(2 pi i frac(1, planck) Omega) F(z),
 $
-thus, the monodromy matrix is given by $M = e^(2 pi i frac(1, planck.reduce) Omega)$.
-Which is exactly the R-matrix we found from the perturbative Chern-Simons theory!#footnote([Well, you may argue that there is a (slight) difference of a factor $h^(or)$ in the definition of $planck.reduce$ at the case of CS and KZ respectively. However, since the perturbative expansion is done at large $k$ limit (small $planck.reduce$), this difference could be ignored. Also, it is quite interesting to restore this factor $h^(or)$ from the perturbative CS theory point of view, which I don't know how to do so.])
+thus, the monodromy matrix is given by $M = e^(2 pi i frac(1, planck) Omega)$.
+Which is exactly the R-matrix we found from the perturbative Chern-Simons theory!#footnote([Well, you may argue that there is a (slight) difference of a factor $h^(or)$ in the definition of $planck$ at the case of CS and KZ respectively. However, since the perturbative expansion is done at large $k$ limit (small $planck$), this difference could be ignored. Also, it is quite interesting to restore this factor $h^(or)$ from the perturbative CS theory point of view, which I don't know how to do so.])
 
 In fact, this is not a coincidence.
 Due to the work of Drinfeld and Kohno, the monodromy representation of the KZ connection is equivalent to the representation of the braid group obtained from the R-matrix of the corresponding quantum group.
@@ -350,9 +350,9 @@ $
 $
 where $partial Delta = Delta_(1) - Delta_(0) + ...$, and $...$ denotes the contributions from the (codimension $1$) boundary strata characterized by some two points collapsing configuration, i.e.:
 $
-  integral_(Delta_(1)) omega - integral_(Delta_(0)) omega + integral_(diff Delta times [0,1]) omega = 0.
+  integral_(Delta_(1)) omega - integral_(Delta_(0)) omega + integral_(partial Delta times [0,1]) omega = 0.
 $
-Using the Fubini's theorem, we only need to check the contributions from $diff Delta$ to verify the invariance of the Kontsevich integral under horizontal deformations, i.e., we need to check that the contributions from $diff Delta$ would vanish.
+Using the Fubini's theorem, we only need to check the contributions from $partial Delta$ to verify the invariance of the Kontsevich integral under horizontal deformations, i.e., we need to check that the contributions from $partial Delta$ would vanish.
 
 There are four types of such collapsing configurations:
 - Time plane hits a critical point.
@@ -426,13 +426,13 @@ In the context of anyons, this could be interpreted as the consistency condition
 
 Thus, the integration would be modeled by a $3$-strands tangle, and the integration over the boundary of $Delta times [0,1]$ would leads to:
 $
-  Phi_(n)(T_(1)) - Phi_(n)(T_(0)) + integral_(diff Delta times [0,1]) omega = 0,
+  Phi_(n)(T_(1)) - Phi_(n)(T_(0)) + integral_(partial Delta times [0,1]) omega = 0,
 $
 where $T_(0)$ and $T_(1)$ are two tangles related by Reidemeister move of type III.
 
 This is exactly the same situation as the horizontal deformation case discussed above.
 Thus, using the same argument as before, the contributions from the boundary strata would vanish.
-What we left is $Phi_(n)(T_1) = Phi_(n)(T_(0))$, which is the $planck.reduce^(n)$-th order (Quantum) Yang-Baxter equation.
+What we left is $Phi_(n)(T_1) = Phi_(n)(T_(0))$, which is the $planck^(n)$-th order (Quantum) Yang-Baxter equation.
 
 
 // R-matrix from perturbative CS theory

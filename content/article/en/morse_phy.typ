@@ -155,7 +155,7 @@ $
 $
 where $tau$ is where the instanton localized on, and $A$ is defined as:
 $
-  integral_(tau_(A))^(tau_(B)) dif tau thin A = [ frac(det(- diff_(tau)^(2) + omega^(2)), det(- diff_(tau)^(2) + V''(x_(c)))) ]^(1\/2),
+  integral_(tau_(A))^(tau_(B)) dif tau thin A = [ frac(det(- partial_(tau)^(2) + omega^(2)), det(- partial_(tau)^(2) + V''(x_(c)))) ]^(1\/2),
 $
 and $V''(x_(A,B)) = m omega^(2)$.
 The original determinant could be written as $K^(-1\/2)_("ins") = e^(- omega tau \/ 2) A$, where the first term could be removed by some proper phase shift in real time.
@@ -200,42 +200,42 @@ $
 $
 where $x_(c)(tau)$ and $x_(c)(tau + eta)$ will both satisfies the equation above, then, at the linear order, we have:
 $
-  [- diff_(tau)^(2) + V''(x_(c)(tau))] diff_(tau) x_(c) = 0,
+  [- partial_(tau)^(2) + V''(x_(c)(tau))] partial_(tau) x_(c) = 0,
 $
-which means that the instanton path $diff_(tau)x_(c)(tau)$ is a zero mode of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$.
+which means that the instanton path $partial_(tau)x_(c)(tau)$ is a zero mode of the operator $- partial_(tau)^(2) + V''(x_(c)(tau))$.
 
 
 
 === Determinant with Zero Mode
 
 To evaluate the determinant, we need to use a more careful treatment of the zero mode.
-Consider eigenstates of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$, we can expand the degree of freedom as $delta x(t) = sum_(n) c_(n) x_(n)(t)$, where $x_(n)(t)$ is the $n$-th eigenstate of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$.
+Consider eigenstates of the operator $- partial_(tau)^(2) + V''(x_(c)(tau))$, we can expand the degree of freedom as $delta x(t) = sum_(n) c_(n) x_(n)(t)$, where $x_(n)(t)$ is the $n$-th eigenstate of the operator $- partial_(tau)^(2) + V''(x_(c)(tau))$.
 Then we can write the path integral for first $N$-th eigenstates as:
 $
   K_("ins",N)^(-1\/2)
   = & A_(N) integral product_(n=1)^(N) frac(dif c_(n), sqrt(2pi)) thin e^(upright(i) S[x_(c)(t) + sum_(n=1)^(N) c_(n) x_(n)(t)]) \
-  = & A_(N) integral_(-oo)^(+oo) frac(dif c_(1), sqrt(2pi)) thin (attach(det', br: N) [- diff_(tau)^(2) + V''(x_(c)(tau))])^(-1\/2),
+  = & A_(N) integral_(-oo)^(+oo) frac(dif c_(1), sqrt(2pi)) thin (attach(det', br: N) [- partial_(tau)^(2) + V''(x_(c)(tau))])^(-1\/2),
 $
 where $attach(det', br: N)$ denotes the determinant with the first $N$-th eigenstates and remove the zero mode. And $A_(N)$ is a normalization factor would be determined by harmonic oscillator.
 Since the normalized zero mode is given by $x_1(tau) = frac(dot(x)_(c)(tau), sqrt(S_0))$, the determinant could be written as:
 $
-  K_("ins",N)^(-1\/2) = A_(N) sqrt(frac(S_(0), 2pi)) integral_(-oo)^(+oo) dif tau thin (attach(det', br: N) [- diff_(tau)^(2) + V''(x_(c)(tau))])^(-1\/2),
+  K_("ins",N)^(-1\/2) = A_(N) sqrt(frac(S_(0), 2pi)) integral_(-oo)^(+oo) dif tau thin (attach(det', br: N) [- partial_(tau)^(2) + V''(x_(c)(tau))])^(-1\/2),
 $
 thus, we can recover the original determinant as $K_( "ins")^(-1\/ 2) = lim_(N->oo) K_( "ins",N)^(-1 \/ 2)$.
 Moreover, the instanton amplitude $A$ would be defined as:
 $
-  A = sqrt(frac(S_(0), 2pi)) (frac(det[-diff^(2)_(tau) + omega^(2)], det' [- diff_(tau)^(2) + V''(x_(c)(tau))]))^(1\/2).
+  A = sqrt(frac(S_(0), 2pi)) (frac(det[-partial^(2)_(tau) + omega^(2)], det' [- partial_(tau)^(2) + V''(x_(c)(tau))]))^(1\/2).
 $
 === Calculating the Determinant
 
 Now we want to get the determinant which removes the zero mode.
 By definition, the determinant (removed the zero mode) is given by:
 $
-  det'[- diff_(tau)^(2) + W(tau)] = product_(n=2) lambda_(n),
+  det'[- partial_(tau)^(2) + W(tau)] = product_(n=2) lambda_(n),
 $
-where the $lambda_n$ are the eigenvalues of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$, which could be defined as:
+where the $lambda_n$ are the eigenvalues of the operator $- partial_(tau)^(2) + V''(x_(c)(tau))$, which could be defined as:
 $
-  [- diff_(tau)^(2) + W(tau)] x_(n)(tau) = lambda_(n) x_(n)(tau),
+  [- partial_(tau)^(2) + W(tau)] x_(n)(tau) = lambda_(n) x_(n)(tau),
 $
 where $x_(n)(tau)$ are en eigenstate of the operator, if and only if $x_(n)$ satisfies the boundary condition $x_(n)(plus.minus oo) = 0$.
 To evaluate the determinant properly, we would firstly consider the equation supports on $[-T\/2, T \/2]$, then remove the lowest eigenvalue $lambda_(1)$, and take the limit $T -> plus oo$.
@@ -245,23 +245,23 @@ The theorem below gives us the ratio of the determinants of two operators with t
 #theorem(
   [The ratio of determinants is:
     $
-      det [frac(- diff_(tau)^(2) + W_1(tau) - lambda, -diff_(tau)^(2) + W_2(tau) - lambda)] = frac(x^((1))_(lambda)(T \/ 2), x^(2)_(lambda)(T \/ 2)),
+      det [frac(- partial_(tau)^(2) + W_1(tau) - lambda, -partial_(tau)^(2) + W_2(tau) - lambda)] = frac(x^((1))_(lambda)(T \/ 2), x^(2)_(lambda)(T \/ 2)),
     $
-    where $x_(lambda)^(1,2)$ satisfies the boundary condition $x_(lambda)^(1,2)(plus.minus T\/2) = 0$ and $diff_(tau) x_(lambda)^(1,2)(-T \/ 2) = 1$.
+    where $x_(lambda)^(1,2)$ satisfies the boundary condition $x_(lambda)^(1,2)(plus.minus T\/2) = 0$ and $partial_(tau) x_(lambda)^(1,2)(-T \/ 2) = 1$.
   ],
 )
 
 You can check the proof of this theorem #link("https://rgjha.github.io/gallery/AOS_Coleman.pdf")[here].
 In our problem, we have $W_1(tau) = V''(x_(c)(tau))$ and $W_2(tau) = omega^(2)$, thus the ratio of the determinants is given by:
 $
-  A = sqrt(frac(S_(0), 2pi)) (frac(det[- diff_(tau)^(2) + omega^(2)], det' [- diff_(tau)^(2) + V''(x_(c)(tau))]))^(1\/2) = lim_(T-> oo) sqrt(frac(S_0, 2pi)) frac(x_(1)(T \/ 2), lambda_0 upright(e)^(T) \/ 2),
+  A = sqrt(frac(S_(0), 2pi)) (frac(det[- partial_(tau)^(2) + omega^(2)], det' [- partial_(tau)^(2) + V''(x_(c)(tau))]))^(1\/2) = lim_(T-> oo) sqrt(frac(S_0, 2pi)) frac(x_(1)(T \/ 2), lambda_0 upright(e)^(T) \/ 2),
 $
 so the next step is to calculate the eigenvalue $lambda_0$ and the function $x_(1)(tau)$.
 
 We note that the (normalized) eigenstate could be written as $x_(1)(tau) = S_0^(-1\/ 2) dot(x)_(c)(tau) -> a upright(e)^(-tau)$, while $tau -> + oo$.
 Using this could help us to construct the eigenfunction $x_(lambda_0)(tau) = frac(1, 2a) (upright(e)^(tau \/ 2) x_(1)(tau) + e^(-tau \/ 2) y_(1)(tau))$, where $y_1(tau)$ could be derived from the Wronskian:
 $
-  x_1 diff_(tau) y_1 - y_1 diff_(tau) x_1 = 2 a^(2),
+  x_1 partial_(tau) y_1 - y_1 partial_(tau) x_1 = 2 a^(2),
 $
 thus we have $y_(1)(tau) -> a upright(e)^(tau)$ while $tau -> oo$.
 The eigenfunction at $tau = T \/ 2$ is $x_(lambda_0)(T \/ 2) = 1$ and $lambda_0 = 4 A^(2) e^(-T)$.
@@ -277,7 +277,7 @@ $
 == "Taming" Infinity: Supersymmetric Quantum Mechanics
 
 The difficulties in calculating the instanton determinant above arise from the infinite dimensional nature of the path integral.
-Which would arise in calculating the determinant of the operator $- diff_(tau)^(2) + V''(x_(c)(tau))$.
+Which would arise in calculating the determinant of the operator $- partial_(tau)^(2) + V''(x_(c)(tau))$.
 If we can find a way to remove such infinite number of degrees of freedom (in the calculation of the determinant is infinite number of eigenstates), then we can calculate the instanton determinant easily by tracking the finite product of the eigenvalues.
 
 == $A \/ A = 1$
@@ -293,19 +293,19 @@ If one introduce $B = A^(1\/ 2)$, the infinite dimensional part would be removed
 The physical realization of this is called _supersymmetry_.
 In supersymmetric quantum mechanics, we introduce some Fermionic variables $psi$ and $overline(psi)$ to the system, such that the Lagrangian of the system would become:
 $
-  upright(i) S[x,psi,overline(psi)] = - integral dif tau thin [ frac(1, 2) angle.l dot(x), dot(x) angle.r + frac(1, 2) angle.l grad h(x), grad h(x) angle.r+ angle.l overline(psi) , (diff_(tau) + grad^(2) h(x)) psi angle.r ],
+  upright(i) S[x,psi,overline(psi)] = - integral dif tau thin [ frac(1, 2) chevron.l dot(x), dot(x) chevron.r + frac(1, 2) chevron.l grad h(x), grad h(x) chevron.r+ chevron.l overline(psi) , (partial_(tau) + grad^(2) h(x)) psi chevron.r ],
 $
-where we have $V(x) = frac(1, 2) (grad h(x))^(2)$ and $angle.l , angle.r$ is the natural pairing induced by the metric on the space.
+where we have $V(x) = frac(1, 2) (grad h(x))^(2)$ and $chevron.l , chevron.r$ is the natural pairing induced by the metric on the space.
 In order to remove the infinite dimensional part in the determinant of the Bosonic part (here comes from $x$), we need to let the Fermionic part satisfy the periodic boundary condition instead of the anti-periodic boundary condition, which is usually used in finite temperature field theory.
 
 The classical equation of motion of the system is given by $dot(x) = plus.minus grad h$, thus the classical ground state of the system is given by the critical points of the Morse function $h$.
 Around the classical ground state(s) $x_(i)$, we can expand the action up to second order as:
 $
-  upright(i)S[delta x, psi, overline(psi)] = - integral dif tau thin [ frac(1, 2) angle.l delta x, ( - diff_(tau)^(2) + (grad^(2) h(x_(i)))^(2)) delta x angle.r + angle.l overline(psi), (diff_(tau) + grad^(2) h(x_(i))) psi angle.r ],
+  upright(i)S[delta x, psi, overline(psi)] = - integral dif tau thin [ frac(1, 2) chevron.l delta x, ( - partial_(tau)^(2) + (grad^(2) h(x_(i)))^(2)) delta x chevron.r + chevron.l overline(psi), (partial_(tau) + grad^(2) h(x_(i))) psi chevron.r ],
 $
-and the path integral around the classical ground state is given by (where the modes of $x$ and $psi, overline(psi)$ are all periodic, thus $diff_(tau)$ has eigenvalues $n$):
+and the path integral around the classical ground state is given by (where the modes of $x$ and $psi, overline(psi)$ are all periodic, thus $partial_(tau)$ has eigenvalues $n$):
 $
-  integral cal(D)[delta x] cal(D)[psi] cal(D)[overline(psi)] thin upright(e)^(upright(i) S[delta x, psi, overline(psi)]) = frac(det (diff_(tau)+ nabla^(2) h(x_(i))), sqrt(det(- diff_(tau)^(2) + (nabla^(2) h(x_(i)))^(2))))
+  integral cal(D)[delta x] cal(D)[psi] cal(D)[overline(psi)] thin upright(e)^(upright(i) S[delta x, psi, overline(psi)]) = frac(det (partial_(tau)+ nabla^(2) h(x_(i))), sqrt(det(- partial_(tau)^(2) + (nabla^(2) h(x_(i)))^(2))))
   = frac(det(nabla^(2)h(x_(i))), |det(nabla^(2) h(x_(i)))|).
 $
 After summing over all the classical ground states, we would get:
@@ -321,7 +321,7 @@ In this section, we want to prove that the time shifting $tau -> tau + delta tau
 
 The general deformation of the instanton path up to the first order could be written as
 $
-  cal(D)_(plus.minus) delta x := diff_(tau) delta x plus.minus diff^(2)_(x) h delta x = 0,
+  cal(D)_(plus.minus) delta x := partial_(tau) delta x plus.minus partial^(2)_(x) h delta x = 0,
 $
 thus, the possible deformation could be determined by the kernel of the operator $cal(D)_(plus.minus)$.
 

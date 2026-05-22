@@ -52,10 +52,10 @@ So, the question is, what are "good" objects and "good" morphisms?
 There are some examples from Gelfand and Manin's book:
 - Naive tensor product is "bad" (only right-exact, not exact), we need to correctly define it by using _flat resolution_, i.e., given $X, Y in cal(A)$, the "good" tensor product should be defined as:
   $
-    X times.circle^(L)Y := P^(bullet) times.circle Y,
+    X times.o^(L)Y := P^(bullet) times.o Y,
   $
   where $P^(bullet)$ is a flat resolution of $X$.
-  By definition of flat resolution, the functor $- times.circle Y$ is exact on $P^(bullet)$, thus the derived tensor product (which could be identified with $Tor_(i)(-,-)$ after taking homology) is "good".
+  By definition of flat resolution, the functor $- times.o Y$ is exact on $P^(bullet)$, thus the derived tensor product (which could be identified with $Tor_(i)(-,-)$ after taking homology) is "good".
   Namely, given a short exact sequence $0 -> A -> B -> C ->0$, the sequence:
   $
     ... -> Tor_(i)(X, A) -> Tor_(i)(X, B) -> Tor_(i)(X, C) -> ...

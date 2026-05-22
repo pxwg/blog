@@ -23,22 +23,21 @@ const config = getSafeLanguageConfig('friend', lang as any);
 <!doctype html>
 <html lang={config.htmlLang}>
   <head>
-    <BaseHead title={config.title} -  + kSiteTitle} description={kSiteDescription} />
+    <BaseHead title={`${config.title} - ${kSiteTitle}`} description={kSiteDescription} />
   </head>
   <body>
     <Header />
-    <main>
-      <section>
+    <main class="page-flow">
+      <section class="flow-section">
         <h1>{config.title}</h1>
-        <ul class="accent block-list">
+        <ul class="accent block-list link-card-list">
           {
             kFriendLinks.map((friend) => (
               <li>
                 <a href={friend.url} target="_blank" rel="noopener noreferrer">
                   {friend.name}
                 </a>
-                <br />
-                {friend.desc}
+                <p>{friend.desc}</p>
               </li>
             ))
           }

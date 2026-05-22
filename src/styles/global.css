@@ -14,21 +14,23 @@
   --accent: #d3006a;
   --accent-dark: #d30069b3;
   --black: #0f1219;
+  --content-width: 52rem;
+  --page-gutter: 2rem;
 }
 
 :root.dark {
-  --main-color: #dfdfd6;
+  --main-color: #e2e0d8;
   --main-hover-color: #fff;
-  --gray-color: #939da3;
-  --raw-bg-color: rgba(255, 255, 255, 0.05);
-  --main-bg-color: #242424;
-  --nav-bg-color: #242424;
+  --gray-color: #a6a39a;
+  --raw-bg-color: rgba(255, 255, 255, 0.06);
+  --main-bg-color: #202020;
+  --nav-bg-color: #202020;
   --accent: #cf829e;
   --accent-dark: #cf829eb3;
 }
 
 body {
-  --vp-font-family-base: "Source Serif 4", "LXGW WenKai", "Inter", "Noto Sans SC",
+  --vp-font-family-base: "Libertinus Serif", "LXGW WenKai", "Source Serif 4", "Inter", "Noto Sans SC",
     "PingFang SC", "Microsoft Yahei", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --vp-font-family-mono: "JetBrains Mono", ui-monospace, "Menlo", "Monaco", "Consolas",
@@ -36,33 +38,35 @@ body {
 
   font-family: var(--vp-font-family-base);
   margin: 0;
-  font-size: 12pt;
+  font-size: 20px;
   padding: 0;
-  text-align: justify;
+  text-align: left;
   background: var(--main-bg-color);
   background-size: 100% 600px;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--main-color);
-  line-height: 1.5;
-}
-@media (max-width: 600) {
-  body {
-    font-weight: 400;
-  }
+  line-height: 1.55;
 }
 main,
 .search {
-  max-width: min(56rem, calc(100% - 2em));
+  width: min(var(--content-width), calc(100% - var(--page-gutter)));
+  max-width: 100%;
   margin: auto;
 }
 main {
   padding: 3em 1em;
 }
+main.page-flow {
+  padding: 0 0 1em;
+}
 @media (max-width: 720px) {
   main {
     padding: 1em;
+  }
+  main.page-flow {
+    padding: 0 0 1em;
   }
   body {
     text-align: left;
@@ -85,47 +89,92 @@ h6 :target {
   scroll-margin-top: 1.25em;
 }
 h1 {
-  font-size: 2.75em;
-  margin-block-start: 0em;
-  margin-block-end: 0.8888889em;
+  font-size: 2.35em;
+  margin-block-start: 0;
+  margin-block-end: 0.38em;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
-  line-height: 1.1111111;
+  line-height: 1.14;
 }
 h2 {
   font-size: 2em;
-  margin-block-start: 1.6em;
-  margin-block-end: 0.6em;
+  margin-block-start: 0.72em;
+  margin-block-end: 0.22em;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
   line-height: 1.3333333;
 }
 h3 {
   font-size: 1.5em;
-  margin-block-start: 1.5em;
-  margin-block-end: 0.6em;
+  margin-block-start: 0.68em;
+  margin-block-end: 0.2em;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
   line-height: 1.45;
 }
 h4 {
   font-size: 1.25em;
-  margin-block-start: 1.5em;
-  margin-block-end: 0.6em;
+  margin-block-start: 0.62em;
+  margin-block-end: 0.18em;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
   line-height: 1.6;
 }
 h5 {
   font-size: 1.1em;
-  margin-block-start: 1.5em;
-  margin-block-end: 0.5em;
+  margin-block-start: 0.58em;
+  margin-block-end: 0.16em;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
   line-height: 1.5;
 }
 p {
-  margin-block-end: 0.5em;
+  margin-block-start: 0.62em;
+  margin-block-end: 0.68em;
+}
+ul,
+ol {
+  margin-block-start: 0.45em;
+  margin-block-end: 0.55em;
+  padding-inline-start: 1.35em;
+}
+li {
+  margin-block-start: 0.15em;
+  margin-block-end: 0.15em;
+}
+li > p:first-child {
+  margin-block-start: 0;
+}
+li > p:last-child {
+  margin-block-end: 0;
+}
+p + ul,
+p + ol {
+  margin-block-start: 0.3em;
+}
+ul + p,
+ol + p {
+  margin-block-start: 0.35em;
+}
+h1 + p,
+h2 + p,
+h3 + p,
+h4 + p,
+h5 + p,
+h6 + p,
+h1 + ul,
+h2 + ul,
+h3 + ul,
+h4 + ul,
+h5 + ul,
+h6 + ul,
+h1 + ol,
+h2 + ol,
+h3 + ol,
+h4 + ol,
+h5 + ol,
+h6 + ol {
+  margin-block-start: 0.25em;
 }
 strong,
 b {
@@ -134,17 +183,21 @@ b {
 a,
 .link {
   color: var(--accent);
-  text-decoration: underline;
+  text-decoration-line: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.12em;
   cursor: pointer;
 }
 a,
 .link {
-  transition: color 0.1s, underline 0.1s;
+  transition: color 0.1s, text-decoration-thickness 0.1s;
 }
 a:hover,
 .link:hover {
   color: var(--accent-dark);
-  text-decoration: underline solid 2px;
+  text-decoration-color: var(--accent-dark);
+  text-decoration-thickness: 0.12em;
 }
 textarea {
   width: 100%;
@@ -169,11 +222,12 @@ samp {
   font-weight: 300;
 }
 code {
-  padding: 0em 0.2em;
-  background-color: var(--raw-bg-color);
-  border-radius: 2px;
-  border: 1px solid var(--accent);
-  font-size: 11pt;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: color-mix(in srgb, var(--main-color) 92%, var(--accent));
+  font-size: 0.92em;
   line-height: inherit;
   vertical-align: baseline;
   display: inline;
@@ -228,12 +282,10 @@ hr {
   /* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
   white-space: nowrap;
 }
-nav a,
 .social-links a {
   text-decoration: none;
   color: var(--main-color);
 }
-nav a:hover,
 .social-links a:hover {
   color: var(--main-hover-color);
 }
@@ -277,6 +329,105 @@ nav a:hover,
 figcaption {
   text-align: center;
 }
+math {
+  color: color-mix(in srgb, var(--main-color) 90%, var(--main-bg-color));
+  font-weight: 400;
+  overflow-wrap: normal;
+  white-space: normal;
+  word-break: normal;
+  word-wrap: normal;
+}
+math[display="block"] {
+  math-style: normal;
+  margin: 0;
+  overflow: visible;
+  text-align: initial;
+}
+mjx-assistive-mml.assistive-mathml {
+  border: 0 !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  padding: 1px 0 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+}
+.typst-inline-math-wrapper > mjx-assistive-mml.assistive-mathml,
+.typst-inline-math > mjx-assistive-mml.assistive-mathml {
+  clip: auto !important;
+  inset: 0 !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  width: 100% !important;
+  color: transparent !important;
+  pointer-events: none;
+  user-select: text;
+}
+.typst-inline-math-wrapper > mjx-assistive-mml.assistive-mathml *,
+.typst-inline-math > mjx-assistive-mml.assistive-mathml * {
+  color: transparent !important;
+}
+.typst-inline-math-wrapper::selection,
+.typst-inline-math::selection,
+.typst-inline-math-wrapper > mjx-assistive-mml.assistive-mathml::selection,
+.typst-inline-math-wrapper > mjx-assistive-mml.assistive-mathml *::selection,
+.typst-inline-math > mjx-assistive-mml.assistive-mathml::selection,
+.typst-inline-math > mjx-assistive-mml.assistive-mathml *::selection {
+  background: Highlight;
+  color: transparent !important;
+}
+.math-svg-mml {
+  position: relative;
+}
+.typst-native-math {
+  color: color-mix(in srgb, var(--main-color) 90%, var(--main-bg-color));
+}
+.typst-native-math math {
+  overflow: visible;
+}
+.typst-native-math.typst-inline-math {
+  display: inline;
+  line-height: normal;
+  vertical-align: baseline;
+}
+.typst-native-math.typst-display-math {
+  overflow: visible;
+}
+.typst-inline-math-wrapper {
+  position: relative;
+  display: inline-block;
+  max-width: none;
+  overflow: visible;
+  line-height: 0;
+  vertical-align: baseline;
+}
+.math-baseline-probe {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+.typst-display-math {
+  margin: 0.75em 0;
+  overflow: visible;
+  text-align: center;
+}
+.typst-inline-math .math-svg > svg,
+.typst-inline-math > svg {
+  display: block;
+}
+.typst-inline-math-wrapper .math-svg {
+  display: inline-block;
+  max-width: none;
+  overflow: hidden;
+}
+.typst-inline-math-wrapper svg {
+  max-width: none;
+  overflow: hidden !important;
+}
 .code-image svg {
   max-width: 100%;
   height: fit-content;
@@ -293,13 +444,6 @@ figcaption {
   width: auto;
   vertical-align: -0.2em;
   display: inline-block;
-}
-.typst-inline-math-wrapper {
-  display: inline-block;
-  line-height: 0;
-}
-.typst-inline-math > svg {
-  display: block;
 }
 .block-equation {
   display: grid;
@@ -322,4 +466,38 @@ figcaption {
 }
 .block-list.accent > li {
   border-left: 2.5px solid var(--accent);
+}
+
+.flow-section {
+  margin-top: 0.45em;
+}
+.flow-section > :first-child {
+  margin-top: 0;
+}
+.flow-section > h1,
+.flow-section > h2,
+.flow-section > h3 {
+  margin-bottom: 0.28em;
+}
+.flow-section > h1 + .link-card-list,
+.flow-section > h2 + .link-card-list,
+.flow-section > h3 + .link-card-list {
+  margin-top: 0.2em;
+}
+.link-card-list {
+  --link-card-gap: 0.6em;
+  --link-card-padding: 0.85em;
+  margin-top: 0.2em;
+}
+.link-card-list.block-list > li,
+.link-card-list > li {
+  margin-top: var(--link-card-gap);
+  padding-left: var(--link-card-padding);
+}
+.link-card-list > li:first-child {
+  margin-top: 0;
+}
+.link-card-list p {
+  margin-top: 0.12em;
+  margin-bottom: 0;
 }

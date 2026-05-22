@@ -126,26 +126,26 @@ const dev = import.meta.env.DEV;
 
 <style is:global>
   :root {
-    --comment-border-color: #3498db;
-    --comment-bg-color: #e8f4f8;
+    --comment-border-color: #d3006a;
+    --comment-bg-color: transparent;
     --comment-text-color: #2c3e50;
-    --comment-link-color: #3498db;
-    --comment-link-hover-color: #2980b9;
+    --comment-link-color: #d3006a;
+    --comment-link-hover-color: #d30069b3;
     --comment-date-color: #7f8c8d;
     --form-border-color: #95a5a6;
-    --form-bg-color: #f9f4f4;
+    --form-bg-color: transparent;
     --form-text-color: #34495e;
     --form-button-color: #7f8c8d;
   }
   :root.dark {
-    --comment-border-color: #5dade2;
-    --comment-bg-color: #1a2332;
+    --comment-border-color: #cf829e;
+    --comment-bg-color: transparent;
     --comment-text-color: #e8e8e8;
-    --comment-link-color: #5dade2;
-    --comment-link-hover-color: #85c1e9;
+    --comment-link-color: #cf829e;
+    --comment-link-hover-color: #cf829eb3;
     --comment-date-color: #95a5a6;
     --form-border-color: #7f8c8d;
-    --form-bg-color: #1c1e20;
+    --form-bg-color: transparent;
     --form-text-color: #d0d0d0;
     --form-button-color: #95a5a6;
   }
@@ -165,17 +165,18 @@ const dev = import.meta.env.DEV;
   .comment {
     background: var(--comment-bg-color);
     border-left: 3px solid var(--comment-border-color);
-    border-radius: 4px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    border-radius: 0;
+    box-shadow: none;
+    padding-left: 0.9em;
   }
   .comment-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.5em;
-    padding: 0.3em 0.75em;
+    padding: 0;
     font-size: 0.9em;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+    border-bottom: 0;
   }
   .comment-header-left {
     display: flex;
@@ -200,7 +201,7 @@ const dev = import.meta.env.DEV;
     white-space: nowrap; /* Prevents date from wrapping */
   }
   .comment-body {
-    padding: 0rem 1rem 0rem;
+    padding: 0;
     line-height: 1.4;
     font-size: 0.95em;
     color: var(--comment-text-color);
@@ -209,16 +210,17 @@ const dev = import.meta.env.DEV;
   .comment-form-wrapper {
     background: var(--form-bg-color);
     border-left: 3px solid var(--form-border-color);
-    border-radius: 4px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    border-radius: 0;
+    box-shadow: none;
+    padding-left: 0.9em;
   }
   .user-info {
     display: flex;
     align-items: center;
     gap: 0.5em;
-    padding: 0.4em 0.75em;
+    padding: 0;
     font-size: 0.9em;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+    border-bottom: 0;
     color: var(--form-text-color);
   }
   .user-info .user-name {
@@ -230,7 +232,7 @@ const dev = import.meta.env.DEV;
     border: 1px solid var(--form-button-color);
     color: var(--form-button-color);
     padding: 0.2em 0.6em;
-    border-radius: 3px;
+    border-radius: 0;
     cursor: pointer;
     font-size: 0.9em;
     transition: all 0.2s ease;
@@ -239,16 +241,16 @@ const dev = import.meta.env.DEV;
     opacity: 0.7;
   }
   #comment-form {
-    padding: 0.5em;
+    padding: 0.5em 0 0;
   }
   #comment-form textarea {
     width: 100%;
     min-height: 50px;
     padding: 0.5em;
     border: 1px solid var(--form-border-color);
-    background: var(--form-bg-color);
+    background: transparent;
     color: var(--form-text-color);
-    border-radius: 3px;
+    border-radius: 0;
     font-family: inherit;
     font-size: 1em;
     resize: vertical;
@@ -260,7 +262,7 @@ const dev = import.meta.env.DEV;
   #comment-form textarea:focus {
     outline: none;
     border-color: var(--accent, var(--comment-border-color));
-    box-shadow: 0 0 0 2px var(--accent-alpha, rgba(52, 152, 219, 0.2));
+    box-shadow: none;
   }
   .form-actions {
     margin-top: 0.5em;
@@ -269,11 +271,11 @@ const dev = import.meta.env.DEV;
     gap: 0.5rem;
   }
   .form-actions button[type='submit'] {
-    background: var(--form-button-color);
-    color: #fff;
-    border: none;
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
     padding: 0.4em 1em;
-    border-radius: 3px;
+    border-radius: 0;
     cursor: pointer;
     font-size: 0.9em;
     transition: opacity 0.2s ease;
@@ -345,16 +347,15 @@ const dev = import.meta.env.DEV;
     color: var(--comment-date-color);
     cursor: pointer;
     padding: 0.25rem 0.5rem;
-    border-radius: 4px;
+    border-radius: 0;
   }
   .action-button:hover {
-    background-color: rgba(128, 128, 128, 0.1);
+    background-color: transparent;
     color: var(--comment-text-color);
   }
   .reply-form-container {
     margin: 0.5rem 0 0 1rem;
-    border-left: 2px solid rgba(128, 128, 128, 0.2);
-    padding-left: 1rem;
+    padding-left: 0;
   }
   .reply-form-container .comment-form-wrapper {
     margin-top: 0;
@@ -371,14 +372,14 @@ const dev = import.meta.env.DEV;
     min-height: 80px;
     padding: 0.5em;
     border: 1px solid var(--form-border-color);
-    background: var(--form-bg-color);
+    background: transparent;
     color: var(--form-text-color);
-    border-radius: 3px;
+    border-radius: 0;
     font-family: inherit;
   }
   .edit-form .form-actions button[type='submit'] {
-    background: var(--form-button-color);
-    color: #fff;
+    background: transparent;
+    color: var(--accent);
   }
   .comment-wrapper {
     display: flex;
@@ -386,8 +387,7 @@ const dev = import.meta.env.DEV;
   }
   .replies-container {
     margin-left: 1.5rem;
-    padding-left: 1.5rem;
-    border-left: 2px solid rgba(128, 128, 128, 0.2);
+    padding-left: 0;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;

@@ -119,7 +119,7 @@ $
 
 Wilson 圈的量子期望值可以形式地定义为：
 $
-  angle.l W_(K_1)(rho_1) ... W_(K_(n))(rho_(n)) angle.r = frac(1, Z_(CS)(X)) integral d mu_(X)[A] thin e^(i S_(CS)[A]) W_(K_1)(rho_1) ... W_(K_(n))(rho_(n)).
+  chevron.l W_(K_1)(rho_1) ... W_(K_(n))(rho_(n)) chevron.r = frac(1, Z_(CS)(X)) integral d mu_(X)[A] thin e^(i S_(CS)[A]) W_(K_1)(rho_1) ... W_(K_(n))(rho_(n)).
 $
 值得注意的是，根据 #link("https://link.springer.com/article/10.1007/BF01217730")[Witten] 的工作，这些期望值给出了 $X = SS^(3)$ 中纽结和链环的拓扑不变量（Jones 多项式）。
 
@@ -146,15 +146,15 @@ $
 我们将施加 _轴向规范_ 条件（又称 _全纯规范_）$A_(overline(z)) = 0$。
 因此，规范联络简化为 $A(z, t) = A_(0) d t + A_(z) d z$，Chern-Simons 作用量简化为：
 $
-  CS_(X)[A] := integral_(X) A overline(diff)_(t) A,
+  CS_(X)[A] := integral_(X) A overline(partial)_(t) A,
 $
-其中 $overline(diff)_(t) := d t overline(partial)$。
+其中 $overline(partial)_(t) := d t overline(partial)$。
 在这种规范固定下，路径积分将简化为纯粹的高斯积分。
 
 要使用微扰方法，我们需要计算规范场 $A$ 的传播子（两点关联函数）。
 在轴向规范下，传播子可以计算为：
 $
-  angle.l A_(i)^(a)(z_1, t_1) A_(j)^(b)(z_2, t_2) angle.r = delta^(a b) frac(1, i k) frac(d z_1 - d z_2, z_1 - z_2) delta(t_1 - t_2).
+  chevron.l A_(i)^(a)(z_1, t_1) A_(j)^(b)(z_2, t_2) chevron.r = delta^(a b) frac(1, i k) frac(d z_1 - d z_2, z_1 - z_2) delta(t_1 - t_2).
 $
 
 因此，Wilson 圈的期望值可以使用 Wick 定理计算。
@@ -169,20 +169,20 @@ $
 $
 因此，期望值可以通过以下方式计算：
 $
-  angle.l A^(a_1)(z(t_1), t_1) ... A^(a_(2n))(z(t_(2n)), t_(2n))angle.r = (frac(1, i k))^(n) tr_(rho) sum_(P) (-1)^(\# arrow.b P) wedge.big_(l in P) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) delta(t_(l_1) - t_(l_2)),
+  chevron.l A^(a_1)(z(t_1), t_1) ... A^(a_(2n))(z(t_(2n)), t_(2n))chevron.r = (frac(1, i k))^(n) tr_(rho) sum_(P) (-1)^(\# arrow.b P) wedge.big_(l in P) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) delta(t_(l_1) - t_(l_2)),
 $
 其中 $P$ 是集合 ${1, ..., 2n}$ 的配对，每个配对 $l in P$ 由两个元素 $(l_1, l_2)$ 组成，$\# arrow.b P$ 表示当赋予从 $K$ 继承的定向时，向下定向的弧的数量。
 
 在积掉 delta 函数后，连接的顶点将位于沿 $RR$ 方向的同一时间切片上。
 因此，Wilson 圈的期望值可以表示为：
 $
-  angle.l W_(K)(rho) angle.r = sum_(n=0)^(oo) frac(1, k^(n)) tr_(rho)Phi_(n)(K),
+  chevron.l W_(K)(rho) chevron.r = sum_(n=0)^(oo) frac(1, k^(n)) tr_(rho)Phi_(n)(K),
 $
 其中 $Phi_(n)(K)$ 称为纽结 $K$ 的 _Kontsevich 积分_，可以表示为：
 $
   Phi_(n)(K) = sum_(P) wedge.big_(l in P) (-1)^(\# arrow.b P) integral_(0 <= t_1 <= ... <= t_(n) <= 1) frac(d z_(l_1) - d z_(l_2), z_(l_1) - z_(l_2)) Omega_(l).
 $
-其中 $Omega_(l) = rho(t_(l_1)) times.circle rho(t_(l_2))$ 是在纽结上点 $gamma(t_(l_1))$ 和 $gamma(t_(l_2))$ 处李代数元素的双重插入，可以理解为在这两点处用权重 $Omega_(l)$ "连接"纽结。
+其中 $Omega_(l) = rho(t_(l_1)) times.o rho(t_(l_2))$ 是在纽结上点 $gamma(t_(l_1))$ 和 $gamma(t_(l_2))$ 处李代数元素的双重插入，可以理解为在这两点处用权重 $Omega_(l)$ "连接"纽结。
 
 不难看出，$Phi_(n)(K)$ 的定义是（我们在 #link("../anyon_cs")[前一篇博客] 中讨论的任意子系统构造的时间演化算符的非阿贝尔推广）。
 因此，你可以认为 Kontsevich 积分可以被理解为某个任意子系统沿世界线 $K$ 运动时在统计相互作用存在下的时间演化算符。
@@ -203,7 +203,7 @@ $
 时间切片上两条链的交点将在 $CC$ 中成为两个不同的点 $z_1, z_2$。
 使用 Kontsevich 积分的构造，唯一的非平凡贡献来自这两点上规范联络的 $n$ 次方，这给出#footnote([这是量子场论中所谓连通图展开的最简单情况。])：
 $
-  angle.l W_(K)(rho) angle.r = tr_(rho) sum_(n=0)^(oo) frac(1, k^(n)) frac(1, n!) (Phi_(1)(K))^(n) ,
+  chevron.l W_(K)(rho) chevron.r = tr_(rho) sum_(n=0)^(oo) frac(1, k^(n)) frac(1, n!) (Phi_(1)(K))^(n) ,
 $
 其中 $Phi_1(K)$ 可以计算为：
 $
@@ -211,9 +211,9 @@ $
 $
 因此，期望值可以表示为：
 $
-  angle.l W_(K)(rho) angle.r = tr_(rho) exp(frac(2 pi i, k) Omega),
+  chevron.l W_(K)(rho) chevron.r = tr_(rho) exp(frac(2 pi i, k) Omega),
 $
-这（在取迹之前）恰好与作用在张量积表示 $rho^(times.circle 2): frak(g) times.circle frak(g) -> GL(V times.circle V)$ 上的量子 _R-矩阵_ 相关。
+这（在取迹之前）恰好与作用在张量积表示 $rho^(times.o 2): frak(g) times.o frak(g) -> GL(V times.o V)$ 上的量子 _R-矩阵_ 相关。
 
 = Knizhnik-Zamolodchikov 联络
 
@@ -223,13 +223,13 @@ $
 在研究具有规范对称性的共形场论时，Knizhnik 和 Zamolodchikov 发现了 Wess-Zumino-Witten (WZW) 模型中初级场关联函数满足的一个显著的微分方程。
 
 考虑复平面 $CC$ 中的 $n$ 个不同点 ${z_1, ..., z_n}$，并将李代数 $frak(g)$ 的表示 $rho_i: frak(g) -> GL(V_i)$ 关联到每个点 $z_i$。
-Knizhnik-Zamolodchikov (KZ) 方程是关于函数 $F: Conf_(n)(CC) -> V_1 times.circle ... times.circle V_n$ 的一阶微分方程组，其中 $Conf_(n)(CC) = {(z_1, ..., z_n) in CC^(n) | z_i != z_j, forall i != j}$ 是 $CC$ 中 $n$ 个不同点的位形空间：
+Knizhnik-Zamolodchikov (KZ) 方程是关于函数 $F: Conf_(n)(CC) -> V_1 times.o ... times.o V_n$ 的一阶微分方程组，其中 $Conf_(n)(CC) = {(z_1, ..., z_n) in CC^(n) | z_i != z_j, forall i != j}$ 是 $CC$ 中 $n$ 个不同点的位形空间：
 $
-  (diff F) / (diff z_i ) - 1 / (k + h^(or)) sum_(i > j) Omega_(i j) / (z_i - z_j) F = 0, thin forall i = 1, ..., n,
+  (partial F) / (partial z_i ) - 1 / (k + h^(or)) sum_(i > j) Omega_(i j) / (z_i - z_j) F = 0, thin forall i = 1, ..., n,
 $
-其中 $h^(or)$ 是李代数 $frak(g)$ 的对偶 Coxeter 数，$Omega_(i j)$ 是作用在张量积 $V_1 times.circle ... times.circle V_n$ 的第 $i$ 和第 $j$ 个因子上的 _Casimir 元_，定义为：
+其中 $h^(or)$ 是李代数 $frak(g)$ 的对偶 Coxeter 数，$Omega_(i j)$ 是作用在张量积 $V_1 times.o ... times.o V_n$ 的第 $i$ 和第 $j$ 个因子上的 _Casimir 元_，定义为：
 $
-  Omega_(i j) = sum_(a) rho_i (t_(a)) times.circle rho_j (t_(a)).
+  Omega_(i j) = sum_(a) rho_i (t_(a)) times.o rho_j (t_(a)).
 $
 
 根据定义，KZ 方程描述了位形空间 $Conf_(n)(CC)$ 上的局部系统，可以被理解为平坦联络 $nabla_("KZ")$。
@@ -257,15 +257,15 @@ $
 一个自然的问题是：这个局部系统的单值性是什么？
 我们首先考虑 $n=2$ 的情况，它可以归结为单个常微分方程：
 $
-  frac(diff F, diff z) - frac(1, planck.reduce) Omega/z F = 0.
+  frac(partial F, partial z) - frac(1, planck) Omega/z F = 0.
 $
-解可以表示为 $F(z) = z^(frac(1, planck.reduce) Omega) C$。
+解可以表示为 $F(z) = z^(frac(1, planck) Omega) C$。
 在 $z$ 绕原点转一圈后，即 $z |-> e^(2 pi i) z$，解将变换为：
 $
-  F(z) |-> e^(2 pi i frac(1, planck.reduce) Omega) F(z),
+  F(z) |-> e^(2 pi i frac(1, planck) Omega) F(z),
 $
-因此，单值矩阵由 $M = e^(2 pi i frac(1, planck.reduce) Omega)$ 给出。
-这恰好是我们从微扰 Chern-Simons 理论中找到的 R-矩阵！#footnote([嗯，你可能会争辩说在 CS 和 KZ 情况下 $planck.reduce$ 的定义中有一个（轻微的）因子 $h^(or)$ 的差异。然而，由于微扰展开是在大 $k$ 极限（小 $planck.reduce$）下进行的，这个差异可以被忽略。此外，从微扰 CS 理论的角度恢复这个因子 $h^(or)$ 是相当有趣的，我不知道如何做到这一点。])
+因此，单值矩阵由 $M = e^(2 pi i frac(1, planck) Omega)$ 给出。
+这恰好是我们从微扰 Chern-Simons 理论中找到的 R-矩阵！#footnote([嗯，你可能会争辩说在 CS 和 KZ 情况下 $planck$ 的定义中有一个（轻微的）因子 $h^(or)$ 的差异。然而，由于微扰展开是在大 $k$ 极限（小 $planck$）下进行的，这个差异可以被忽略。此外，从微扰 CS 理论的角度恢复这个因子 $h^(or)$ 是相当有趣的，我不知道如何做到这一点。])
 
 事实上，这不是巧合。
 根据 Drinfeld 和 Kohno 的工作，KZ 联络的单值表示等价于从相应量子群的 R-矩阵获得的辫群表示。
@@ -344,9 +344,9 @@ $
 $
 其中 $partial Delta = Delta_(1) - Delta_(0) + ...$，$...$ 表示来自（余维 $1$）边界层的贡献，其特征是某两点坍缩构型，即：
 $
-  integral_(Delta_(1)) omega - integral_(Delta_(0)) omega + integral_(diff Delta times [0,1]) omega = 0.
+  integral_(Delta_(1)) omega - integral_(Delta_(0)) omega + integral_(partial Delta times [0,1]) omega = 0.
 $
-使用 Fubini 定理，我们只需要检查来自 $diff Delta$ 的贡献来验证 Kontsevich 积分在水平形变下的不变性，即，我们需要检查来自 $diff Delta$ 的贡献会消失。
+使用 Fubini 定理，我们只需要检查来自 $partial Delta$ 的贡献来验证 Kontsevich 积分在水平形变下的不变性，即，我们需要检查来自 $partial Delta$ 的贡献会消失。
 
 有四种类型的这样的坍缩构型：
 - 时间平面碰到临界点。
@@ -423,10 +423,10 @@ Yang-Baxter 方程可以理解为纽结理论中 III 型 Reidemeister 移动下 
 
 因此，积分将由 $3$-链缠结建模，对 $Delta times [0,1]$ 的边界上的积分将导致：
 $
-  Phi_(n)(T_(1)) - Phi_(n)(T_(0)) + integral_(diff Delta times [0,1]) omega = 0,
+  Phi_(n)(T_(1)) - Phi_(n)(T_(0)) + integral_(partial Delta times [0,1]) omega = 0,
 $
 其中 $T_(0)$ 和 $T_(1)$ 是通过 III 型 Reidemeister 移动相关的两个缠结。
 
 这与上面讨论的水平形变情况完全相同。
 因此，使用与之前相同的论证，来自边界层的贡献将消失。
-我们剩下的是 $Phi_(n)(T_1) = Phi_(n)(T_(0))$，这是 $planck.reduce^(n)$ 阶（量子）Yang-Baxter 方程。
+我们剩下的是 $Phi_(n)(T_1) = Phi_(n)(T_(0))$，这是 $planck^(n)$ 阶（量子）Yang-Baxter 方程。

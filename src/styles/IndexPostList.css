@@ -1,16 +1,19 @@
 .posts li > a.heading {
-  display: flex;
+  display: inline-block;
 }
+.post-meta,
 .date {
   font-style: italic;
+  color: var(--main-color);
+  font-size: 0.86em;
+  line-height: 1.35;
+  margin-top: 0.05em;
 }
 .posts .heading h2 {
-  font-size: 1.25em;
+  font-size: 1.18em;
   margin: 0;
-  margin-right: 0.5em;
-  line-height: 1.6;
+  line-height: 1.25;
   color: var(--main-color);
-  text-decoration: none;
   transition: color 0.1s;
 }
 .posts .heading {
@@ -20,9 +23,15 @@
 .posts .heading:hover h2 {
   color: var(--accent-dark);
 }
-.posts h2,
-.posts .date {
-  line-height: 32px;
+.posts .tags {
+  margin-top: 0.15em;
+  margin-bottom: 0.12em;
+  font-size: 0.92em;
+  line-height: 1.35;
+}
+.post-description {
+  margin-top: 0.12em;
+  margin-bottom: 0;
 }
 ul.tags {
   list-style: none;
@@ -34,8 +43,5 @@ ul.tags {
   margin-right: 1em;
 }
 .tags a {
-  text-decoration: none;
-}
-.tags a:hover {
-  text-decoration: underline;
+  color: var(--accent);
 }

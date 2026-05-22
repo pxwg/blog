@@ -186,8 +186,7 @@ export function renderInitialLayout(
 
   container.innerHTML = `<h3>Comments</h3>
 <div id="comment-list"></div>
-<div id="comment-form-container"></div>
-<p class="view-on-github"><a href="${discussion.url}" target="_blank" rel="noopener noreferrer">View on GitHub →</a></p>`;
+<div id="comment-form-container"></div>`;
   const commentList = container.querySelector<HTMLElement>('#comment-list')!;
 
   if (commentTree.length > 0) {

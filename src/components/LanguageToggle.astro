@@ -29,24 +29,19 @@ const zhUrl = generateLanguageToggleUrl(Astro.url.pathname, 'zh');
 
 <style>
   .language-toggle {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    font-size: 0.9em;
+    display: inline;
     position: relative;
     z-index: 10;
-    right: 9px;
   }
 
   .lang-link {
     color: var(--accent);
-    text-decoration: underline;
     cursor: pointer;
     transition: color 0.2s;
   }
 
   .lang-link:hover {
-    color: var(--main-hover-color);
+    color: var(--accent-dark);
   }
 
   .current-lang {

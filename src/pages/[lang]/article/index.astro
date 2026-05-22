@@ -1,13 +1,11 @@
 ---
 import { getCollection } from "astro:content";
-import { execSync } from 'node:child_process';
 import TagList from "$components/TagList.astro";
-import { Search } from "@myriaddreamin/tylant";
 import BaseHead from "$components/BaseHead.astro";
 import Footer from "$components/Footer.astro";
 import FormattedDate from "$components/FormattedDate.astro";
 import Header from "$components/Header.astro";
-import { kUrlBase, kSiteTitle, kSiteDescription, kEnableSearch } from "$consts";
+import { kUrlBase, kSiteTitle, kSiteDescription } from "$consts";
 import "$styles/IndexPostList.css";
 import { getGitModifiedDate } from "../../../utils/git";
 import { getSafeLanguageConfig } from "$utils/i18n";
@@ -58,20 +56,19 @@ const config = getSafeLanguageConfig('articleIndex', lang as any);
   <head>
     <BaseHead title={kSiteTitle} description={kSiteDescription} />
     <style>
-      .posts.loading { display: none; }
-      main.search-enabled { padding-top: 0; }
-      @media (max-width: 600px) { .heading { display: flex; flex-direction: column; } }
+      .post-index-title {
+        margin-bottom: 0.28em;
+      }
     </style>
   </head>
   <body>
     <Header />
-    {kEnableSearch && <Search />}
-    <main class={kEnableSearch ? "search-enabled" : ""}>
-      <section>
-        <h2 style="margin-bottom: 1rem; font-size: 2rem;">
+    <main class="page-flow post-index">
+      <section class="flow-section">
+        <h1 class="post-index-title">
           {config.title}
-        </h2>
-        <ul class={`accent block-list posts${kEnableSearch ? " loading" : ""}`}>
+        </h1>
+        <ul class="accent block-list link-card-list posts">
           {
             posts.map((post) => {
               const postUrl = `${kUrlBase}/${lang}/article/${post.id.replace(`${lang}/`, '')}/`;
@@ -88,27 +85,25 @@ const config = getSafeLanguageConfig('articleIndex', lang as any);
                 >
                   <a class="heading" href={postUrl}>
                     <h2><span class="title">{post.data.title}</span></h2>
-                      <span class="date"><FormattedDate date={post.data.date} /> ✎ <FormattedDate date={post.data.modifiedDate}/></span>
                   </a>
+                  <div class="post-meta">
+                    <FormattedDate date={post.data.date} />
+                    {
+                      post.data.modifiedDate && (
+                        <>
+                          <span> · updated </span>
+                          <FormattedDate date={post.data.modifiedDate} />
+                        </>
+                      )
+                    }
+                  </div>
                   {post.data.tags && <TagList tags={post.data.tags} lang={config.tagListLang} />}
-                  {post.data.description || ""}
+                  <p class="post-description">{post.data.description || ""}</p>
                 </li>
               )
             })
           }
         </ul>
-        {
-          kEnableSearch && (
-            <script>
-              document.addEventListener('DOMContentLoaded', () => {
-                const postsElement = document.querySelector('.posts');
-                if (postsElement) {
-                  postsElement.classList.remove('loading');
-                }
-              });
-            </script>
-          )
-        }
       </section>
     </main>
     <Footer />

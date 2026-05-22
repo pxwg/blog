@@ -34,7 +34,7 @@
 
 当使用维克定理（Wick's theorem）对路径积分进行微扰展开时，展开式中的每一项都可以用一个费曼图来表示，其构建遵循以下规则：
 - *图（Graph）* $Gamma(g, n)$：一个亏格为 $g$ 且带有 $n$ 条带标号外腿（external legs）的图。
-- *边（Edges）：* 对应传播子 $angle.l phi_1(x_1) phi_2(x_2)angle.r$，源自拉格朗日量的自由部分。
+- *边（Edges）：* 对应传播子 $chevron.l phi_1(x_1) phi_2(x_2)chevron.r$，源自拉格朗日量的自由部分。
 - *顶点（Vertices）：* 对应拉格朗日量中的相互作用项。
 每个顶点的配价（valence）由相互作用项的阶数决定。
 
@@ -192,23 +192,23 @@ $
   $])
 这是 $sMod_(bb(S))$ 范畴中的一个单纯对象（simplicial object），构成了 modular operad $cal(A)$ 的 *bar construction*。
 
-单纯对象编码了面映射（face maps）${diff_(i)}$ 和退化映射（degeneracy maps）${sigma_(i)}$，从而产生同调结构。“主方程” $diff^(2) = 0$ 编码了理论的一致性条件，特别是单子的结合律和单位律公理。
+单纯对象编码了面映射（face maps）${partial_(i)}$ 和退化映射（degeneracy maps）${sigma_(i)}$，从而产生同调结构。“主方程” $partial^(2) = 0$ 编码了理论的一致性条件，特别是单子的结合律和单位律公理。
 
-考虑边界算子 $diff$ 的具体结构。
-面映射 $diff_i$ 本质上对应于在第 $i$ 层嵌套处收缩图。此类映射的表达式为：
+考虑边界算子 $partial$ 的具体结构。
+面映射 $partial_i$ 本质上对应于在第 $i$ 层嵌套处收缩图。此类映射的表达式为：
 $
-  diff_(i) = cases(
+  partial_(i) = cases(
     bb(M)^(i) compose mu compose bb(M)^(n-1-i)\, thin & 0<=i<n,
     bb(M)^(n) compose rho\, & thin i=n\,
   )
 $
-这些映射满足单纯恒等式 $diff_(i) diff_(j) = diff_(j-1) diff_(i)$。
+这些映射满足单纯恒等式 $partial_(i) partial_(j) = partial_(j-1) partial_(i)$。
 
-利用这些面映射，我们定义总边界映射 $diff_((n)): bb(M)^(n+1)cal(A) -> bb(M)^(n) cal(A)$ 为：
+利用这些面映射，我们定义总边界映射 $partial_((n)): bb(M)^(n+1)cal(A) -> bb(M)^(n) cal(A)$ 为：
 $
-  diff_((n)) = sum_(i=0)^(n) (-1)^(i) diff_(i),
+  partial_((n)) = sum_(i=0)^(n) (-1)^(i) partial_(i),
 $
-其中由于单纯恒等式，主方程 $diff^(2)_((n)) = 0$ 得到满足。
+其中由于单纯恒等式，主方程 $partial^(2)_((n)) = 0$ 得到满足。
 
 #remark([
   这个 bar construction 是同调代数中经典 bar construction 的自然推广。在那里，链复形可以被视为一维的树，而面映射对应于顶点的“分裂”。

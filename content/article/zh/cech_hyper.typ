@@ -53,10 +53,10 @@
 Gelfand 和 Manin 的书中有一些例子：
 - 朴素的张量积是“坏”的（它只是右正合的，而非正合的），我们需要使用_平坦分解_来正确地定义它，即，给定 $X, Y in cal(A)$，“好”的张量积应定义为：
   $
-    X times.circle^(L)Y := P^(bullet) times.circle Y,
+    X times.o^(L)Y := P^(bullet) times.o Y,
   $
   其中 $P^(bullet)$ 是 $X$ 的一个平坦分解。
-  根据平坦分解的定义，函子 $- times.circle Y$ 在 $P^(bullet)$ 上是正合的，因此导出的张量积（取同调后可等同于 $Tor_(i)(-,-)$）是“好”的。
+  根据平坦分解的定义，函子 $- times.o Y$ 在 $P^(bullet)$ 上是正合的，因此导出的张量积（取同调后可等同于 $Tor_(i)(-,-)$）是“好”的。
   也就是说，给定一个短正合列 $0 -> A -> B -> C ->0$，序列：
   $
     ... -> Tor_(i)(X, A) -> Tor_(i)(X, B) -> Tor_(i)(X, C) -> ...

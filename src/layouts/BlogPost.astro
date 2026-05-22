@@ -64,52 +64,79 @@ const pdfArchives = await getCollection('archive');
     />
     <style is:global>
       main {
-        width: calc(100% - 2em);
-        max-width: 100%;
-        margin: 0;
+        padding: 0 0 1em;
       }
       .prose,
       .comment-region,
       ul.tags {
-        max-width: min(56rem, calc(100% - 2em));
+        width: 100%;
         color: var(--main-color);
-        margin: auto;
+        margin-left: 0;
+        margin-right: 0;
       }
       .prose {
-        padding: 1em;
+        padding: 0 0 0.25em;
       }
       .prose p {
-        margin-block-start: 0.5em;
-        margin-block-end: 0.5em;
+        margin-block-start: 0.68em;
+        margin-block-end: 0.72em;
       }
       .title {
-        margin-bottom: 1em;
-        padding: 1em 0;
-        line-height: 1;
-      }
-      .outline {
-        margin-top: -2em;
-      }
-      .outline + hr {
-        margin-bottom: 1em;
+        margin-bottom: 0.45em;
+        padding: 0.25em 0 0.15em;
       }
       .title h1 {
-        margin: 0 0 0.5em 0;
+        font-size: 2.25em;
+        margin: 0 0 0.14em 0;
+        line-height: 1.15;
       }
-      .annotation {
-        color: var(--gray-color);
-        display: flex;
-        gap: 0.5em;
-        margin-bottom: 0.5em;
+      .article-meta {
+        color: var(--main-color);
+        display: block;
+        margin: 0;
+        font-size: 0.82em;
+        line-height: 1.35;
+      }
+      .meta-date {
+        margin: 0;
+      }
+      .meta-language {
+        margin: 0.22em 0 0;
+        padding-left: 0.7em;
+        border-left: 3px solid var(--accent);
       }
       .last-updated-on,
       .click-count,
       .like-count {
         font-style: italic;
       }
+      .title .translation-disclaimer {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+        color: inherit !important;
+        font: inherit !important;
+        line-height: inherit !important;
+      }
+      .title .translation-disclaimer a {
+        color: var(--accent) !important;
+      }
+      .title hr {
+        display: none;
+      }
+      .prose > h1:first-of-type,
+      .prose > h2:first-of-type,
+      .title + h1,
+      .title + h2 {
+        margin-block-start: 0.45em;
+      }
       ul.tags {
         list-style: none;
         padding: 0;
+        margin-top: 0.15em;
+        margin-bottom: 1.1em;
       }
       .tags li {
         display: inline-block;
@@ -122,27 +149,8 @@ const pdfArchives = await getCollection('archive');
       .tags a:hover {
         text-decoration: underline;
       }
-      .outline {
-        text-align: left;
-      }
-
-      .outline-item {
-        line-height: 1.8889;
-      }
-      .outline-item.x-heading-1 {
-        margin-left: 0em;
-      }
-      .outline-item.x-heading-2 {
-        margin-left: 1em;
-      }
-      .outline-item.x-heading-3 {
-        margin-left: 2em;
-      }
-      .outline-item.x-heading-4 {
-        margin-left: 3em;
-      }
-      .outline-item.x-heading-5 {
-        margin-left: 4em;
+      .prose > p:last-child {
+        margin-bottom: 0.2em;
       }
     </style>
     {id && kEnableClick && <PostClick id={id} />}
@@ -154,52 +162,53 @@ const pdfArchives = await getCollection('archive');
       <article>
         <div class="prose">
           <section class="title" aria-label="Title">
-            <div class="annotation">
-              <div class="date">
+            <h1>{title}</h1>
+            <div class="article-meta">
+              <div class="meta-date">
                 <FormattedDate date={date} />
                 {
                   updatedDate && (
                     <>
                       <span class="last-updated-on">
-                        , Last updated on{' '}
+                        · updated{' '}
                         <FormattedDate date={updatedDate || date} />
                       </span>
                     </>
                   )
                 }
+                {
+                  id && kEnableClick && (
+                    <>
+                      <span> · </span>
+                      <span class="click-count">
+                        {click} {click === 1 ? 'view' : 'views'}
+                      </span>
+                    </>
+                  )
+                }
+                {
+                  id && kEnableReaction && (
+                    <>
+                      <span> · </span>
+                      <span class="like-count">
+                        {like} {like === 1 ? 'like' : 'likes'}
+                      </span>
+                    </>
+                  )
+                }
               </div>
-              {
-                id && kEnableClick && (
-                  <>
-                    <span>·</span>
-                    <div class="click-count">
-                      {click} {click === 1 ? 'view' : 'views'}
-                    </div>
-                  </>
-                )
-              }
-              {
-                id && kEnableReaction && (
-                  <>
-                    <span>·</span>
-                    <span class="like-count">
-                      {like} {like === 1 ? 'like' : 'likes'}
-                    </span>
-                  </>
-                )
-              }
+              <div class="meta-language">
+                {
+                  !isAboutPage && (
+                    <TranslationLink
+                      entry={Astro.props}
+                      locale={currentLang}
+                      llmTranslated={llmTranslated}
+                    />
+                  )
+                }
+              </div>
             </div>
-            <h1>{title}</h1>
-            {
-              !isAboutPage && (
-                <TranslationLink
-                  entry={Astro.props}
-                  locale={currentLang}
-                  llmTranslated={llmTranslated}
-                />
-              )
-            }
-            <hr />
           </section>
           <slot />
         </div>

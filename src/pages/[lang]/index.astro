@@ -75,16 +75,16 @@ const config = getSafeLanguageConfig('index', lang as any);
   </head>
   <body>
     <Header />
-    <main>
-      <section aria-label="Prelude">
+    <main class="page-flow">
+      <section class="flow-section" aria-label="Prelude">
         <h1 set:html={kSiteIndexTitle} />
         <AboutContent />
       </section>
-      <section aria-label="Recent Posts">
+      <section class="flow-section" aria-label="Recent Posts">
         <h2 id="recent-posts-title">
           {config.title}
         </h2>
-        <ul class="accent block-list posts">
+        <ul class="accent block-list link-card-list posts">
           {
             posts.map((post) => {
               const postUrl = `${kUrlBase}/${lang}/article/${post.id.replace(`${lang}/`, '')}/`;
@@ -99,13 +99,22 @@ const config = getSafeLanguageConfig('index', lang as any);
                     modifiedDate: post.data.modifiedDate ? post.data.modifiedDate.toISOString() : null
                   })}
                 >
-                <li>
                   <a class="heading" href={postUrl}>
                     <h2><span class="title">{post.data.title}</span></h2>
-                      <span class="date"><FormattedDate date={post.data.date} /> ✎ <FormattedDate date={post.data.modifiedDate}/></span>
                   </a>
+                  <div class="post-meta">
+                    <FormattedDate date={post.data.date} />
+                    {
+                      post.data.modifiedDate && (
+                        <>
+                          <span> · updated </span>
+                          <FormattedDate date={post.data.modifiedDate} />
+                        </>
+                      )
+                    }
+                  </div>
                   {post.data.tags && <TagList tags={post.data.tags} lang="zh"/>}
-                  {post.data.description || ""}
+                  <p class="post-description">{post.data.description || ""}</p>
                 </li>
               );
             })

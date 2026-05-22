@@ -25,7 +25,7 @@ classical equation of motion become MC equation.
 
 The cyclic structure could be viewed as locally shifted $- 1$ symplectic
 form, which is a non-degenerate pairing
-$omega : V times.circle V arrow.r bb(R)$ , which satisfies the cyclicity
+$omega : V times.o V arrow.r bb(R)$ , which satisfies the cyclicity
 condition under Koszul sign rule
 $
   omega ( mu_n ( a_1 , dots.h , a_n ) , a_(n + 1) ) = ( - 1 )^(lr(|a_0|) ( lr(|a_1|) + dots.h + lr(|a_n|) )) omega ( a_(n + 1) , mu_n ( a_1 , dots.h , a_n ) ) ,
@@ -46,7 +46,7 @@ identity could be identified as $B^2 = 0$.
 Using the superfield $Phi$ and local shifted $- 1$ symplectic pairing
 $omega$ , the BV action could be defined as
 $
-  S = omega (pi_1 B times.circle I) : S^c V times.circle S^c V arrow.r bb(R) ,
+  S = omega (pi_1 B times.o I) : S^c V times.o S^c V arrow.r bb(R) ,
 $
 $
   Phi mapsto sum_i frac(1, ( i + 1 ) !) omega (Phi , mu_i ( Phi , dots.h.c , Phi )) ,
@@ -78,9 +78,9 @@ $
 $
 And the non-trivial symplectic form $omega$ would be defined as:
 $
-  omega ( A , A^(star) ) = integral_X angle.l A , A^star angle.r , quad omega ( psi , psi^(star) ) = integral_X angle.l psi , psi^(star) angle.r ,
+  omega ( A , A^(star) ) = integral_X chevron.l A , A^star chevron.r , quad omega ( psi , psi^(star) ) = integral_X chevron.l psi , psi^(star) chevron.r ,
 $
-where $angle.l dot.op , dot.op angle.r$ is the Killing form on the Lie algebra
+where $chevron.l dot.op , dot.op chevron.r$ is the Killing form on the Lie algebra
 $frak(g)$.
 
 Especially, at the chain level, $mu_1$ part would induce a cochain
@@ -90,13 +90,13 @@ $
 $
 which satisfies $mu_1^2 = 0$, and the action could be written as
 $
-  S [ A , A^(star) , psi , psi^(star) ] = integral_X [1 / 2 angle.l F , star.op F angle.r - angle.l A^(star) , dif_A psi angle.r + 1 / 2 angle.l psi^(star) , [ psi , psi ] angle.r ] ,
+  S [ A , A^(star) , psi , psi^(star) ] = integral_X [1 / 2 chevron.l F , star.op F chevron.r - chevron.l A^(star) , dif_A psi chevron.r + 1 / 2 chevron.l psi^(star) , [ psi , psi ] chevron.r ] ,
 $
 where $dif_A = dif + [ A , dot.op ]$ is the covariant
 derivative induced via gauge connection $A$. If we denote $mu_1$ as
 cohomological vector field $Q$, the BV action could be written as
 $
-  S [ cal(A) ] = integral_X [1 / 2 angle.l cal(A) , Q cal(A) angle.r + frac(1, 3 !) angle.l cal(A) , mu_2 ( cal(A) , cal(A) ) angle.r + frac(1, 4 !) angle.l cal(A) , mu_3 ( cal(A) , cal(A) , cal(A) ) angle.r ] ,
+  S [ cal(A) ] = integral_X [1 / 2 chevron.l cal(A) , Q cal(A) chevron.r + frac(1, 3 !) chevron.l cal(A) , mu_2 ( cal(A) , cal(A) ) chevron.r + frac(1, 4 !) chevron.l cal(A) , mu_3 ( cal(A) , cal(A) , cal(A) ) chevron.r ] ,
 $
 which is called homotopic Chern-Simons action, where $cal(A)$ is the
 superfield.
@@ -109,7 +109,7 @@ $ & mu_1 ( psi_1 ) := dif psi_1 , quad mu_1 ( A_1 ) := dif A_1 , quad mu_1 ( A_1
 & mu_2 ( A_1 , A_2^(star) ) := [ A_1 , A_2^(star) ] , quad mu_2 ( A_1 , A_2 ) = [ A_1 , A_2 ] $ and the non-trivial symplectic form $omega$ would be defined as what
 we have defined above. The action could be written as
 $
-  "CS" [ cal(A) ] = integral_X [1 / 2 angle.l cal(A) , dif cal(A) angle.r + 1 / 6 angle.l cal(A) , [cal(A) , cal(A)] angle.r ] ,
+  "CS" [ cal(A) ] = integral_X [1 / 2 chevron.l cal(A) , dif cal(A) chevron.r + 1 / 6 chevron.l cal(A) , [cal(A) , cal(A)] chevron.r ] ,
 $
 where $cal(A) = A + A^(star) + psi + psi^(star)$ is the super field. We can
 simply note that this action is simply the Chern-Simons action, which
