@@ -31,8 +31,8 @@
 
 body {
   --vp-font-family-base: "Libertinus Serif", "Source Serif 4", "Songti SC", "STSong",
-    "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", "Inter", "Noto Sans SC",
-    "PingFang SC", "Microsoft Yahei", ui-serif, Georgia, serif,
+    "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun",
+    "Inter", "Noto Sans SC", "PingFang SC", "Microsoft Yahei", ui-serif, Georgia, serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --vp-font-family-mono: "JetBrains Mono", ui-monospace, "Menlo", "Monaco", "Consolas",
     "Liberation Mono", "Courier New", monospace;

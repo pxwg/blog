@@ -79,6 +79,9 @@ export default defineConfig({
     build: {
       assetsInlineLimit(filePath, content) {
         const KB = 1024;
+        if (/\.(woff2?|ttf|otf)$/i.test(filePath)) {
+          return false;
+        }
         return content.length < (filePath.endsWith('.css') ? 100 * KB : 4 * KB);
       },
     },

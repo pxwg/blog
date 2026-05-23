@@ -19,6 +19,7 @@
     "@astrojs/rss": "^4.0.13",
     "@astrojs/sitemap": "^3.6.0",
     "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource/noto-serif-sc": "^5.2.9",
     "@myriaddreamin/tylant": "workspace:^",
     "@myriaddreamin/tylant-theme-toggle": "workspace:^",
     "@myriaddreamin/typst-ts-node-compiler": "0.7.0-rc2",
