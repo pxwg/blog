@@ -5,7 +5,7 @@ import BaseHead from "$components/BaseHead.astro";
 import Footer from "$components/Footer.astro";
 import FormattedDate from "$components/FormattedDate.astro";
 import Header from "$components/Header.astro";
-import { kUrlBase, kSiteTitle, kSiteDescription } from "$consts";
+import { kUrlBase, kSiteTitle, kSiteDescription, kEnableSearch } from "$consts";
 import "$styles/IndexPostList.css";
 import { getGitModifiedDate } from "../../../utils/git";
 import { getSafeLanguageConfig } from "$utils/i18n";
@@ -49,6 +49,34 @@ const sortedPosts = postsWithModifiedDate.sort(
 const posts = sortedPosts.filter(post => post.id.startsWith(`${lang}/`));
 
 const config = getSafeLanguageConfig('articleIndex', lang as any);
+
+const searchCopy = lang === "zh"
+      ? {
+          label: "检索",
+          placeholder: "标题、摘要或标签",
+          sortLabel: "排序",
+          date: "日期新到旧",
+          dateAsc: "日期旧到新",
+          modifiedDate: "更新新到旧",
+      modifiedDateAsc: "更新旧到新",
+      title: "标题",
+      tags: "标签",
+      result: "篇文章",
+      empty: "没有找到匹配的文章。",
+    }
+      : {
+          label: "Search",
+          placeholder: "Title, summary, or tag",
+          sortLabel: "Sort",
+          date: "Newest first",
+          dateAsc: "Oldest first",
+          modifiedDate: "Recently updated",
+      modifiedDateAsc: "Least recently updated",
+      title: "Title",
+      tags: "Tags",
+      result: "posts",
+      empty: "No matching posts.",
+    };
 ---
 
 <!doctype html>
@@ -68,7 +96,39 @@ const config = getSafeLanguageConfig('articleIndex', lang as any);
         <h1 class="post-index-title">
           {config.title}
         </h1>
-        <ul class="accent block-list link-card-list posts">
+        {
+          kEnableSearch && (
+            <form class="post-search" role="search" aria-label={searchCopy.label}>
+              <label class="post-search-field">
+                <span class="post-search-kicker">
+                  <span class="post-search-label-text">{searchCopy.label}</span>
+                  <output class="post-search-count" aria-live="polite" data-result-label={searchCopy.result}>
+                    {posts.length} {searchCopy.result}
+                  </output>
+                </span>
+                <input
+                  id="post-search-text"
+                  type="search"
+                  name="search"
+                  autocomplete="off"
+                  placeholder={searchCopy.placeholder}
+                />
+              </label>
+              <label class="post-search-sort">
+                <span class="post-search-label-text">{searchCopy.sortLabel}</span>
+                <select id="post-search-sort" name="sort">
+                  <option value="date">{searchCopy.date}</option>
+                  <option value="date-asc">{searchCopy.dateAsc}</option>
+                  <option value="modified-date">{searchCopy.modifiedDate}</option>
+                  <option value="modified-date-asc">{searchCopy.modifiedDateAsc}</option>
+                  <option value="title">{searchCopy.title}</option>
+                  <option value="tag">{searchCopy.tags}</option>
+                </select>
+              </label>
+            </form>
+          )
+        }
+        <ul class="accent block-list link-card-list posts" data-post-count={posts.length}>
           {
             posts.map((post) => {
               const postUrl = `${kUrlBase}/${lang}/article/${post.id.replace(`${lang}/`, '')}/`;
@@ -104,6 +164,126 @@ const config = getSafeLanguageConfig('articleIndex', lang as any);
             })
           }
         </ul>
+        <p class="post-search-empty" hidden>{searchCopy.empty}</p>
+        {
+          kEnableSearch && (
+            <script>
+              interface ArticleMeta {
+                title?: string;
+                description?: string;
+                tags?: string[];
+                date?: Date;
+                modifiedDate?: Date | null;
+              }
+
+              interface SearchItem {
+                element: HTMLLIElement;
+                id: string;
+                data: ArticleMeta;
+              }
+
+              const searchForm = document.querySelector<HTMLFormElement>(".post-search");
+              const searchText = document.querySelector<HTMLInputElement>("#post-search-text");
+              const searchSort = document.querySelector<HTMLSelectElement>("#post-search-sort");
+              const searchCount = document.querySelector<HTMLOutputElement>(".post-search-count");
+              const searchEmpty = document.querySelector<HTMLElement>(".post-search-empty");
+              const postList = document.querySelector<HTMLUListElement>(".posts");
+              const resultLabel = searchCount?.dataset.resultLabel || "posts";
+
+              const searchItems: SearchItem[] = Array.from(
+                document.querySelectorAll<HTMLLIElement>(".posts > li")
+              ).map((li) => {
+                const articleMeta = JSON.parse(li.dataset.articleMeta || "{}");
+                if (articleMeta.date) {
+                  articleMeta.date = new Date(articleMeta.date);
+                }
+                if (articleMeta.modifiedDate) {
+                  articleMeta.modifiedDate = new Date(articleMeta.modifiedDate);
+                }
+
+                return {
+                  id: li.dataset.articleId || "",
+                  data: articleMeta,
+                  element: li,
+                };
+              });
+
+              const sorters: Record<string, (a: SearchItem, b: SearchItem) => number> = {
+                date: (a, b) => (b.data.date?.valueOf() || 0) - (a.data.date?.valueOf() || 0),
+                "date-asc": (a, b) => (a.data.date?.valueOf() || 0) - (b.data.date?.valueOf() || 0),
+                "modified-date": (a, b) =>
+                  (b.data.modifiedDate?.valueOf() || 0) - (a.data.modifiedDate?.valueOf() || 0),
+                "modified-date-asc": (a, b) =>
+                  (a.data.modifiedDate?.valueOf() || 0) - (b.data.modifiedDate?.valueOf() || 0),
+                title: (a, b) => (a.data.title || "").localeCompare(b.data.title || ""),
+                tag: (a, b) => {
+                  const aTags = a.data.tags || [];
+                  const bTags = b.data.tags || [];
+                  return aTags.join(" ").localeCompare(bTags.join(" "));
+                },
+              };
+
+              function syncUrl(search: string, sort: string) {
+                const params = new URLSearchParams(window.location.search);
+                if (search) {
+                  params.set("search", search);
+                } else {
+                  params.delete("search");
+                }
+
+                if (sort && sort !== "date") {
+                  params.set("sort", sort);
+                } else {
+                  params.delete("sort");
+                }
+
+                const nextUrl = `${window.location.pathname}${params.toString() ? `?${params}` : ""}`;
+                window.history.replaceState({}, "", nextUrl);
+              }
+
+              function runSearch() {
+                const search = (searchText?.value || "").trim().toLowerCase();
+                const sort = searchSort?.value || "date";
+                const sorter = sorters[sort] || sorters.date;
+
+                const matchedPosts = searchItems
+                  .filter(({ data }) => {
+                    if (!search) return true;
+                    const searchableText = [
+                      data.title,
+                      data.description,
+                      ...(data.tags || []),
+                    ].join(" ").toLowerCase();
+                    return searchableText.includes(search);
+                  })
+                  .sort(sorter);
+
+                postList?.replaceChildren(...matchedPosts.map((post) => post.element));
+                if (searchCount) {
+                  searchCount.value = `${matchedPosts.length} ${resultLabel}`;
+                  searchCount.textContent = `${matchedPosts.length} ${resultLabel}`;
+                }
+                if (searchEmpty) {
+                  searchEmpty.hidden = matchedPosts.length > 0;
+                }
+
+                syncUrl(search, sort);
+              }
+
+              searchForm?.addEventListener("submit", (event) => {
+                event.preventDefault();
+                runSearch();
+              });
+              searchText?.addEventListener("input", runSearch);
+              searchSort?.addEventListener("change", runSearch);
+
+              const params = new URLSearchParams(window.location.search);
+              if (searchText) searchText.value = params.get("search") || "";
+              if (searchSort) searchSort.value = params.get("sort") || "date";
+              runSearch();
+            </script>
+          )
+        }
       </section>
     </main>
     <Footer />
