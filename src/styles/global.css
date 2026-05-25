@@ -30,10 +30,10 @@
 }
 
 body {
-  --vp-font-family-base: "Libertinus Serif", "Source Serif 4", "Songti SC", "STSong",
-    "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun",
-    "Inter", "Noto Sans SC", "PingFang SC", "Microsoft Yahei", ui-serif, Georgia, serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --vp-font-family-base: "Libertinus Serif", "Source Serif 4", "Noto Serif SC",
+    "Noto Serif CJK SC", "Source Han Serif SC", "Source Han Serif CN", "Inter",
+    ui-serif, Georgia, serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
   --vp-font-family-mono: "JetBrains Mono", ui-monospace, "Menlo", "Monaco", "Consolas",
     "Liberation Mono", "Courier New", monospace;
 
@@ -49,6 +49,25 @@ body {
   font-weight: 400;
   color: var(--main-color);
   line-height: 1.55;
+}
+html:lang(zh) body {
+  --vp-font-family-zh-prose: "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+    "Source Han Serif CN", "Libertinus Serif", "Source Serif 4", ui-serif, Georgia, serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --vp-zh-prose-scale: 0.93;
+  --vp-zh-prose-line-height: 1.667;
+
+  line-height: 1.55;
+  text-rendering: optimizeLegibility;
+}
+html:lang(zh) .prose,
+html:lang(zh) .comment-region,
+html:lang(zh) ul.tags {
+  font-family: var(--vp-font-family-zh-prose);
+}
+html:lang(zh) .prose {
+  font-size: calc(1em * var(--vp-zh-prose-scale));
+  line-height: var(--vp-zh-prose-line-height);
 }
 main,
 .search {
@@ -129,9 +148,26 @@ h5 {
   margin-inline-end: 0px;
   line-height: 1.5;
 }
+html:lang(zh) h1,
+html:lang(zh) h2,
+html:lang(zh) h3,
+html:lang(zh) h4,
+html:lang(zh) h5 {
+  font-weight: 600;
+}
+html:lang(zh) h1 {
+  line-height: 1.18;
+}
+html:lang(zh) h2 {
+  line-height: 1.36;
+}
 p {
   margin-block-start: 0.62em;
   margin-block-end: 0.68em;
+}
+html:lang(zh) p {
+  margin-block-start: 0.72em;
+  margin-block-end: 0.78em;
 }
 ul,
 ol {

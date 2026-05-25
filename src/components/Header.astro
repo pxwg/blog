@@ -32,40 +32,38 @@ const localizedText = {
 
 <header>
   <nav class="site-nav">
-    <div class="nav-top">
-      <h2 class="logo"><a href={localizedUrls.home}>{kSiteLogo}</a></h2>
-      <div class="site-actions">
-        <LanguageToggle articleId={articleId} />
-        <a
-          href="https://github.com/pxwg/blog"
-          target="_blank"
-          rel="noreferrer"
-          title="Go to the repository of this blog"
-        >
-          github
-        </a>
-        <span class="theme-action"><ThemeToggle lightIcon="light" darkIcon="dark" /></span>
-      </div>
-    </div>
-    <div class="internal-links">
+    <h2 class="logo"><a href={localizedUrls.home}>{kSiteLogo}</a></h2>
+    <div class="internal-links" aria-label="Primary navigation">
       <HeaderLink href={localizedUrls.home}>{localizedText.home}</HeaderLink>
       <HeaderLink href={localizedUrls.posts}>{localizedText.posts}</HeaderLink>
       <HeaderLink href={localizedUrls.friends}>{localizedText.friends}</HeaderLink>
       <HeaderLink href={localizedUrls.about}>{localizedText.about}</HeaderLink>
+    </div>
+    <div class="site-actions" aria-label="Site actions">
+      <LanguageToggle articleId={articleId} />
+      <a
+        href="https://github.com/pxwg/blog"
+        target="_blank"
+        rel="noreferrer"
+        title="Go to the repository of this blog"
+      >
+        github
+      </a>
+      <span class="theme-action"><ThemeToggle lightIcon="light" darkIcon="dark" /></span>
     </div>
   </nav>
 </header>
 
 <style>
   .logo {
-    font-size: 1.08em;
+    font-size: 1em;
     font-weight: 700;
     font-style: italic;
     letter-spacing: 0;
   }
   header {
     margin: 0;
-    padding: 0.8rem 0 0.45rem;
+    padding: 0.6rem 0 0.35rem;
     background: var(--nav-bg-color);
   }
   h2 {
@@ -80,23 +78,23 @@ const localizedText = {
     width: min(var(--content-width), calc(100% - var(--page-gutter)));
     max-width: 100%;
     margin: auto;
-  }
-  .nav-top {
     display: flex;
     align-items: baseline;
-    gap: 0.95em;
     flex-wrap: wrap;
+    column-gap: 0.95em;
+    row-gap: 0.12em;
   }
   .site-actions,
   .internal-links {
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 0.75em;
+    column-gap: 0.72em;
+    row-gap: 0.12em;
   }
   .site-actions {
     justify-content: flex-start;
-    font-size: 0.82em;
+    font-size: 0.86em;
     color: var(--gray-color);
   }
   .site-actions > * + *::before {
@@ -104,9 +102,18 @@ const localizedText = {
     color: var(--gray-color);
     margin-right: 0.75em;
   }
+  .internal-links::before,
+  .site-actions::before {
+    content: "/";
+    color: var(--gray-color);
+    margin-right: 0.05em;
+  }
   .internal-links {
-    margin-top: 0.22rem;
-    font-size: 0.94em;
+    font-size: 0.86em;
+  }
+  :global(html:lang(zh)) .internal-links a {
+    font-size: calc(1em * var(--vp-zh-prose-scale, 0.93));
+    line-height: calc(1.55 / var(--vp-zh-prose-scale, 0.93));
   }
   .site-nav a {
     padding: 0;
@@ -155,12 +162,11 @@ const localizedText = {
     display: inline;
   }
   @media (max-width: 680px) {
-    .nav-top {
-      display: block;
+    header {
+      padding-top: 0.5rem;
     }
-    .site-actions {
-      justify-content: flex-start;
-      margin-top: 0.25rem;
+    .site-nav {
+      row-gap: 0.05em;
     }
   }
   @media (max-width: 400px) {

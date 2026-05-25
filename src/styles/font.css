@@ -5,8 +5,8 @@
 @import "@fontsource-variable/inter/wght-italic.css";
 @import "@fontsource-variable/inter/opsz.css";
 @import "@fontsource/noto-serif-sc/400.css";
+@import "@fontsource/noto-serif-sc/600.css";
 @import "@fontsource/noto-serif-sc/700.css";
-@import 'lxgw-wenkai-webfont/style.css';
 
 @font-face {
   font-family: 'Libertinus Serif';

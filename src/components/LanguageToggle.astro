@@ -37,7 +37,14 @@ const zhUrl = generateLanguageToggleUrl(Astro.url.pathname, 'zh');
   .lang-link {
     color: var(--accent);
     cursor: pointer;
+    display: inline-block;
     transition: color 0.2s;
+  }
+
+  .lang-link[data-lang="zh"] {
+    font-size: 0.93em;
+    line-height: calc(1.55 / var(--vp-zh-prose-scale, 0.93));
+    text-underline-offset: 0.16em;
   }
 
   .lang-link:hover {

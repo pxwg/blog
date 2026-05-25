@@ -1,0 +1,402 @@
+<main class="font-metrics-page">
+  <h1>Font metrics debug</h1>
+  <p>
+    Samples are drawn on canvas using browser font metrics. Red is baseline, blue is
+    ascent, green is descent, and gray is the CSS line box. Rows marked pass are within
+    the configured ink-height and line-height tolerance.
+  </p>
+  <section class="controls" aria-label="Font scale controls">
+    <label>
+      CJK scale
+      <input id="cjk-scale" type="number" value="0.93" min="0.8" max="1.1" step="0.01" />
+    </label>
+    <label>
+      Prose size
+      <input id="prose-size" type="number" value="20" min="14" max="28" step="0.1" />
+    </label>
+    <label>
+      Prose line
+      <input id="prose-line" type="number" value="31" min="22" max="42" step="0.1" />
+    </label>
+  </section>
+  <p id="metric-summary" class="metric-summary" role="status"></p>
+  <script id="font-metrics-results" type="application/json">{}</script>
+  <div id="metrics"></div>
+</main>
+
+<script>
+  const latinFamily = '"Libertinus Serif", "Source Serif 4", serif';
+  const notoFamily = '"Noto Serif SC", "Noto Serif CJK SC", serif';
+  const tolerance = {
+    inkPx: 0.6,
+    linePx: 0.8,
+  };
+
+  const groups = [
+    {
+      title: 'Header nav',
+      target: 'Latin nav',
+      rows: [
+        {
+          label: 'Latin nav',
+          text: 'home posts friends about github light',
+          family: latinFamily,
+          size: 17.2,
+          lineHeight: 26.66,
+        },
+        {
+          label: 'Noto SC CJK nav',
+          text: '首页 文章 友链 关于 中文',
+          family: notoFamily,
+          sizeFrom: 'cjk-nav',
+          lineHeight: 26.66,
+        },
+      ],
+    },
+    {
+      title: 'Article title',
+      target: 'English title',
+      rows: [
+        {
+          label: 'English title',
+          text: 'Migrating Typst Blog Math from SVG to MathML',
+          family: latinFamily,
+          size: 41.6,
+          lineHeight: 47.42,
+        },
+        {
+          label: 'Chinese title',
+          text: '将 Typst 博客公式从 SVG 迁移到 MathML',
+          family: notoFamily,
+          sizeFrom: 'scaled-title',
+          lineHeight: 47.42,
+        },
+      ],
+    },
+    {
+      title: 'Article prose',
+      target: 'English prose',
+      rows: [
+        {
+          label: 'English prose',
+          text: 'Most articles on my blog are written in Typst and then rendered into a static site through Astro.',
+          family: latinFamily,
+          sizeFrom: 'prose',
+          lineHeightFrom: 'prose-line',
+        },
+        {
+          label: 'Chinese prose',
+          text: '我的博客文章主要用 Typst 写，再交给 Astro 生成静态网页。',
+          family: notoFamily,
+          sizeFrom: 'scaled-prose',
+          lineHeightFrom: 'prose-line',
+        },
+      ],
+    },
+    {
+      title: 'Mixed Chinese prose',
+      target: 'Chinese prose',
+      rows: [
+        {
+          label: 'Chinese prose',
+          text: '我的博客文章主要用 Typst 写，再交给 Astro 生成静态网页。',
+          family: notoFamily,
+          sizeFrom: 'scaled-prose',
+          lineHeightFrom: 'prose-line',
+        },
+        {
+          label: 'Mixed prose',
+          text: '我的博客文章主要用 Typst 写，再交给 Astro 生成静态网页。HTML 里的数学公式。',
+          family: notoFamily,
+          sizeFrom: 'scaled-prose',
+          lineHeightFrom: 'prose-line',
+        },
+      ],
+    },
+  ];
+
+  const $ = (id) => document.getElementById(id);
+  const metricsRoot = $('metrics');
+  const summaryRoot = $('metric-summary');
+  const resultsScript = $('font-metrics-results');
+
+  function settings() {
+    const cjkScale = Number($('cjk-scale').value);
+    const proseSize = Number($('prose-size').value);
+    const proseLine = Number($('prose-line').value);
+    return {
+      cjkScale,
+      proseSize,
+      proseLine,
+      value(name) {
+        if (name === 'cjk-nav') return 17.2 * cjkScale;
+        if (name === 'scaled-title') return 41.6 * cjkScale;
+        if (name === 'prose') return proseSize;
+        if (name === 'scaled-prose') return proseSize * cjkScale;
+        if (name === 'prose-line') return proseLine;
+        return Number(name);
+      },
+    };
+  }
+
+  function measure(row, config) {
+    const fontSize = row.size ?? config.value(row.sizeFrom);
+    const lineHeight = row.lineHeight ?? config.value(row.lineHeightFrom);
+    const measureCanvas = document.createElement('canvas');
+    const ctx = measureCanvas.getContext('2d');
+    ctx.font = `${fontSize}px ${row.family}`;
+    const textMetrics = ctx.measureText(row.text);
+    const ascent = textMetrics.actualBoundingBoxAscent;
+    const descent = textMetrics.actualBoundingBoxDescent;
+    return {
+      ...row,
+      fontSize,
+      lineHeight,
+      ascent,
+      descent,
+      inkHeight: ascent + descent,
+      inkRatio: (ascent + descent) / fontSize,
+    };
+  }
+
+  function draw(measured) {
+    const width = 860;
+    const height = Math.ceil(measured.lineHeight + 30);
+    const baseline = Math.round(15 + measured.lineHeight * 0.72);
+    const canvas = document.createElement('canvas');
+    canvas.width = width * devicePixelRatio;
+    canvas.height = height * devicePixelRatio;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+
+    const ctx = canvas.getContext('2d');
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+    ctx.font = `${measured.fontSize}px ${measured.family}`;
+    ctx.textBaseline = 'alphabetic';
+    const inkTop = baseline - measured.ascent;
+    const inkBottom = baseline + measured.descent;
+    const lineTop = baseline - measured.lineHeight * 0.72;
+    const lineBottom = lineTop + measured.lineHeight;
+
+    ctx.fillStyle = 'rgba(255,255,255,0.035)';
+    ctx.fillRect(0, lineTop, width, measured.lineHeight);
+    ctx.strokeStyle = 'rgba(180,180,180,0.45)';
+    ctx.beginPath();
+    ctx.moveTo(0, lineTop);
+    ctx.lineTo(width, lineTop);
+    ctx.moveTo(0, lineBottom);
+    ctx.lineTo(width, lineBottom);
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(98, 160, 255, 0.9)';
+    ctx.beginPath();
+    ctx.moveTo(0, inkTop);
+    ctx.lineTo(width, inkTop);
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(255, 106, 106, 0.95)';
+    ctx.beginPath();
+    ctx.moveTo(0, baseline);
+    ctx.lineTo(width, baseline);
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(103, 210, 132, 0.9)';
+    ctx.beginPath();
+    ctx.moveTo(0, inkBottom);
+    ctx.lineTo(width, inkBottom);
+    ctx.stroke();
+
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--main-color').trim();
+    ctx.fillText(measured.text, 12, baseline);
+    return canvas;
+  }
+
+  function statusFor(row, target) {
+    const inkDelta = row.inkHeight - target.inkHeight;
+    const lineDelta = row.lineHeight - target.lineHeight;
+    const ok = Math.abs(inkDelta) <= tolerance.inkPx && Math.abs(lineDelta) <= tolerance.linePx;
+    return { ok, inkDelta, lineDelta };
+  }
+
+  function renderRow(row, target) {
+    const status = statusFor(row, target);
+    const article = document.createElement('article');
+    article.className = `metric-row ${status.ok ? 'is-pass' : 'is-warn'}`;
+    article.dataset.metricLabel = row.label;
+    article.dataset.metricStatus = status.ok ? 'pass' : 'check';
+    article.dataset.inkDelta = status.inkDelta.toFixed(2);
+    article.dataset.lineDelta = status.lineDelta.toFixed(2);
+    article.innerHTML = `
+      <h3>${row.label} <span>${status.ok ? 'pass' : 'check'}</span></h3>
+      <dl>
+        <div><dt>font-size</dt><dd>${row.fontSize.toFixed(2)}px</dd></div>
+        <div><dt>line-height</dt><dd>${row.lineHeight.toFixed(2)}px</dd></div>
+        <div><dt>ascent</dt><dd>${row.ascent.toFixed(2)}px</dd></div>
+        <div><dt>descent</dt><dd>${row.descent.toFixed(2)}px</dd></div>
+        <div><dt>ink height</dt><dd>${row.inkHeight.toFixed(2)}px</dd></div>
+        <div><dt>ink / size</dt><dd>${row.inkRatio.toFixed(3)}</dd></div>
+        <div><dt>ink delta</dt><dd>${status.inkDelta.toFixed(2)}px</dd></div>
+        <div><dt>line delta</dt><dd>${status.lineDelta.toFixed(2)}px</dd></div>
+      </dl>
+    `;
+    article.append(draw(row));
+    return article;
+  }
+
+  async function render() {
+    await document.fonts.ready;
+    const config = settings();
+    const results = groups.map((group) => {
+      const measuredRows = group.rows.map((row) => measure(row, config));
+      const target = measuredRows.find((row) => row.label === group.target) ?? measuredRows[0];
+      const rows = measuredRows.map((row) => ({
+        ...row,
+        status: statusFor(row, target),
+      }));
+      return {
+        title: group.title,
+        target: target.label,
+        rows,
+      };
+    });
+    const failures = results.flatMap((group) =>
+      group.rows
+        .filter((row) => !row.status.ok)
+        .map((row) => `${group.title}: ${row.label}`)
+    );
+    const sections = results.map((group) => {
+      const section = document.createElement('section');
+      section.className = 'metric-group';
+      section.dataset.metricGroup = group.title;
+      section.innerHTML = `<h2>${group.title}</h2>`;
+      const target = group.rows.find((row) => row.label === group.target) ?? group.rows[0];
+      section.append(...group.rows.map((row) => renderRow(row, target)));
+      return section;
+    });
+    metricsRoot.replaceChildren(...sections);
+    const status = failures.length === 0 ? 'pass' : 'check';
+    document.documentElement.dataset.fontMetricsStatus = status;
+    summaryRoot.textContent =
+      status === 'pass'
+        ? `All ${results.reduce((count, group) => count + group.rows.length, 0)} metric rows pass.`
+        : `${failures.length} metric row${failures.length === 1 ? '' : 's'} need checking.`;
+    const serializedResults = {
+      status,
+      tolerance,
+      settings: {
+        cjkScale: config.cjkScale,
+        proseSize: config.proseSize,
+        proseLine: config.proseLine,
+      },
+      groups: results.map((group) => ({
+        title: group.title,
+        target: group.target,
+        rows: group.rows.map((row) => ({
+          label: row.label,
+          text: row.text,
+          fontSize: row.fontSize,
+          lineHeight: row.lineHeight,
+          ascent: row.ascent,
+          descent: row.descent,
+          inkHeight: row.inkHeight,
+          inkRatio: row.inkRatio,
+          status: row.status.ok ? 'pass' : 'check',
+          inkDelta: row.status.inkDelta,
+          lineDelta: row.status.lineDelta,
+        })),
+      })),
+    };
+    resultsScript.textContent = JSON.stringify(serializedResults);
+    window.__FONT_METRICS_RESULTS__ = serializedResults;
+  }
+
+  document.querySelectorAll('input').forEach((input) => {
+    input.addEventListener('input', render);
+  });
+  render();
+</script>
+
+<style is:global>
+  .font-metrics-page {
+    padding-top: 1.4em;
+  }
+  .font-metrics-page .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    margin: 1em 0 1.2em;
+    padding-left: 0.7em;
+    border-left: 3px solid var(--accent);
+  }
+  .font-metrics-page label {
+    display: grid;
+    gap: 0.12em;
+    color: var(--gray-color);
+    font-family: var(--vp-font-family-mono);
+    font-size: 0.72em;
+    text-transform: uppercase;
+  }
+  .font-metrics-page .metric-summary {
+    margin: 0.2em 0 0.8em;
+    color: var(--gray-color);
+    font-family: var(--vp-font-family-mono);
+    font-size: 0.72em;
+  }
+  .font-metrics-page input {
+    width: 6em;
+    border: 0;
+    border-bottom: 1px solid var(--accent);
+    background: transparent;
+    color: var(--main-color);
+    font-family: var(--vp-font-family-base);
+  }
+  .font-metrics-page .metric-group {
+    margin: 1.3em 0 1.8em;
+  }
+  .font-metrics-page .metric-group > h2 {
+    margin-bottom: 0.2em;
+    font-size: 1.35em;
+  }
+  .font-metrics-page .metric-row {
+    margin: 0.85em 0;
+  }
+  .font-metrics-page .metric-row h3 {
+    margin: 0 0 0.15em;
+    font-size: 0.95em;
+  }
+  .font-metrics-page .metric-row h3 span {
+    color: var(--gray-color);
+    font-family: var(--vp-font-family-mono);
+    font-size: 0.66em;
+    font-weight: 300;
+    text-transform: uppercase;
+  }
+  .font-metrics-page .metric-row.is-warn h3 span {
+    color: var(--accent);
+  }
+  .font-metrics-page dl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75em;
+    margin: 0 0 0.35em;
+    color: var(--gray-color);
+    font-family: var(--vp-font-family-mono);
+    font-size: 0.68em;
+  }
+  .font-metrics-page dl div {
+    display: flex;
+    gap: 0.25em;
+    align-items: baseline;
+  }
+  .font-metrics-page dt::after {
+    content: ":";
+  }
+  .font-metrics-page dd {
+    margin: 0;
+  }
+  .font-metrics-page canvas {
+    max-width: 100%;
+    border-left: 3px solid var(--accent);
+    background: var(--raw-bg-color);
+  }
+</style>

@@ -1,0 +1,27 @@
+---
+import BaseHead from '$components/BaseHead.astro';
+import Header from '$components/Header.astro';
+
+export function getStaticPaths() {
+  if (import.meta.env.PROD) {
+    return [];
+  }
+
+  return [{ params: { lang: 'en' } }, { params: { lang: 'zh' } }];
+}
+
+const { lang } = Astro.params;
+const FontMetricsDebug = import.meta.env.PROD
+  ? undefined
+  : (await import('$components/FontMetricsDebug.astro')).default;
+---
+
+<html lang={lang}>
+  <head>
+    <BaseHead title="Font metrics debug" description="Compare blog font metrics." />
+  </head>
+  <body>
+    <Header />
+    {FontMetricsDebug && <FontMetricsDebug />}
+  </body>
+</html>
