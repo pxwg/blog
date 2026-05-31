@@ -7,5 +7,6 @@ Key reminders:
 - Preserve the blog language: dark paper page, heavy typography, margin-note UI, compact and low-icon.
 - The main source surface is `content/article/**/*.typ`, `typ/templates`, `src/layouts/BlogPost.astro`, `src/components`, and `src/styles/global.css`.
 - MathML is the primary HTML output for article formulas; do not fix formulas with temporary character substitutions.
+- For article UI visual fixes, verify with a minimal reproduction screenshot, a real article-page screenshot, DOM/codepoint evidence, and an explicit check that the screenshots reflect the target problem.
 - Run `pnpm build` before release or deployable changes.
 - Use Conventional Commits for commit messages, for example `docs: document blog design language`.
