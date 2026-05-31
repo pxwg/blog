@@ -112,6 +112,34 @@
 }
 @font-face {
   font-family: 'Source Serif 4';
+  src: url('/fonts/source-serif/SourceSerif4-Semibold.otf.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Source Serif 4';
+  src: url('/fonts/source-serif/SourceSerif4-SemiboldIt.otf.woff2') format('woff2');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Source Serif 4';
+  src: url('/fonts/source-serif/SourceSerif4-Bold.otf.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Source Serif 4';
+  src: url('/fonts/source-serif/SourceSerif4-BoldIt.otf.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Source Serif 4';
   src: url('/fonts/source-serif/SourceSerif4-ExtraLight.otf.woff2') format('woff2');
   font-weight: 200;
   font-style: normal;
