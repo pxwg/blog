@@ -15,6 +15,10 @@
   llm-translated: true,
 )
 
+#remark[
+  In #link("https://github.com/typst/typst/releases")[Typst 0.15.0], the latest release, Typst now natively supports MathML formula output, so the approach described in this article is no longer needed.
+]
+
 = Origin
 
 Most articles on my blog are written in Typst and then rendered into a static site through Astro.

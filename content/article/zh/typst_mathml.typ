@@ -14,6 +14,10 @@
   translationKey: "typst_mathml",
 )
 
+#remark[
+  在最新的#link("https://github.com/typst/typst/releases")[Typst 0.15.0 版本]中，typst 已经原生支持 MathML 公式输出，因此本文所描述的方案已经不必被使用。
+]
+
 = 缘起
 
 我的博客文章主要用 Typst 写，再交给 Astro 生成静态网页。
