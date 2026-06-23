@@ -29,8 +29,9 @@
   rgb("#756D64")
 }
 #let scan-flow-fonts = ("Source Han Serif SC", "Libertinus")
-#let scan-flow-card-width = 118pt
+#let scan-flow-card-width = 124pt
 #let scan-flow-arrow-width = 48pt
+#let scan-flow-line-leading = 0.18em
 #let scan-flow-chip(theme, label, fill, stroke-color) = box(
   inset: (x: 1.8pt, y: 0pt),
 )[#text(size: 13.2pt, fill: scan-flow-main(theme))[#label]]
@@ -40,6 +41,7 @@
   radius: 0pt,
   stroke: 0.75pt + scan-flow-rule(theme),
 )[
+  #set par(leading: scan-flow-line-leading, justify: false)
   #text(size: 12.8pt, weight: "semibold", fill: scan-flow-main(theme))[#title]
   #v(0.25pt)
   #align(center)[#text(size: 13.6pt, fill: scan-flow-main(theme))[#body]]
@@ -47,6 +49,7 @@
   #text(size: 11pt, fill: scan-flow-muted(theme))[#note]
 ]
 #let scan-flow-arrow(theme, title, note) = align(center)[
+  #set par(leading: scan-flow-line-leading, justify: false)
   #grid(
     columns: auto,
     row-gutter: 0pt,
@@ -127,25 +130,25 @@ buffer(i+1) = collection of { node_n(i+1): location + source + image binding }
         [#scan-flow-chip("N₀", rgb("#DBEAFE"), rgb("#2563EB")) #h(2pt) #text(
             fill: scan-flow-muted,
           )[+] #h(2pt) #scan-flow-chip("B₀", rgb("#DCFCE7"), rgb("#16A34A"))],
-        [旧图像仍绑定],
+        [old image still bound],
         rgb("#EFF6FF"),
         rgb("#2563EB"),
       ),
-      scan-flow-arrow([scan start], [空窗]),
+      scan-flow-arrow([scan start], [gap]),
       scan-flow-card(
         [scan window],
         [#scan-flow-chip("N₁", rgb("#FEE2E2"), rgb("#DC2626"))],
-        [图像锚点缺席],
+        [image anchor absent],
         rgb("#FEF2F2"),
         rgb("#DC2626"),
       ),
-      scan-flow-arrow([scan end], [匹配]),
+      scan-flow-arrow([scan end], [match]),
       scan-flow-card(
         [after scan],
         [#scan-flow-chip("N₁", rgb("#DCFCE7"), rgb("#16A34A")) #h(2pt) #text(
             fill: scan-flow-muted,
           )[+] #h(2pt) #scan-flow-chip("B₀", rgb("#DCFCE7"), rgb("#16A34A"))],
-        [旧资产挂回新节点],
+        [old asset reattached to new node],
         rgb("#F0FDF4"),
         rgb("#16A34A"),
       ),
@@ -176,17 +179,17 @@ buffer(i+1) = collection of { node_n(i+1): location + source + image binding }
         [#scan-flow-chip("N₀", rgb("#DBEAFE"), rgb("#2563EB")) #h(2pt) #text(
             fill: scan-flow-muted,
           )[+] #h(2pt) #scan-flow-chip("B₀", rgb("#DCFCE7"), rgb("#16A34A"))],
-        [扫描前绑定],
+        [binding before scan],
         rgb("#EFF6FF"),
         rgb("#2563EB"),
       ),
-      scan-flow-arrow([hash map], [复用]),
+      scan-flow-arrow([hash map], [reuse]),
       scan-flow-card(
         [matched],
         [#scan-flow-chip("N₁", rgb("#DCFCE7"), rgb("#16A34A")) #h(2pt) #text(
             fill: scan-flow-muted,
           )[+] #h(2pt) #scan-flow-chip("B₀", rgb("#DCFCE7"), rgb("#16A34A"))],
-        [新节点复用旧资产],
+        [new node reuses old asset],
         rgb("#F0FDF4"),
         rgb("#16A34A"),
       ),
@@ -220,25 +223,25 @@ buffer(i+1) = collection of { node_n(i+1): location + source + image binding }
         [#scan-flow-chip("N₀", rgb("#DBEAFE"), rgb("#2563EB")) #h(2pt) #text(
             fill: scan-flow-muted,
           )[+] #h(2pt) #scan-flow-chip("B₀", rgb("#DCFCE7"), rgb("#16A34A"))],
-        [旧绑定仍在],
+        [old binding remains],
         rgb("#EFF6FF"),
         rgb("#2563EB"),
       ),
-      scan-flow-arrow([scan start], [空窗]),
+      scan-flow-arrow([scan start], [gap]),
       scan-flow-card(
         [scan window],
         [#scan-flow-chip("N₁", rgb("#FEE2E2"), rgb("#DC2626"))],
-        [图像位置未知],
+        [image position unknown],
         rgb("#FEF2F2"),
         rgb("#DC2626"),
       ),
-      scan-flow-arrow([scan end], [回填]),
+      scan-flow-arrow([scan end], [backfill]),
       scan-flow-card(
         [after scan],
         [#scan-flow-chip("N₁", rgb("#DCFCE7"), rgb("#16A34A")) #h(2pt) #text(
             fill: scan-flow-muted,
           )[+] #h(2pt) #scan-flow-chip("B₀", rgb("#DCFCE7"), rgb("#16A34A"))],
-        [旧资产被重新挂回],
+        [old asset reattached],
         rgb("#F0FDF4"),
         rgb("#16A34A"),
       ),
@@ -292,15 +295,15 @@ buffer(i+1) = collection of { node_n(i+1): location + source + image binding }
       scan-flow-card(
         [edit event],
         [#scan-flow-chip("input", rgb("#DBEAFE"), rgb("#2563EB"))],
-        [任意位置输入],
+        [input anywhere],
         rgb("#EFF6FF"),
         rgb("#2563EB"),
       ),
-      scan-flow-arrow([editor map], [位移]),
+      scan-flow-arrow([editor map], [displacement]),
       scan-flow-card(
         [new layout],
         [#scan-flow-chip("P₁", rgb("#DCFCE7"), rgb("#16A34A"))],
-        [新的文本位置],
+        [new text position],
         rgb("#F0FDF4"),
         rgb("#16A34A"),
       ),
@@ -338,15 +341,15 @@ buffer(i+1) = collection of { node_n(i+1): location + source + image binding }
       scan-flow-card(
         [before edit],
         [#scan-flow-chip("P₀", rgb("#DBEAFE"), rgb("#2563EB"))],
-        [旧文本位置],
+        [old text position],
         rgb("#EFF6FF"),
         rgb("#2563EB"),
       ),
-      scan-flow-arrow([edit], [映射]),
+      scan-flow-arrow([edit], [mapping]),
       scan-flow-card(
         [after edit],
         [#scan-flow-chip("P₁", rgb("#DCFCE7"), rgb("#16A34A"))],
-        [新文本位置],
+        [new text position],
         rgb("#F0FDF4"),
         rgb("#16A34A"),
       ),

@@ -30,8 +30,9 @@
   rgb("#756D64")
 }
 #let scan-flow-fonts = ("Source Han Serif SC", "Libertinus")
-#let scan-flow-card-width = 118pt
+#let scan-flow-card-width = 124pt
 #let scan-flow-arrow-width = 48pt
+#let scan-flow-line-leading = 0.18em
 #let scan-flow-chip(theme, label, fill, stroke-color) = box(
   inset: (x: 1.8pt, y: 0pt),
 )[#text(size: 13.2pt, fill: scan-flow-main(theme))[#label]]
@@ -41,6 +42,7 @@
   radius: 0pt,
   stroke: 0.75pt + scan-flow-rule(theme),
 )[
+  #set par(leading: scan-flow-line-leading, justify: false)
   #text(size: 12.8pt, weight: "semibold", fill: scan-flow-main(theme))[#title]
   #v(0.25pt)
   #align(center)[#text(size: 13.6pt, fill: scan-flow-main(theme))[#body]]
@@ -48,6 +50,7 @@
   #text(size: 11pt, fill: scan-flow-muted(theme))[#note]
 ]
 #let scan-flow-arrow(theme, title, note) = align(center)[
+  #set par(leading: scan-flow-line-leading, justify: false)
   #grid(
     columns: auto,
     row-gutter: 0pt,
