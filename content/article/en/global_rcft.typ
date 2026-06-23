@@ -464,8 +464,13 @@ On _genus zero Riemann surfaces_, we have the following Moore-Seiberg equations:
 //     )
 //   ],
 // )
-#image_gallery(
-  paths: ("../assets/global_rcft_pent.png", "../assets/global_rcft_hex.png"),
+#image_viewer(
+  path: "../assets/global_rcft_pent.png",
+  dark-adapt: true,
+  adapt-mode: "invert-no-hue",
+)
+#image_viewer(
+  path: "../assets/global_rcft_hex.png",
   dark-adapt: true,
   adapt-mode: "invert-no-hue",
 )

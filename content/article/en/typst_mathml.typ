@@ -195,7 +195,9 @@ At 24px, the same pattern remained: browser default `math` / `STIX Two Math` wer
 The reproduction looked roughly like this.
 The two display formulas in the left `bare` comparison are visibly too small:
 
-#figure(image("../assets/mathml_integral_debug.png", width: 100%))
+#image_viewer(
+  path: "../assets/mathml_integral_debug.png",
+)
 
 The blog's global styles contain many rules meant for normal prose: fonts, line height, wrapping, image size, and overflow.
 They make sense for paragraphs, images, and code blocks, but inheriting them into `math` can break things.

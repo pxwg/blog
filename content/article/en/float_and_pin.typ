@@ -18,7 +18,9 @@
 
 In the MacOS system, some native applications support the window pinning feature (officially called "Float on Top"), such as `Stickies`. Some non-native applications can also achieve the floating feature, such as `Typora`.
 
-#figure(code-image(image("../assets/float_and_pin_2.png")))
+#image_viewer(
+  path: "../assets/float_and_pin_2.png",
+)
 
 The ability to pin certain windows on top is very useful in specific scenarios. For example, when reading literature, you can pin a note-taking window on top, making it convenient to take notes at any time. Even when switching to other applications, the note window won't be obscured, thus not interfering with the note-taking process.
 
@@ -121,7 +123,9 @@ echo level | ncat -U /tmp/kitty_level.sock
 ```
 can change the current window's pinning level, where level is an integer. The larger the value, the more frontmost the window. Wrapping this command into a Hammerspoon hotkey enables quick window pinning.
 
-#figure(code-image(image("../assets/float_and_pin_1.png")))
+#image_viewer(
+  path: "../assets/float_and_pin_1.png",
+)
 
 = Summary
 
