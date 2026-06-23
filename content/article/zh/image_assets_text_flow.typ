@@ -74,7 +74,7 @@
 
 = 缘起
 
-在构建 `math-conceal.nvim` 这个插件的过程中，我需要构建一个能够抵御大量编辑的、理论证明可行的机制。
+在构建 #link("https://github.com/pxwg/math-conceal.nvim")[`math-conceal.nvim`] 这个插件的过程中，我需要构建一个能够抵御大量编辑的、理论证明可行的机制。
 这个插件的目标是在 Neovim 中实现图形化公式渲染：一方面保留 ASCII 形式的标准 math conceal，并通过 `decoration-provider` 做更细粒度的展开；另一方面，将公式图片作为 overlay conceal 放回 buffer，让公式编辑变得尽可能顺畅。
 
 #image_viewer(
