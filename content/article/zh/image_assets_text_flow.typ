@@ -196,9 +196,10 @@ buffer(i+1) = collection of { node_n(i+1): location + source + image binding }
 })
 
 闪烁问题事实上可以通过复用上一版本的渲染图片来缓解。
+
 更严重的问题来自资产与源码的错位。
 
-它的来源和上一版本一样：在节点位移后，扫描阶段节点源码已经发生变换，但由于新的 Tree-sitter span 还没有算出来，因此新图片的位置是未知的。
+它的来源和上一问题一样：在节点位移后，扫描阶段节点源码已经发生变换，但由于新的 Tree-sitter span 还没有算出来，因此新图片的位置是未知的。
 这会导致错位现象。
 
 #flow-diagram(theme => {
