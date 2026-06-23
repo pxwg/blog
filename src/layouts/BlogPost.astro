@@ -75,7 +75,14 @@ const pdfArchives = await getCollection('archive');
         margin-right: 0;
       }
       .prose {
+        --article-prose-line-height: 1.55;
+        --article-title-line-height: 1.22;
+        line-height: var(--article-prose-line-height);
         padding: 0 0 0.25em;
+      }
+      html:lang(zh) .prose {
+        --article-prose-line-height: var(--vp-zh-prose-line-height);
+        --article-title-line-height: 1.3;
       }
       .prose p {
         margin-block-start: 0.68em;
@@ -86,26 +93,27 @@ const pdfArchives = await getCollection('archive');
         margin-block-end: 0.8em;
       }
       .title {
-        margin-bottom: 0.38em;
-        padding: 0.18em 0 0.1em;
+        line-height: var(--article-prose-line-height);
+        margin-bottom: 0.72em;
+        padding: 0.18em 0 0.18em;
       }
       .title h1 {
         font-size: 2.08em;
-        margin: 0 0 0.14em 0;
-        line-height: 1.14;
+        margin: 0 0 0.22em 0;
+        line-height: var(--article-title-line-height);
       }
       .article-meta {
         color: var(--main-color);
         display: block;
         margin: 0;
         font-size: 0.82em;
-        line-height: 1.35;
+        line-height: var(--article-prose-line-height);
       }
       .meta-date {
         margin: 0;
       }
       .meta-language {
-        margin: 0.22em 0 0;
+        margin: 0.36em 0 0;
         padding-left: 0.7em;
         border-left: 3px solid var(--accent);
       }
