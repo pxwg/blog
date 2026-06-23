@@ -76,8 +76,6 @@
   align(center)[#text(size: 0.9em)[#body]]
 }
 
-= Motivation
-
 While building the #link("https://github.com/pxwg/math-conceal.nvim")[`math-conceal.nvim`] plugin, I needed to construct a mechanism that could withstand heavy editing and remain theoretically defensible.
 The goal of this plugin is to implement graphical formula rendering in Neovim: on one side, it preserves standard ASCII-form math conceal and uses `decoration-provider` for finer-grained expansion; on the other side, it places formula images back into the buffer as overlay conceal, making formula editing as smooth as possible.
 
