@@ -66,38 +66,38 @@ const pdfArchives = await getCollection('archive');
       main {
         padding: 0 0 1em;
       }
-      .prose,
+      .article-prose,
       .comment-region,
-      ul.tags {
+      main > ul.tags {
         width: 100%;
         color: var(--main-color);
         margin-left: 0;
         margin-right: 0;
       }
-      .prose {
+      .article-prose {
         --article-prose-line-height: 1.55;
         --article-title-line-height: 1.22;
         line-height: var(--article-prose-line-height);
         padding: 0 0 0.25em;
       }
-      html:lang(zh) .prose {
+      html:lang(zh) .article-prose {
         --article-prose-line-height: var(--vp-zh-prose-line-height);
         --article-title-line-height: 1.3;
       }
-      .prose p {
+      .article-prose p {
         margin-block-start: 0.68em;
         margin-block-end: 0.72em;
       }
-      html:lang(zh) .prose p {
+      html:lang(zh) .article-prose p {
         margin-block-start: 0.72em;
         margin-block-end: 0.8em;
       }
-      .title {
+      .article-title {
         line-height: var(--article-prose-line-height);
         margin-bottom: 0.72em;
         padding: 0.18em 0 0.18em;
       }
-      .title h1 {
+      .article-title h1 {
         font-size: 2.08em;
         margin: 0 0 0.22em 0;
         line-height: var(--article-title-line-height);
@@ -122,7 +122,7 @@ const pdfArchives = await getCollection('archive');
       .like-count {
         font-style: italic;
       }
-      .title .translation-disclaimer {
+      .article-title .translation-disclaimer {
         display: block !important;
         margin: 0 !important;
         padding: 0 !important;
@@ -132,19 +132,19 @@ const pdfArchives = await getCollection('archive');
         font: inherit !important;
         line-height: inherit !important;
       }
-      .title .translation-disclaimer a {
+      .article-title .translation-disclaimer a {
         color: var(--accent) !important;
       }
-      .title hr {
+      .article-title hr {
         display: none;
       }
-      .prose > h1:first-of-type,
-      .prose > h2:first-of-type,
-      .title + h1,
-      .title + h2 {
+      .article-prose > h1:first-of-type,
+      .article-prose > h2:first-of-type,
+      .article-prose > .article-title + h1,
+      .article-prose > .article-title + h2 {
         margin-block-start: 0.45em;
       }
-      ul.tags {
+      main > ul.tags {
         list-style: none;
         padding: 0;
         margin-top: 0.15em;
@@ -161,7 +161,7 @@ const pdfArchives = await getCollection('archive');
       .tags a:hover {
         text-decoration: underline;
       }
-      .prose > p:last-child {
+      .article-prose > p:last-child {
         margin-bottom: 0.2em;
       }
     </style>
@@ -172,8 +172,8 @@ const pdfArchives = await getCollection('archive');
     <Header articleId={id || undefined} />
     <main>
       <article>
-        <div class="prose">
-          <section class="title" aria-label="Title">
+        <div class="prose article-prose">
+          <section class="title article-title" aria-label="Title">
             <h1>{title}</h1>
             <div class="article-meta">
               <div class="meta-date">
