@@ -474,6 +474,54 @@ mjx-assistive-mml.assistive-mathml {
   max-width: 100%;
   height: fit-content;
 }
+.code-image.themed.typst-flow-diagram {
+  display: block;
+  width: 100%;
+  margin: 1.05em 0 1.15em;
+  overflow-x: auto;
+}
+.code-image.themed.typst-flow-diagram .light {
+  display: flex;
+}
+.code-image.themed.typst-flow-diagram .dark {
+  display: none;
+}
+.dark .code-image.themed.typst-flow-diagram .light {
+  display: none;
+}
+.dark .code-image.themed.typst-flow-diagram .dark {
+  display: flex;
+}
+.code-image.themed.typst-flow-diagram .light,
+.code-image.themed.typst-flow-diagram .dark {
+  width: 100%;
+  justify-content: center;
+}
+.code-image.themed.typst-flow-diagram svg {
+  display: block;
+  width: 100% !important;
+  max-width: 48rem;
+  height: auto !important;
+  margin: 0 auto;
+}
+.typst-flow-caption {
+  max-width: 48rem;
+  margin: -0.45em auto 1.1em;
+  color: color-mix(in srgb, var(--main-color) 62%, var(--main-bg-color));
+  font-size: 0.9em;
+  line-height: 1.45;
+  text-align: center;
+}
+@media (max-width: 480px) {
+  .code-image.themed.typst-flow-diagram .light,
+  .code-image.themed.typst-flow-diagram .dark {
+    justify-content: flex-start;
+  }
+  .code-image.themed.typst-flow-diagram svg {
+    width: 34rem !important;
+    max-width: none;
+  }
+}
 .inline-equation {
   display: inline-flex;
   align-items: baseline;
