@@ -1,17 +1,17 @@
 ---
 import { kUrlBase, kSiteLogo } from "$consts";
 import { ThemeToggle } from "@myriaddreamin/tylant-theme-toggle";
-import HeaderLink from "./HeaderLink.astro";
-import LanguageToggle from "./LanguageToggle.astro";
+import { generateLanguageToggleUrl } from "$utils/i18n";
 
 interface Props {
   articleId?: string;
 }
 
-const { articleId } = Astro.props;
-
-// Get current locale from URL
-const currentLocale = Astro.url.pathname.startsWith('/zh/') ? 'zh' : 'en';
+const pathWithoutBase = kUrlBase && Astro.url.pathname.startsWith(`${kUrlBase}/`)
+  ? Astro.url.pathname.slice(kUrlBase.length)
+  : Astro.url.pathname;
+const currentLocale = pathWithoutBase.startsWith('/zh/') ? 'zh' : 'en';
+const targetLocale = currentLocale === 'zh' ? 'en' : 'zh';
 
 // Generate localized URLs
 const localizedUrls = {
@@ -21,130 +21,108 @@ const localizedUrls = {
   about: currentLocale === 'zh' ? `${kUrlBase}/zh/about/` : `${kUrlBase}/en/about/`
 };
 
-// Localized text
-const localizedText = {
-  home: currentLocale === 'zh' ? '首页' : 'home',
-  posts: currentLocale === 'zh' ? '文章' : 'posts',
-  friends: currentLocale === 'zh' ? '友链' : 'friends',
-  about: currentLocale === 'zh' ? '关于' : 'about'
-};
+const routeParts = pathWithoutBase.split('/').filter(Boolean);
+const pageParts = routeParts[0] === 'zh' || routeParts[0] === 'en'
+  ? routeParts.slice(1)
+  : routeParts;
+const currentSection = pageParts[0] === 'article'
+  ? 'posts'
+  : pageParts[0] === 'friend'
+    ? 'friends'
+    : pageParts[0] === 'about'
+      ? 'about'
+      : 'home';
+
+const currentSectionUrl = localizedUrls[currentSection as keyof typeof localizedUrls];
+const languageToggleUrl = `${kUrlBase}${generateLanguageToggleUrl(pathWithoutBase, targetLocale)}`;
+const languageLabel = currentLocale === 'zh' ? 'en' : 'cn';
 ---
 
 <header>
-  <nav class="site-nav">
-    <h2 class="logo"><a href={localizedUrls.home}>{kSiteLogo}</a></h2>
-    <div class="internal-links" aria-label="Primary navigation">
-      <HeaderLink href={localizedUrls.home}>{localizedText.home}</HeaderLink>
-      <HeaderLink href={localizedUrls.posts}>{localizedText.posts}</HeaderLink>
-      <HeaderLink href={localizedUrls.friends}>{localizedText.friends}</HeaderLink>
-      <HeaderLink href={localizedUrls.about}>{localizedText.about}</HeaderLink>
+  <nav class="newspaper-nav" aria-label="Site navigation">
+    <div class="nav-left">
+      <a class="site-mark" href={localizedUrls.home}>{kSiteLogo}</a>
+      <span class="nav-separator" aria-hidden="true">|</span>
+      <a class="nav-link section-link" href={currentSectionUrl}>{currentSection}</a>
+      <span class="nav-separator" aria-hidden="true">|</span>
+      <a class="nav-link language-link" href={languageToggleUrl}>{languageLabel}</a>
     </div>
-    <div class="site-actions" aria-label="Site actions">
-      <LanguageToggle articleId={articleId} />
-      <a
-        href="https://github.com/pxwg/blog"
-        target="_blank"
-        rel="noreferrer"
-        title="Go to the repository of this blog"
-      >
-        github
-      </a>
-      <span class="theme-action"><ThemeToggle lightIcon="light" darkIcon="dark" /></span>
-    </div>
+    <span class="theme-action"><ThemeToggle lightIcon="light" darkIcon="dark" /></span>
   </nav>
 </header>
 
 <style>
-  .logo {
-    font-size: 1em;
-    font-weight: 700;
-    font-style: italic;
-    letter-spacing: 0;
-  }
   header {
     margin: 0;
-    padding: 0.6rem 0 0.35rem;
+    padding: 0.58rem 0 0.38rem;
     background: var(--nav-bg-color);
   }
-  h2 {
-    margin: 0;
-    font-size: 1em;
-  }
-  h2 a,
-  h2 a.active {
-    text-decoration: none;
-  }
-  .site-nav {
+  .newspaper-nav {
     width: min(var(--content-width), calc(100% - var(--page-gutter)));
     max-width: 100%;
     margin: auto;
     display: flex;
     align-items: baseline;
-    flex-wrap: wrap;
-    column-gap: 0.95em;
-    row-gap: 0.12em;
+    justify-content: space-between;
+    gap: 1em;
+    color: var(--main-color);
+    font-size: 0.96em;
+    line-height: 1.38;
   }
-  .site-actions,
-  .internal-links {
+  .nav-left {
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    column-gap: 0.72em;
-    row-gap: 0.12em;
+    column-gap: 0.44em;
+    row-gap: 0.1em;
   }
-  .site-actions {
-    justify-content: flex-start;
-    font-size: 0.86em;
-    color: var(--gray-color);
-  }
-  .site-actions > * + *::before {
-    content: "·";
-    color: var(--gray-color);
-    margin-right: 0.75em;
-  }
-  .internal-links::before,
-  .site-actions::before {
-    content: "/";
-    color: var(--gray-color);
-    margin-right: 0.05em;
-  }
-  .internal-links {
-    font-size: 0.86em;
-  }
-  :global(html:lang(zh)) .internal-links a {
-    font-size: calc(1em * var(--vp-zh-prose-scale, 0.93));
-    line-height: calc(1.55 / var(--vp-zh-prose-scale, 0.93));
-  }
-  .site-nav a {
-    padding: 0;
-    border: 0;
-    color: var(--accent);
-  }
-  .site-nav a.active {
-    color: var(--accent);
-  }
-  .logo a,
-  .logo a.active {
+  .site-mark,
+  .nav-link {
     color: var(--main-color);
-    text-decoration: none;
+    font-style: normal;
+    line-height: inherit;
+    text-decoration-line: underline;
+    text-decoration-color: currentColor;
+    text-decoration-thickness: 0.07em;
+    text-underline-offset: 0.16em;
+  }
+  .site-mark {
+    font-size: 1em;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .nav-link {
+    font-size: 1em;
+    font-weight: 400;
+  }
+  .site-mark:hover {
+    color: var(--main-hover-color);
+    text-decoration-color: currentColor;
+  }
+  .nav-link:hover,
+  :global(#theme-toggle:hover) {
+    color: var(--main-hover-color);
+    text-decoration-color: currentColor;
+  }
+  .nav-separator {
+    color: var(--main-color);
+  }
+  .theme-action {
+    margin-left: auto;
+    white-space: nowrap;
   }
   :global(#theme-toggle) {
     display: inline;
     padding: 0;
     border: 0;
-    color: var(--accent);
+    color: var(--main-color);
     font: inherit;
     line-height: inherit;
     text-decoration-line: underline;
-    text-decoration-color: var(--accent);
-    text-decoration-thickness: 0.08em;
-    text-underline-offset: 0.12em;
+    text-decoration-color: currentColor;
+    text-decoration-thickness: 0.07em;
+    text-underline-offset: 0.16em;
     vertical-align: baseline;
-  }
-  :global(#theme-toggle:hover) {
-    color: var(--accent-dark);
-    text-decoration-color: var(--accent-dark);
-    text-decoration-thickness: 0.12em;
   }
   :global(#theme-toggle .theme-icon) {
     line-height: inherit;
@@ -163,15 +141,10 @@ const localizedText = {
   }
   @media (max-width: 680px) {
     header {
-      padding-top: 0.5rem;
+      padding-top: 0.58rem;
     }
-    .site-nav {
-      row-gap: 0.05em;
-    }
-  }
-  @media (max-width: 400px) {
-    .site-nav {
-      font-size: 14px;
+    .newspaper-nav {
+      gap: 0.6em;
     }
   }
 </style>

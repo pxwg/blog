@@ -8,21 +8,41 @@ interface Props {
 const { lang } = Astro.props;
 
 const homeTags = ["physics", "math", "programming", "prose"];
-const profileLinks = [
-  {
-    label: lang === "zh" ? "知乎" : "Zhihu",
-    href: "https://www.zhihu.com/people/bu-hui-fei-de-qi-e-71",
-  },
-  {
-    label: "Github",
-    href: "https://github.com/pxwg",
-  },
-];
 
 const tagHref = (tag: string) => {
   const params = new URLSearchParams({ search: tag });
   return `${kUrlBase}/${lang}/article/?${params}`;
 };
+
+const randomTagOptions = homeTags.map((tag) => ({
+  label: `#${tag}`,
+  href: tagHref(tag),
+}));
+const fallbackTag = randomTagOptions[Math.floor(Math.random() * randomTagOptions.length)] ?? randomTagOptions[0];
+const randomTagOptionsJson = JSON.stringify(randomTagOptions);
+const allPostsHref = `${kUrlBase}/${lang}/article/`;
+const profileLinks = [
+  {
+    label: lang === "zh" ? "知乎" : "Zhihu",
+    href: "https://www.zhihu.com/people/bu-hui-fei-de-qi-e-71",
+    external: true,
+  },
+  {
+    label: "Github",
+    href: "https://github.com/pxwg",
+    external: true,
+  },
+  {
+    label: "friends",
+    href: `${kUrlBase}/${lang}/friend/`,
+    external: false,
+  },
+  {
+    label: "about",
+    href: `${kUrlBase}/${lang}/about/`,
+    external: false,
+  },
+];
 
 const tagNavLabel = lang === "zh" ? "文章标签" : "Article tags";
 const profileNavLabel = lang === "zh" ? "外部链接" : "Profile links";
@@ -31,22 +51,25 @@ const profileNavLabel = lang === "zh" ? "外部链接" : "Profile links";
 <main class="home-minimal" aria-label={kSiteTitle}>
   <h1>{kSiteTitle}</h1>
   <p class="home-motto">I believe, since I remember.</p>
-  <nav class="home-line home-tags" aria-label={tagNavLabel}>
-    {
-      homeTags.map((tag, index) => (
-        <span class="home-link-group">
-          {index > 0 && <span class="home-separator" aria-hidden="true">|</span>}
-          <a href={tagHref(tag)}>#{tag}</a>
-        </span>
-      ))
-    }
+  <nav class="home-line home-tags" aria-label={tagNavLabel} data-random-tags={randomTagOptionsJson}>
+    <span class="home-link-group">
+      <a href={allPostsHref}>all posts</a>
+    </span>
+    <span class="home-link-group">
+      <span class="home-separator" aria-hidden="true">|</span>
+      <a class="random-tag-link" href={fallbackTag.href}>{fallbackTag.label}</a>
+    </span>
   </nav>
   <nav class="home-line home-profiles" aria-label={profileNavLabel}>
     {
       profileLinks.map((link, index) => (
         <span class="home-link-group">
           {index > 0 && <span class="home-separator" aria-hidden="true">|</span>}
-          <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
+          {
+            link.external
+              ? <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
+              : <a href={link.href}>{link.label}</a>
+          }
         </span>
       ))
     }
@@ -115,7 +138,6 @@ const profileNavLabel = lang === "zh" ? "外部链接" : "Profile links";
     }
 
     .home-tags {
-      column-gap: 0;
       font-size: 0.96em;
     }
 
@@ -128,17 +150,31 @@ const profileNavLabel = lang === "zh" ? "外部链接" : "Profile links";
     .home-minimal h1 {
       font-size: 2.45rem;
     }
+  }
 
-    .home-tags {
+  @media (max-width: 340px) {
+    .home-profiles {
       column-gap: 0.65em;
     }
 
-    .home-tags .home-link-group {
+    .home-profiles .home-link-group {
       gap: 0;
     }
 
-    .home-tags .home-separator {
+    .home-profiles .home-separator {
       display: none;
     }
   }
 </style>
+
+<script>
+  const randomTagNav = document.querySelector<HTMLElement>("[data-random-tags]");
+  const randomTagLink = randomTagNav?.querySelector<HTMLAnchorElement>(".random-tag-link");
+  const randomTagOptions = JSON.parse(randomTagNav?.dataset.randomTags ?? "[]");
+  const randomTag = randomTagOptions[Math.floor(Math.random() * randomTagOptions.length)];
+
+  if (randomTag && randomTagLink) {
+    randomTagLink.href = randomTag.href;
+    randomTagLink.textContent = randomTag.label;
+  }
+</script>
