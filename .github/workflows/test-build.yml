@@ -14,17 +14,23 @@ jobs:
       BLOG_FONT_DIR: assets/fonts
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
-          submodules: recursive
+          submodules: false
           fetch-depth: 0
-      - uses: pnpm/action-setup@v4
+      - name: Checkout submodules
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --force typ packages/tylant
+          git -C typ config submodule.packages/mathyml.url https://github.com/Wybxc/mathyml.git
+          git submodule update --init --force --recursive
+      - uses: pnpm/action-setup@v5
         name: Install pnpm
         with:
           version: 10
           run_install: false
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: "pnpm"
