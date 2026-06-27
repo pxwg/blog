@@ -83,19 +83,11 @@ const searchCopy = lang === "zh"
 <html lang={config.htmlLang}>
   <head>
     <BaseHead title={kSiteTitle} description={kSiteDescription} />
-    <style>
-      .post-index-title {
-        margin-bottom: 0.28em;
-      }
-    </style>
   </head>
   <body>
     <Header />
-    <main class="page-flow post-index">
+    <main class="page-flow post-index" aria-label={config.title}>
       <section class="flow-section">
-        <h1 class="post-index-title">
-          {config.title}
-        </h1>
         {
           kEnableSearch && (
             <form class="post-search" role="search" aria-label={searchCopy.label}>

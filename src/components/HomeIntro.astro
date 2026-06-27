@@ -46,9 +46,14 @@ const profileLinks = [
 
 const tagNavLabel = lang === "zh" ? "文章标签" : "Article tags";
 const profileNavLabel = lang === "zh" ? "外部链接" : "Profile links";
+const homeHeroLabel =
+  lang === "zh"
+    ? "彩霞云层与天空的插图"
+    : "Rosy clouds across the sky";
 ---
 
 <main class="home-minimal" aria-label={kSiteTitle}>
+  <div class="home-hero" role="img" aria-label={homeHeroLabel}></div>
   <h1>{kSiteTitle}</h1>
   <p class="home-motto">I believe, since I remember.</p>
   <nav class="home-line home-tags" aria-label={tagNavLabel} data-random-tags={randomTagOptionsJson}>
@@ -82,11 +87,27 @@ const profileNavLabel = lang === "zh" ? "外部链接" : "Profile links";
     width: min(34rem, calc(100% - var(--page-gutter)));
     min-height: 100svh;
     margin: auto;
-    padding: clamp(4rem, 15vh, 9rem) 0;
+    padding: clamp(2rem, 8vh, 5rem) 0 clamp(5rem, 18vh, 10rem);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
+  }
+
+  .home-hero {
+    width: 100%;
+    aspect-ratio: 4 / 1;
+    margin: 0 0 clamp(1rem, 3vw, 1.45rem);
+    overflow: hidden;
+    background-image: url("/images/homeward-sky-hero-light.webp");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  :global(.dark) .home-hero {
+    background-image: url("/images/homeward-sky-hero.webp");
+    background-position: center 44%;
   }
 
   .home-minimal h1 {
@@ -130,7 +151,7 @@ const profileNavLabel = lang === "zh" ? "外部链接" : "Profile links";
   @media (max-width: 520px) {
     .home-minimal {
       width: min(100% - 1.6rem, 34rem);
-      padding-block: 3rem;
+      padding: 2.5rem 0 3.75rem;
     }
 
     .home-minimal h1 {

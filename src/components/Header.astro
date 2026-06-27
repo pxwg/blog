@@ -36,9 +36,14 @@ const currentSection = pageParts[0] === 'article'
 const currentSectionUrl = localizedUrls[currentSection as keyof typeof localizedUrls];
 const languageToggleUrl = `${kUrlBase}${generateLanguageToggleUrl(pathWithoutBase, targetLocale)}`;
 const languageLabel = currentLocale === 'zh' ? 'en' : 'cn';
+// const headerHeroLabel =
+//   currentLocale === 'zh'
+//     ? '彩霞云层与天空的插图'
+//     : 'Rosy clouds across the sky';
 ---
 
 <header>
+  <!-- <div class="header-hero" role="img" aria-label={headerHeroLabel}></div> -->
   <nav class="newspaper-nav" aria-label="Site navigation">
     <div class="nav-left">
       <a class="site-mark" href={localizedUrls.home}>{kSiteLogo}</a>
@@ -54,9 +59,23 @@ const languageLabel = currentLocale === 'zh' ? 'en' : 'cn';
 <style>
   header {
     margin: 0;
-    padding: 0.58rem 0 0.38rem;
+    padding: 0.7em 0;
     background: var(--nav-bg-color);
   }
+  /* .header-hero {
+    width: min(var(--content-width), calc(100% - var(--page-gutter)));
+    max-width: 100%;
+    aspect-ratio: 9 / 1;
+    margin: 0 auto 0.42rem;
+    overflow: hidden;
+    background-image: url("/images/homeward-sky-header-light.webp");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  :global(.dark) .header-hero {
+    background-image: url("/images/homeward-sky-header.webp");
+  } */
   .newspaper-nav {
     width: min(var(--content-width), calc(100% - var(--page-gutter)));
     max-width: 100%;
@@ -141,8 +160,11 @@ const languageLabel = currentLocale === 'zh' ? 'en' : 'cn';
   }
   @media (max-width: 680px) {
     header {
-      padding-top: 0.58rem;
+      padding-block: 0.62em;
     }
+    /* .header-hero {
+      margin-bottom: 0.36rem;
+    } */
     .newspaper-nav {
       gap: 0.6em;
     }

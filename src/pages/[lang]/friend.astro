@@ -1,5 +1,4 @@
 ---
-import { getCollection } from "astro:content";
 import BaseHead from "$components/BaseHead.astro";
 import Header from "$components/Header.astro";
 import Footer from "$components/Footer.astro";
@@ -13,8 +12,6 @@ export async function getStaticPaths() {
   ];
 }
 
-const allPosts = (await getCollection("blog"))
-
 const { lang } = Astro.params;
 
 const config = getSafeLanguageConfig('friend', lang as any);
@@ -27,9 +24,8 @@ const config = getSafeLanguageConfig('friend', lang as any);
   </head>
   <body>
     <Header />
-    <main class="page-flow">
+    <main class="page-flow" aria-label={config.title}>
       <section class="flow-section">
-        <h1>{config.title}</h1>
         <ul class="accent block-list link-card-list">
           {
             kFriendLinks.map((friend) => (
