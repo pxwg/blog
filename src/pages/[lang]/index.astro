@@ -1,21 +1,11 @@
 ---
-import { getCollection } from "astro:content";
-import  TagList  from "$components/TagList.astro";
 import BaseHead from "$components/BaseHead.astro";
-import Header from "$components/Header.astro";
-import Footer from "$components/Footer.astro";
-import FormattedDate from "$components/FormattedDate.astro";
+import HomeIntro from "$components/HomeIntro.astro";
 import {
   kSiteTitle,
-  kSiteIndexTitle,
   kSiteDescription,
-  kUrlBase,
   kBaiduVeriCode,
 } from "$consts";
-// @ts-ignore
-import AboutContent from "../../../content/other/intro.typ?html&body";
-import "$styles/IndexPostList.css";
-import { getGitModifiedDate } from "../../utils/git";
 import { getSafeLanguageConfig } from "$utils/i18n";
 
 export async function getStaticPaths() {
@@ -25,35 +15,9 @@ export async function getStaticPaths() {
   ];
 }
 
-const allPosts = (await getCollection("blog"))
-
 const { lang } = Astro.params;
-
-const postsWithModifiedDate = allPosts.map(post => {
-  const modifiedDate = getGitModifiedDate(post.id, {
-    contentDir: 'content/article',
-    fileExtension: '.typ',
-    fallbackDate: post.data.date,
-    debug: true
-  });
-
-  return {
-    ...post,
-    data: {
-      ...post.data,
-      modifiedDate
-    }
-  };
-});
-
-
-const recentPosts = postsWithModifiedDate.sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-);
-
-const posts = recentPosts.filter(post => post.id.startsWith(`${lang}/`)).slice(0, 5);
-
-const config = getSafeLanguageConfig('index', lang as any);
+const currentLang = lang === "zh" ? "zh" : "en";
+const config = getSafeLanguageConfig("index", currentLang);
 
 ---
 
@@ -66,62 +30,8 @@ const config = getSafeLanguageConfig('index', lang as any);
         <meta name="baidu-site-verification" content={kBaiduVeriCode} />
       )
     }
-    <style>
-      .comments a { display: inline-block; }
-      @media (max-width: 600px) { .posts .heading { display: flex; flex-direction: column; } }
-      .comment-item { background-color: var(--main-bg-color); }
-      .monthly li { font-style: italic; }
-    </style>
   </head>
   <body>
-    <Header />
-    <main class="page-flow">
-      <section class="flow-section" aria-label="Prelude">
-        <h1 set:html={kSiteIndexTitle} />
-        <AboutContent />
-      </section>
-      <section class="flow-section" aria-label="Recent Posts">
-        <h2 id="recent-posts-title">
-          {config.title}
-        </h2>
-        <ul class="accent block-list link-card-list posts">
-          {
-            posts.map((post) => {
-              const postUrl = `${kUrlBase}/${lang}/article/${post.id.replace(`${lang}/`, '')}/`;
-              return (
-                <li
-                  data-article-id={post.id}
-                  data-article-meta={JSON.stringify({
-                    title: post.data.title,
-                    description: post.data.description,
-                    tags: post.data.tags,
-                    date: post.data.date.toISOString(),
-                    modifiedDate: post.data.modifiedDate ? post.data.modifiedDate.toISOString() : null
-                  })}
-                >
-                  <a class="heading" href={postUrl}>
-                    <h2><span class="title">{post.data.title}</span></h2>
-                  </a>
-                  <div class="post-meta">
-                    <FormattedDate date={post.data.date} />
-                    {
-                      post.data.modifiedDate && (
-                        <>
-                          <span> · updated </span>
-                          <FormattedDate date={post.data.modifiedDate} />
-                        </>
-                      )
-                    }
-                  </div>
-                  {post.data.tags && <TagList tags={post.data.tags} lang="zh"/>}
-                  <p class="post-description">{post.data.description || ""}</p>
-                </li>
-              );
-            })
-          }
-        </ul>
-      </section>
-    </main>
-    <Footer />
+    <HomeIntro lang={currentLang} />
   </body>
 </html>

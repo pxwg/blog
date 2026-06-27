@@ -1,0 +1,144 @@
+---
+import { kSiteTitle, kUrlBase } from "$consts";
+
+interface Props {
+  lang: "en" | "zh";
+}
+
+const { lang } = Astro.props;
+
+const homeTags = ["physics", "math", "programming", "prose"];
+const profileLinks = [
+  {
+    label: lang === "zh" ? "知乎" : "Zhihu",
+    href: "https://www.zhihu.com/people/bu-hui-fei-de-qi-e-71",
+  },
+  {
+    label: "Github",
+    href: "https://github.com/pxwg",
+  },
+];
+
+const tagHref = (tag: string) => {
+  const params = new URLSearchParams({ search: tag });
+  return `${kUrlBase}/${lang}/article/?${params}`;
+};
+
+const tagNavLabel = lang === "zh" ? "文章标签" : "Article tags";
+const profileNavLabel = lang === "zh" ? "外部链接" : "Profile links";
+---
+
+<main class="home-minimal" aria-label={kSiteTitle}>
+  <h1>{kSiteTitle}</h1>
+  <p class="home-motto">I believe, since I remember.</p>
+  <nav class="home-line home-tags" aria-label={tagNavLabel}>
+    {
+      homeTags.map((tag, index) => (
+        <span class="home-link-group">
+          {index > 0 && <span class="home-separator" aria-hidden="true">|</span>}
+          <a href={tagHref(tag)}>#{tag}</a>
+        </span>
+      ))
+    }
+  </nav>
+  <nav class="home-line home-profiles" aria-label={profileNavLabel}>
+    {
+      profileLinks.map((link, index) => (
+        <span class="home-link-group">
+          {index > 0 && <span class="home-separator" aria-hidden="true">|</span>}
+          <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
+        </span>
+      ))
+    }
+  </nav>
+</main>
+
+<style>
+  .home-minimal {
+    box-sizing: border-box;
+    width: min(34rem, calc(100% - var(--page-gutter)));
+    min-height: 100svh;
+    margin: auto;
+    padding: clamp(4rem, 15vh, 9rem) 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .home-minimal h1 {
+    margin: 0 0 0.28em;
+    font-size: 3.4rem;
+    line-height: 1.05;
+    letter-spacing: 0;
+  }
+
+  .home-motto {
+    margin: 0 0 0.9em;
+    color: var(--main-color);
+    font-size: 1.08em;
+    line-height: 1.35;
+  }
+
+  .home-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 0.42em;
+    margin: 0.08em 0;
+    line-height: 1.55;
+  }
+
+  .home-link-group {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.42em;
+    white-space: nowrap;
+  }
+
+  .home-profiles {
+    margin-top: 0.18em;
+  }
+
+  .home-separator {
+    color: var(--gray-color);
+  }
+
+  @media (max-width: 520px) {
+    .home-minimal {
+      width: min(100% - 1.6rem, 34rem);
+      padding-block: 3rem;
+    }
+
+    .home-minimal h1 {
+      font-size: 2.65rem;
+    }
+
+    .home-tags {
+      column-gap: 0;
+      font-size: 0.96em;
+    }
+
+    .home-tags .home-link-group {
+      gap: 0.36em;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .home-minimal h1 {
+      font-size: 2.45rem;
+    }
+
+    .home-tags {
+      column-gap: 0.65em;
+    }
+
+    .home-tags .home-link-group {
+      gap: 0;
+    }
+
+    .home-tags .home-separator {
+      display: none;
+    }
+  }
+</style>
