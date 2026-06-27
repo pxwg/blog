@@ -58,10 +58,9 @@ jobs:
           cache: "pnpm"
 
       - name: Install just
-        uses: extractions/setup-just@v2
+        uses: extractions/setup-crate@v2
         with:
-          version: latest
-          run_install: false
+          repo: casey/just
       
       - name: Add wasm32-unknown-unknown target
         run: |
@@ -95,7 +94,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v6
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: "./dist"
       - name: Deploy to GitHub Pages
