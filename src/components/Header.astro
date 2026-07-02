@@ -1,24 +1,27 @@
 ---
 import { kUrlBase, kSiteLogo } from "$consts";
 import { ThemeToggle } from "@myriaddreamin/tylant-theme-toggle";
-import { generateLanguageToggleUrl } from "$utils/i18n";
+import {
+  generateLanguageToggleUrl,
+  getCurrentLanguage,
+  getLocalizedPagePath,
+  stripUrlBase,
+} from "$utils/i18n";
 
 interface Props {
   articleId?: string;
 }
 
-const pathWithoutBase = kUrlBase && Astro.url.pathname.startsWith(`${kUrlBase}/`)
-  ? Astro.url.pathname.slice(kUrlBase.length)
-  : Astro.url.pathname;
-const currentLocale = pathWithoutBase.startsWith('/zh/') ? 'zh' : 'en';
+const pathWithoutBase = stripUrlBase(Astro.url.pathname, kUrlBase);
+const currentLocale = getCurrentLanguage(pathWithoutBase);
 const targetLocale = currentLocale === 'zh' ? 'en' : 'zh';
 
 // Generate localized URLs
 const localizedUrls = {
-  home: currentLocale === 'zh' ? `${kUrlBase}/zh/` : `${kUrlBase}/en/`,
-  posts: currentLocale === 'zh' ? `${kUrlBase}/zh/article/` : `${kUrlBase}/en/article/`,
-  friends: currentLocale === 'zh' ? `${kUrlBase}/zh/friend/` : `${kUrlBase}/en/friend/`,
-  about: currentLocale === 'zh' ? `${kUrlBase}/zh/about/` : `${kUrlBase}/en/about/`
+  home: getLocalizedPagePath('home', currentLocale, kUrlBase),
+  posts: getLocalizedPagePath('posts', currentLocale, kUrlBase),
+  friends: getLocalizedPagePath('friends', currentLocale, kUrlBase),
+  about: getLocalizedPagePath('about', currentLocale, kUrlBase)
 };
 
 const routeParts = pathWithoutBase.split('/').filter(Boolean);

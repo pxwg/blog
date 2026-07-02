@@ -3,11 +3,15 @@
 import BaseHead from "$components/BaseHead.astro";
 import Footer from "$components/Footer.astro";
 import Header from "$components/Header.astro";
-import { kSiteTitle, kSiteDescription } from "$consts";
+import { kSiteTitle, kSiteDescription, kUrlBase } from "$consts";
+import { defaultLanguage, getLocalizedPagePath } from "$utils/i18n";
+
+const aboutHref = getLocalizedPagePath("about", defaultLanguage, kUrlBase);
+const homeHref = getLocalizedPagePath("home", defaultLanguage, kUrlBase);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={defaultLanguage} data-url-base={kUrlBase}>
   <head>
     <BaseHead title={"404 Not Found - " + kSiteTitle} description={kSiteDescription} />
     <style>
@@ -32,13 +36,29 @@ import { kSiteTitle, kSiteDescription } from "$consts";
         <h1>404 - Page Not Found</h1>
         <p>In a place where no one is, inspiration is born.</p>
         <div>
-          You can: <a href="/about" class="accent">Contact me</a> and share your thoughts.
+          You can: <a href={aboutHref} class="accent" data-localized-route="about">Contact me</a> and share your thoughts.
         </div>
         <div>
-          Or: <a href="/" class="accent">Return Home</a> and explore other content.
+          Or: <a href={homeHref} class="accent" data-localized-route="home">Return Home</a> and explore other content.
         </div>
       </section>
     </main>
     <Footer />
+    <script>
+      import { getCurrentLanguage, getLocalizedPagePath } from "$utils/i18n";
+
+      const urlBase = document.documentElement.dataset.urlBase ?? "";
+      const currentLang = getCurrentLanguage(window.location.pathname, urlBase);
+      document.documentElement.lang = currentLang;
+
+      document.querySelectorAll("[data-localized-route]").forEach((link) => {
+        if (!(link instanceof HTMLAnchorElement)) return;
+
+        const route = link.dataset.localizedRoute;
+        if (route === "about" || route === "home") {
+          link.setAttribute("href", getLocalizedPagePath(route, currentLang, urlBase));
+        }
+      });
+    </script>
   </body>
 </html>

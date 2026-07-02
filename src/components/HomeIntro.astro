@@ -1,5 +1,6 @@
 ---
 import { kSiteTitle, kUrlBase } from "$consts";
+import { getLocalizedPagePath } from "$utils/i18n";
 
 interface Props {
   lang: "en" | "zh";
@@ -11,7 +12,7 @@ const homeTags = ["physics", "math", "programming", "prose"];
 
 const tagHref = (tag: string) => {
   const params = new URLSearchParams({ search: tag });
-  return `${kUrlBase}/${lang}/article/?${params}`;
+  return `${getLocalizedPagePath("posts", lang, kUrlBase)}?${params}`;
 };
 
 const randomTagOptions = homeTags.map((tag) => ({
@@ -20,7 +21,7 @@ const randomTagOptions = homeTags.map((tag) => ({
 }));
 const fallbackTag = randomTagOptions[Math.floor(Math.random() * randomTagOptions.length)] ?? randomTagOptions[0];
 const randomTagOptionsJson = JSON.stringify(randomTagOptions);
-const allPostsHref = `${kUrlBase}/${lang}/article/`;
+const allPostsHref = getLocalizedPagePath("posts", lang, kUrlBase);
 const profileLinks = [
   {
     label: lang === "zh" ? "知乎" : "Zhihu",
@@ -34,12 +35,12 @@ const profileLinks = [
   },
   {
     label: "friends",
-    href: `${kUrlBase}/${lang}/friend/`,
+    href: getLocalizedPagePath("friends", lang, kUrlBase),
     external: false,
   },
   {
     label: "about",
-    href: `${kUrlBase}/${lang}/about/`,
+    href: getLocalizedPagePath("about", lang, kUrlBase),
     external: false,
   },
 ];

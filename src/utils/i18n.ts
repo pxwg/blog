@@ -2,9 +2,30 @@
  * i18n utilities for language configuration and routing
  */
 
-import { kUrlBase } from '$consts';
-
 export type Language = 'zh' | 'en';
+export const defaultLanguage: Language = 'en';
+export const supportedLanguages = ['en', 'zh'] as const;
+
+export type LocalizedRouteKey = 'home' | 'posts' | 'friends' | 'about';
+
+export const localizedRoutePaths = {
+  home: {
+    en: '/en/',
+    zh: '/zh/',
+  },
+  posts: {
+    en: '/en/article/',
+    zh: '/zh/article/',
+  },
+  friends: {
+    en: '/en/friend/',
+    zh: '/zh/friend/',
+  },
+  about: {
+    en: '/en/about/',
+    zh: '/zh/about/',
+  },
+} as const satisfies Record<LocalizedRouteKey, Record<Language, string>>;
 
 export interface LanguageConfig {
   htmlLang: string;
@@ -32,6 +53,42 @@ export interface TranslationStrings {
     zh: string;
     en: string;
   };
+}
+
+export function isLanguage(value: string | undefined): value is Language {
+  return value === 'en' || value === 'zh';
+}
+
+export function normalizeUrlBase(base = ''): string {
+  if (!base || base === '/') return '';
+  return base.replace(/\/+$/, '').replace(/^(?!\/)/, '/');
+}
+
+export function stripUrlBase(pathname: string, base = ''): string {
+  const normalizedBase = normalizeUrlBase(base);
+  const normalizedPath = pathname.startsWith('/') ? pathname : `/${pathname}`;
+
+  if (!normalizedBase) return normalizedPath;
+  if (normalizedPath === normalizedBase) return '/';
+  if (normalizedPath.startsWith(`${normalizedBase}/`)) {
+    return normalizedPath.slice(normalizedBase.length) || '/';
+  }
+
+  return normalizedPath;
+}
+
+export function withUrlBase(pathname: string, base = ''): string {
+  const normalizedBase = normalizeUrlBase(base);
+  const normalizedPath = pathname.startsWith('/') ? pathname : `/${pathname}`;
+  return `${normalizedBase}${normalizedPath}` || '/';
+}
+
+export function getLocalizedPagePath(
+  routeKey: LocalizedRouteKey,
+  lang: Language,
+  base = ''
+): string {
+  return withUrlBase(localizedRoutePaths[routeKey][lang], base);
 }
 
 /**
@@ -109,10 +166,9 @@ export const translations: TranslationStrings = {
 /**
  * Get current language from URL path
  */
-export function getCurrentLanguage(urlPath: string): Language {
-  if (urlPath.startsWith('/zh/')) return 'zh';
-  if (urlPath.startsWith('/en/')) return 'en';
-  return 'en'; // default
+export function getCurrentLanguage(urlPath: string, base = ''): Language {
+  const [urlLang] = stripUrlBase(urlPath, base).split('/').filter(Boolean);
+  return isLanguage(urlLang) ? urlLang : defaultLanguage;
 }
 
 /**
@@ -148,7 +204,7 @@ export function generateLanguageToggleUrl(
   const pathParts = pathname.split('/').filter(Boolean);
 
   if (pathParts.length > 0) {
-    if (pathParts[0] === 'en' || pathParts[0] === 'zh') {
+    if (isLanguage(pathParts[0])) {
       pathParts[0] = targetLang;
     } else {
       pathParts.unshift(targetLang);
