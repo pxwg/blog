@@ -69,6 +69,16 @@ html:lang(zh) .prose {
   font-size: calc(1em * var(--vp-zh-prose-scale));
   line-height: var(--vp-zh-prose-line-height);
 }
+html:lang(zh) .article-prose :where(p, li, blockquote, figcaption) {
+  font-kerning: normal;
+  font-feature-settings: "halt" 1;
+}
+html:lang(zh) .article-prose .cjk-punctuation {
+  margin-inline: 0.025em;
+}
+html:lang(zh) .article-prose :where(code, pre, kbd, samp, math) {
+  font-feature-settings: normal;
+}
 main,
 .search {
   width: min(var(--content-width), calc(100% - var(--page-gutter)));
