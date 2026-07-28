@@ -203,71 +203,32 @@ The geodesic flow is smooth on this completed space. Great circles through $N$ g
 
 = From Great Circles to Kepler Orbits
 
-The completed sphere picture gives the normalized Kepler solution explicitly. A unit-speed great circle is determined by an orthonormal pair in $RR^4$. Shift its parameter so that $psi=0$ corresponds to periapsis, and choose orthonormal vectors $e_1,e_2 in RR^3$ in the orbital plane. For $0 <= e < 1$, write
+We can now read the Kepler orbit directly from a great circle. Let $psi$ be its unit-speed angle, shifted so that $psi=0$ corresponds to periapsis, and choose orthonormal vectors $e_1,e_2 in RR^3$ in the orbital plane. Applying the cotangent stereographic map and using $q=y$ gives
 $
-        xi_0 (psi) & = e cos psi, \
-   xi_(perp) (psi) & = e_1 sin psi
-                     - sqrt(1-e^2) e_2 cos psi, \
-       eta_0 (psi) & = -e sin psi, \
-  eta_(perp) (psi) & = e_1 cos psi
-                     + sqrt(1-e^2) e_2 sin psi.
-$
-Here $xi(psi) in SS^3$, $eta=xi'$, and $psi$ is the great-circle angle. The cotangent lift of stereographic projection gives
-$
-  x
-  = frac(xi_(perp), 1-xi_0),
+  q(psi)
+  = (cos psi-e)e_1
+  + sqrt(1-e^2) sin psi e_2,
   quad
-  y
-  = (1-xi_0) eta_(perp)
-  + xi_(perp) eta_0.
+  norm(q(psi))=1-e cos psi.
 $
-Using $q=y$ and $p=-x$, we recover
-$
-  q(psi) & = (cos psi-e)e_1
-           + sqrt(1-e^2) sin psi e_2, \
-  p(psi) & = frac(
-             -sin psi e_1
-             + sqrt(1-e^2) cos psi e_2,
-             1-e cos psi
-           ).
-$
-In particular,
-$
-  norm(q(psi)) = 1-e cos psi,
-  quad
-  frac(1, 2) norm(p(psi))^2
-  - frac(1, norm(q(psi)))
-  = -frac(1, 2).
-$
-Eliminating $psi$ from the position gives
+The parameter $e$ measures how close the great circle comes to the north pole. Eliminating $psi$ gives
 $
   (q dot e_1 + e)^2
   + frac((q dot e_2)^2, 1-e^2)
-  = 1.
+  = 1,
 $
-This is an ellipse of semimajor axis $1$ and eccentricity $e$, with the force center at one focus. Geometrically, $e$ also measures how close the corresponding great circle comes to the north pole: since $xi_0=e cos psi$, the minimum spherical distance $d$ from the great circle to $N$ satisfies $e=cos d$. The circular orbit has $e=0$, while the collision limit $e=1$ is a great circle through $N$.
+so the cotangent projection of the great circle is a Kepler ellipse of eccentricity $e$.
 
-Since $dif psi=dif s$, the Sundman relation becomes
+Because the great circle has unit speed, $dif psi=dif s$. The Sundman relation therefore becomes
 $
   dif t
   = norm(q(psi)) dif psi
-  = (1-e cos psi) dif psi.
+  = (1-e cos psi) dif psi,
 $
-Integrating from periapsis gives
+and hence
 $
-  t-tau = psi-e sin psi.
+  t-tau=psi-e sin psi.
 $
-Thus, the great-circle angle, the regularized time, and the eccentric anomaly are the same variable up to an additive constant. Restoring the mass $m$, coupling $kappa$, and semimajor axis $a$, the solution becomes
-$
-  q(psi)
-  = a(cos psi-e)e_1
-  + a sqrt(1-e^2) sin psi e_2,
-$
-with Kepler's equation
-$
-  sqrt(frac(kappa, m a^3)) (t-tau)
-  = psi-e sin psi.
-$
-The scaling from the normalized energy surface then recovers every fixed negative-energy branch.
+Thus, the great-circle angle, the regularized time, and the eccentric anomaly are the same variable up to an additive constant.
 
-Thus, from geodesics on the three-sphere, we have reproduced and solved the negative-energy branch of Kepler's problem.
+From geodesics on the three-sphere, we have therefore reproduced and solved the negative-energy branch of Kepler's problem.

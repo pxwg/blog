@@ -204,71 +204,32 @@ $
 
 = 从大圆到 Kepler 轨道
 
-补全后的球面图景明确给出了归一化的 Kepler 解。一条单位速大圆由 $RR^4$ 中的一对正交单位向量确定。重新选取参数原点，使得 $psi=0$ 对应近心点，并在轨道平面内选取正交单位向量 $e_1,e_2 in RR^3$。对于 $0 <= e < 1$，写作
+现在可以直接从一条大圆读出 Kepler 轨道。令 $psi$ 为大圆的单位速角参数，并平移参数原点，使 $psi=0$ 对应近心点；再在轨道平面内选取正交单位向量 $e_1,e_2 in RR^3$。应用余切球极投影并使用 $q=y$，得到
 $
-        xi_0 (psi) & = e cos psi, \
-   xi_(perp) (psi) & = e_1 sin psi
-                     - sqrt(1-e^2) e_2 cos psi, \
-       eta_0 (psi) & = -e sin psi, \
-  eta_(perp) (psi) & = e_1 cos psi
-                     + sqrt(1-e^2) e_2 sin psi.
-$
-这里 $xi(psi) in SS^3$，$eta=xi'$，而 $psi$ 是大圆的角参数。球极投影的余切提升给出
-$
-  x
-  = frac(xi_(perp), 1-xi_0),
+  q(psi)
+  = (cos psi-e)e_1
+  + sqrt(1-e^2) sin psi e_2,
   quad
-  y
-  = (1-xi_0) eta_(perp)
-  + xi_(perp) eta_0.
+  norm(q(psi))=1-e cos psi.
 $
-利用 $q=y$ 和 $p=-x$，我们重新得到
-$
-  q(psi) & = (cos psi-e)e_1
-           + sqrt(1-e^2) sin psi e_2, \
-  p(psi) & = frac(
-             -sin psi e_1
-             + sqrt(1-e^2) cos psi e_2,
-             1-e cos psi
-           ).
-$
-特别地，
-$
-  norm(q(psi)) = 1-e cos psi,
-  quad
-  frac(1, 2) norm(p(psi))^2
-  - frac(1, norm(q(psi)))
-  = -frac(1, 2).
-$
-从位置中消去 $psi$，得到
+参数 $e$ 度量了大圆与北极的接近程度。消去 $psi$，得到
 $
   (q dot e_1 + e)^2
   + frac((q dot e_2)^2, 1-e^2)
-  = 1.
+  = 1,
 $
-这是一个半长轴为 $1$、偏心率为 $e$ 的椭圆，力心位于它的一个焦点上。从几何上看，$e$ 也度量了相应大圆与北极的接近程度：由于 $xi_0=e cos psi$，若以 $d$ 表示相应大圆同北极 $N$ 之间的最小球面距离，便有 $e=cos d$。圆轨道对应 $e=0$，而碰撞极限 $e=1$ 则是一条穿过 $N$ 的大圆。
+因此，大圆的余切投影是一条偏心率为 $e$ 的 Kepler 椭圆。
 
-由于 $dif psi=dif s$，Sundman 关系变为
+由于大圆以单位速运动，我们有 $dif psi=dif s$。Sundman 关系于是变为
 $
   dif t
   = norm(q(psi)) dif psi
-  = (1-e cos psi) dif psi.
+  = (1-e cos psi) dif psi,
 $
-从近心点开始积分，得到
+从而
 $
-  t-tau = psi-e sin psi.
+  t-tau=psi-e sin psi.
 $
-因此，大圆的角参数、正则化时间与偏近点角是同一个变量，至多相差一个加法常数。恢复质量 $m$、耦合常数 $kappa$ 与半长轴 $a$ 后，解变为
-$
-  q(psi)
-  = a(cos psi-e)e_1
-  + a sqrt(1-e^2) sin psi e_2,
-$
-同时 Kepler 方程为
-$
-  sqrt(frac(kappa, m a^3)) (t-tau)
-  = psi-e sin psi.
-$
-由归一化能量面的缩放便可以进一步恢复每一个固定负能量分支。
+因此，大圆的角参数、正则化时间与偏近点角是同一个变量，至多相差一个加法常数。
 
 至此，我们从三维球面上的测地线出发，重新得到了 Kepler 问题的负能量分支，并完成了它的求解。
