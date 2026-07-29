@@ -199,7 +199,7 @@ $
   tilde.equiv S^* SS^3
   tilde.equiv T_(1) SS^3.
 $
-The geodesic flow is smooth on this completed space. Great circles through $N$ give the regularized radial collision--ejection trajectories. At fixed negative energy these are the $L=0$ degenerate ellipses, not the zero-energy parabolic branch.
+The geodesic flow is smooth on this completed space. Great circles through $N$ give the regularized radial collision--ejection trajectories. At fixed negative energy, these circles are the $L=0$ degenerate ellipses.
 
 = From Great Circles to Kepler Orbits
 
