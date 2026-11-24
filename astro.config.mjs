@@ -89,7 +89,7 @@ export default defineConfig({
       external: ['@myriaddreamin/typst-ts-node-compiler'],
       noExternal: ['@fontsource-variable/inter'],
     },
-    // Copy static assets to the dist folder
+    // Copy article assets and MathJax's runtime files to dist.
     plugins: [
       viteStaticCopy({
         targets: [
@@ -100,6 +100,33 @@ export default defineConfig({
           {
             src: './content/article/assets/*',
             dest: 'zh/article/assets',
+          },
+          {
+            src: [
+              './node_modules/mathjax/startup.js',
+              './node_modules/mathjax/core.js',
+              './node_modules/mathjax/LICENSE',
+            ],
+            dest: 'vendor/mathjax',
+          },
+          {
+            src: './node_modules/mathjax/input/mml.js',
+            dest: 'vendor/mathjax/input',
+          },
+          {
+            src: './node_modules/mathjax/output/chtml.js',
+            dest: 'vendor/mathjax/output',
+          },
+          {
+            src: './node_modules/mathjax/a11y/assistive-mml.js',
+            dest: 'vendor/mathjax/a11y',
+          },
+          {
+            src: [
+              './node_modules/@mathjax/mathjax-newcm-font/chtml.js',
+              './node_modules/@mathjax/mathjax-newcm-font/chtml',
+            ],
+            dest: 'vendor/mathjax/mathjax-newcm',
           },
         ],
       }),

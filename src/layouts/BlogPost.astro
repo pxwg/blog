@@ -84,6 +84,15 @@ const pdfArchives = await getCollection('archive');
         --article-prose-line-height: var(--vp-zh-prose-line-height);
         --article-title-line-height: 1.3;
       }
+      .article-prose .typst-native-math.typst-inline-math > mjx-container[jax='CHTML'] {
+        line-height: 0;
+      }
+      .article-prose .typst-native-math.typst-display-math {
+        margin-block: 0.25em;
+      }
+      .article-prose .typst-display-math > mjx-container[jax='CHTML'][display='true'] {
+        margin: 0;
+      }
       .article-prose p {
         margin-block-start: 0.68em;
         margin-block-end: 0.72em;
@@ -91,6 +100,12 @@ const pdfArchives = await getCollection('archive');
       html:lang(zh) .article-prose p {
         margin-block-start: 0.72em;
         margin-block-end: 0.8em;
+      }
+      .article-prose p:has(+ .typst-native-math.typst-display-math) {
+        margin-block-end: 0.25em;
+      }
+      .article-prose .typst-native-math.typst-display-math + p {
+        margin-block-start: 0.25em;
       }
       .article-title {
         line-height: var(--article-prose-line-height);
@@ -235,5 +250,13 @@ const pdfArchives = await getCollection('archive');
       }
     </main>
     <Footer />
+    <script>
+      import { renderArticleMath } from '$utils/article-math';
+
+      const prose = document.querySelector('.article-prose');
+      if (prose?.querySelector('.typst-native-math > math')) {
+        renderArticleMath(prose);
+      }
+    </script>
   </body>
 </html>
